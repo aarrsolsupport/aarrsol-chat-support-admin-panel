@@ -1,0 +1,486 @@
+
+@media screen and (max-width: 1450px){
+   
+}
+
+@media screen and (max-width: 1350px){
+ 
+    
+}
+@media screen and (max-width: 1199px){
+   
+}
+
+@media screen and (max-width: 1024px){
+   
+}
+
+@media screen and (max-width: 991px){
+    .sidebar-menu-sec {
+        position: initial;
+        width: 100%;
+    }
+    .sidebar-menu-con {
+        height: auto;
+        overflow-x: auto;
+        overflow-y: inherit;
+    }
+    .sidebar-menu-list {
+        display: flex;
+        align-items: center;
+        width: max-content;
+    }
+
+    .sidebar-menu-item {
+        width: 120px;
+    }
+
+    .borad-inner-body-sec {
+        margin-left: auto;
+    }
+
+    .borad-container {
+        padding-left: 10px !important;
+    }
+
+    .borad-inner-body {
+        margin-top: 68px;
+    }
+
+    .operator-table-con {
+        overflow-y: auto;
+        padding-bottom: 110px;
+    }
+
+    .menu-item-con {
+        border-left: 0px solid var(--white-color);
+        border-bottom: 3px solid var(--white-color);
+    }
+
+   
+
+    .tickets-modal-item .thm-heading {
+       margin: 2px 6px;
+    }
+
+    .tickets-modal-list-sec {
+        width: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .tickets-modal-item .thm-heading {
+        white-space: nowrap;
+    }
+
+    .tickets-details-modal-list {
+        padding: 4px 14px;
+    }
+
+    .tickets-details-modal  .modal-header .thm-heading h4 {
+        font-size: 14px;
+    }
+    .tickets-details-modal  .modal-header .thm-heading h3 {
+        font-size: 12px;
+    }
+
+    .tickets-modal-item {
+        height: 56px;
+    }
+
+    .tickets-details-con .thm-heading p {
+        margin-top: 4px;
+    }
+
+    .tickets-details-con .thm-heading p {
+        font-size: 12px;
+    }
+
+    .login-sec {
+        width: 95%;
+    }
+
+    .login-form-con {
+        padding: 12px;
+        padding-left: 0px;
+    }
+
+    .remember-sec label {
+        font-size: 12px;
+    }
+
+    .forgot-sec a {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 767px){
+   .operator-table-footer{
+    display: block;
+   }
+    .entries-sec {
+        justify-content: center;
+        margin: 10px 0px;
+    }
+
+    .operator-table-sec {
+        height: auto;
+    }
+    .entries-pages {
+        justify-content: center;
+        display: block;
+        text-align: center;
+    }
+    .menu-item-con {
+        padding: 5px 0px;
+    }
+
+    .sidebar-menu-item {
+        width: 106px;
+    }
+
+    .thm-heading h2 {
+        font-size: 13px;
+    }
+
+    .admin-con span {
+        font-size: 10px;
+    }
+    .thm-heading h3 {
+        font-size: 13px;
+    }
+    .menu-item-con .thm-heading {
+        margin-top: 4px;
+    }
+
+    .search-sec {
+        padding: 12px;
+    }
+
+    .thm-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+    .edit-icon{
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .edit-icon img{
+        width: 100%;
+        height: 100%;
+    }
+
+    .entries-pagination {
+        margin-left: 0px;
+        margin-top: 10px;
+    }
+
+    .entries-pagination .pagination{
+        justify-content: center;
+    }
+
+    .login-item-img {
+    text-align:center;
+    height: 100%;
+    width: 100%;
+    }
+    
+    .login-item-img img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .login-sec{
+        width:90%;
+    }
+}
+
+@media screen and (max-width: 575px){
+
+    .operator-table-con {
+        overflow-x: auto;
+    }
+
+
+
+
+    .header-wrapper {
+        padding: 6px 0px;
+    }
+
+    .sidebar-menu-con::-webkit-scrollbar {
+        display: none;
+    }
+    .menu-item-con .thm-heading {
+        margin-top: 2px;
+    }
+
+    .sidebar-menu-item {
+        width: 101px;
+    }
+
+    .borad-inner-body {
+        margin-top: 65px;
+    }
+
+    .search-sec {
+        padding: 8px;
+    }
+
+    .search-input-sec input {
+        height: 38px;
+    }
+
+    .operator-table-sec {
+        margin-top: 12px;
+        border-radius: 10px;
+    }
+    .more-list-btn {
+        padding: 4px 8px;
+        margin: 0px 0px;
+    }
+
+    .operator-check-con .form-check input {
+        height: 16px;
+        width: 26px;
+    }
+
+    .thm-heading h4 {
+        font-size: 18px;
+    }
+
+    .dashboard-list-con {
+        border-radius: 8px;
+        margin: 6px 0px;
+        padding: 20px 10px;
+    }
+
+    .tickets-details-modal-list {
+        padding: 4px;
+    }
+
+    .tickets-details-modal .modal-header {
+        padding: 8px 10px;
+    }
+
+    .tickets-details-con {
+        padding: 6px 10px;
+        padding-top: 0px;
+    }
+
+    .tickets-details-con .thm-heading span {
+        font-size: 12px;
+    }
+
+
+    .login-item-img {
+        display: none;
+    }
+
+    .login-form-con {
+        padding: 12px;
+        padding-left: 12px;
+    }
+
+
+    .login-con {
+        border-top: none;
+
+        padding: 18px 0px;
+    }
+
+}
+
+@media screen and (max-width: 479px){
+
+    .header-logo {
+        max-width: 110px;
+    }
+
+    .operator-offcanvas-footer .thm-btn {
+        padding: 6px 0px;
+    }
+
+    .status-popup-sec {
+        width: 100%;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 6px;
+        margin-bottom: 64px;
+    }
+    
+    .operator-btn .thm-btn {
+        width: 98px;
+    }
+    .thm-heading h3 {
+        font-size: 12px;
+    }
+    .admin-con span {
+        font-size: 9px;
+    }
+
+    .admin-con {
+        margin-right: 8px;
+    }
+
+    .header-admin-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .thm-heading h2 {
+        font-size: 12px;
+    }
+    .sidebar-menu-item {
+        width: 88px;
+    }
+
+    .sidebar-menu-con {
+        padding-top: 60px;
+    }
+
+    .menu-item-con {
+        border-bottom: 2px solid var(--white-color);
+    }
+
+    .header-wrapper {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .admin-img-sec .header-admin-btn {
+        border: 1px solid var(--border-color);
+    }
+
+    .search-input-sec {
+        width: 160px;
+    }
+
+    .notification-sec {
+        margin-right: 5px;
+    }
+
+    .thm-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .search-input-sec input {
+        border: 1px solid var(--border-color) !important;
+        font-size: 12px;
+    }
+
+    .entries-pagination .pagination .page-item .page-link {
+        font-size: 12px;
+        padding: 4px 12px;
+    }
+
+    .entries-select select {
+        font-size: 12px;
+        margin: 0px 10px;
+    }
+
+    .thm-heading h4 {
+        font-size: 16px;
+    }
+
+    .operator-offcanvas-body{
+        padding: 10px;
+    }
+
+    .operator-item label {
+        font-size: 13px;
+        margin-bottom: 2px;
+    }
+    .operator-item input, .operator-item select {
+        border-radius: 4px;
+        font-size: 12px;
+        height: 38px;
+    }
+
+    .thm-heading span {
+        font-size: 12px;
+    }
+
+    .dashboard-list-con {
+        border-radius: 6px;
+        margin: 6px 0px;
+        padding: 14px 8px;
+    }
+
+    .status-popup-modal .modal-body .status-popup-sec {
+        width: 100%;
+        border: none;
+        border-radius: 0px;
+        padding: 0px;
+        margin-bottom:0px;
+    }
+
+    .status-popup-modal .header-admin-btn {
+        width: 52px;
+        height: 52px;
+    }
+
+    .status-popup-sec .operator-item {
+        width: 92%;
+        margin: 0px auto;
+        padding: 10px 0px 26px;
+    }
+
+    .status-popup-modal .modal-body {
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 24px 10px;
+    }
+
+    .tickets-details-modal  .modal-header .thm-heading h4 {
+        font-size: 13px;
+    }
+    .tickets-details-modal  .modal-header .thm-heading h3 {
+        font-size: 11px;
+    }
+
+    .tickets-modal-item .thm-heading span {
+        font-size: 11px;
+    }
+
+    .tickets-modal-item.entries-select-dropdown button {
+        font-size: 12px;    
+        padding: 2px 22px;
+    }
+
+    .tickets-details-con .thm-heading {
+        margin-top: 6px;
+    }
+    .tickets-details-con .thm-heading h2 {
+        font-size: 13px;
+    }
+
+    .tickets-details-con .thm-heading p {
+        font-size: 11px;
+    }
+
+    .tickets-details-con .thm-heading span {
+        font-size: 11px;
+    }
+
+    .form-footer .thm-btn{
+        height: 38px;
+    }
+
+    .login-sec {
+        width: 100%;
+    }
+
+}
+
+@media screen and (max-width: 359px){
+
+    .status-popup-sec .operator-item {
+        width: 100%;
+    }
+   
+}

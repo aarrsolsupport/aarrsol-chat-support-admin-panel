@@ -72,58 +72,58 @@
    </section>
 </template>
 <script>
-import { required } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
-import axios from "axios"
+   import { required } from '@vuelidate/validators'
+   import { useVuelidate } from '@vuelidate/core'
+   import axios from "axios"
 
-export default {
-    name: 'LoginComponent',
-    setup () {
-        return { v$: useVuelidate() }
-    },
-    validations:{
-        userid:{required},
-        password:{required},
-    },
-    data() {
-        return {
-            userid: '',
-            password: '',
-            error_message: ''
-        }
-    },
-    mounted(){
-        if(localStorage.getItem('_token')){
-            this.$router.push('/')
-        }
-    },
-    methods: {
-      login(){
-         this.v$.$touch()
-         if (this.v$.$error) {
-            return false
-         }else{
-            this.$store.commit('is_loader', true);
-            axios.post('/login',{'userid':this.userid,'password': this.password})
-            .then(res => {
-               if(res.data.error === true){  
-                  this.$toast.error(res.data.message);
-               }else{
-                  console.log(res.data.data.user)
-                  this.$store.commit('setAuthUser', res.data.data.user)
-                  localStorage.setItem('_token',res.data.data.access_token);
-                  localStorage.setItem('authData',JSON.stringify(res.data.data.user), { encrypt: false });
-                  window.location.href='/'
-               }
-               this.$store.commit('is_loader', false);
-            }).catch(e => {
-               this.error_message = e.response.data.message;
-               this.$store.commit('is_loader', false);
-            })
+   export default {
+      name: 'LoginComponent',
+      setup () {
+         return { v$: useVuelidate() }
+      },
+      validations:{
+         userid:{required},
+         password:{required},
+      },
+      data() {
+         return {
+               userid: '',
+               password: '',
+               error_message: ''
          }
-      }
-    },
-}
+      },
+      mounted(){
+         if(localStorage.getItem('_token')){
+            this.$router.push('/')
+         }
+      },
+      methods: {
+         login(){
+            this.v$.$touch()
+            if (this.v$.$error) {
+               return false
+            }else{
+               this.$store.commit('is_loader', true);
+               axios.post('/login',{'userid':this.userid,'password': this.password})
+               .then(res => {
+                  if(res.data.error === true){  
+                     this.$toast.error(res.data.message);
+                  }else{
+                     console.log(res.data.data.user)
+                     this.$store.commit('setAuthUser', res.data.data.user)
+                     localStorage.setItem('_token',res.data.data.access_token);
+                     localStorage.setItem('authData',JSON.stringify(res.data.data.user), { encrypt: false });
+                     window.location.href='/'
+                  }
+                  this.$store.commit('is_loader', false);
+               }).catch(e => {
+                  this.error_message = e.response.data.message;
+                  this.$store.commit('is_loader', false);
+               })
+            }
+         }
+      },
+   }
 </script>
 <style>
    .close {

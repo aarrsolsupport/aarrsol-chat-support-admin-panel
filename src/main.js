@@ -21,18 +21,17 @@ createApp(App)
     .mount('#app')
 
 import axios from "axios"
-window.axios = require('axios');
 axios.defaults.baseURL = 'http://admin.chat-system.dll/api/'
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Authorization'] ='Bearer ' + localStorage.getItem('_token');
 
 // This code will catch 401 status returend requests 
-window.axios.interceptors.response.use(function (response){
-    console.log(['response' , response])
+axios.interceptors.response.use(function (response){
+    // console.log(['response' , response])
     return response;
 },function (error){
-    console.error(['error' , error])
+    // console.error(['error' , error])
     if(error.response.status == 401)
     {
         localStorage.removeItem('_token'); 

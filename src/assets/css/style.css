@@ -918,7 +918,7 @@ background-color: var(--border-color);
 	transform: translate(-15px,-50%);
 }
 
-.pending-thm .thm-heading h2{
+.pending-thm .thm-heading h2, span.pending-thm{
 	color: #F8C40C;
 }
 
@@ -927,7 +927,7 @@ background-color: var(--border-color);
 	background-color: #F8C40C !important;
 }
 
-.open-thm .thm-heading h2{
+.open-thm .thm-heading h2, span.open-thm{
 	color: #21AB4A;
 }
 
@@ -937,7 +937,7 @@ background-color: var(--border-color);
 }
 
 
-.close-thm .thm-heading h2{
+.close-thm .thm-heading h2, span.close-thm{
 	color: #E62127;
 }
 

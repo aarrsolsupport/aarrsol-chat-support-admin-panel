@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import filters from './helpers/filters'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../src/assets/styles.scss';
@@ -9,17 +10,22 @@ import 'bootstrap/dist/js/bootstrap.bundle'
 
 import jQuery from "jquery"
 window.$ = window.jQuery = require('jquery');
+import moment from 'moment';
 
 import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 
-createApp(App)
+const app = createApp(App)
     .use(router)
     .use(store)
     .use(jQuery)
-    .use(ToastPlugin,{ position: 'top-right', duration: 4000, dismissible:true})
-    .mount('#app')
+    .use(moment)
+    .use(ToastPlugin,{ position: 'top-right', duration: 4000, dismissible:true});
 
+app.config.globalProperties.$filters = filters;
+
+app.mount('#app');
+      
 import axios from "axios"
 axios.defaults.baseURL = 'http://admin.chat-system.dll/api/'
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

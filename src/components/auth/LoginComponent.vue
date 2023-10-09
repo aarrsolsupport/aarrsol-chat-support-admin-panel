@@ -109,7 +109,7 @@
                   if(res.data.error === true){  
                      this.$toast.error(res.data.message);
                   }else{
-                     console.log(res.data.data.user)
+                     // console.log(res.data.data.user)
                      this.$store.commit('setAuthUser', res.data.data.user)
                      localStorage.setItem('_token',res.data.data.access_token);
                      localStorage.setItem('authData',JSON.stringify(res.data.data.user), { encrypt: false });

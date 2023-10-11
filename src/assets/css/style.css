@@ -919,7 +919,7 @@ background-color: var(--border-color);
 }
 
 .pending-thm .thm-heading h2, span.pending-thm{
-	color: #F8C40C;
+	color: #F8C40C !important;
 }
 
 
@@ -928,7 +928,7 @@ background-color: var(--border-color);
 }
 
 .open-thm .thm-heading h2, span.open-thm{
-	color: #21AB4A;
+	color: #21AB4A !important;
 }
 
 
@@ -938,7 +938,7 @@ background-color: var(--border-color);
 
 
 .close-thm .thm-heading h2, span.close-thm{
-	color: #E62127;
+	color: #E62127 !important;
 }
 
 

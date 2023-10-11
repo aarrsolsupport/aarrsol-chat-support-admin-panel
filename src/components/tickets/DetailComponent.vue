@@ -15,17 +15,17 @@
                     <div class="tickets-modal-list-sec">
                         <div class="tickets-details-modal-list">
 
-                            <div class="tickets-modal-item todo border border-warning">
+                            <div class="tickets-modal-item">
                                 <div class="thm-heading">
                                     <span>Chat ID</span>
-                                    <h3>Abc5648BXve</h3>
+                                    <h3>{{ item.chat_id }}</h3>
                                 </div>
                             </div>
 
                             <div class="tickets-modal-item todo border border-warning">
                                 <div class="thm-heading">
                                     <span>Issue ID</span>
-                                    <h3>Example User</h3>
+                                    <h3>{{ item.issue_description }}</h3>
                                 </div>
                             </div>
 
@@ -56,50 +56,43 @@
                                     <div class="status-sec">
                                         <div class="entries-select ">
 
-                                            <div class="dropdown entries-select-dropdown">
-                                                <button class="thm-btn dropdown-toggle entries-select-list pending-thm"
+                                            <div class="dropdown entries-select-dropdown" v-if="item.status">
+                                                <div class="thm-heading">
+                                                    <span :class="ticket_status[item.status].theme">{{ ticket_status[item.status].text }}</span>
+                                                </div>
+                                                <!-- *TO-DO* -->
+                                                <!-- <button class="thm-btn dropdown-toggle entries-select-list"
+                                                    :class="ticket_status[item.status].theme"
                                                     type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                                     aria-expanded="false">
                                                     <div class="thm-heading">
-                                                        <h2>Pending</h2>
+                                                        <h2>{{ ticket_status[item.status].text }}</h2>
                                                     </div>
                                                 </button>
                                                 <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
                                                     aria-labelledby="dropdownMenuButton1">
-                                                    <li class="pending-thm">
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                    <li v-for="(status, id) in ticket_status" :key="id"
+                                                        :class="status.theme" @click="setDetails(item, id)">
+                                                        <a v-if="item.status == id" class="dropdown-item" href="#">
+                                                            <div class="thm-heading">
+                                                                <h2>{{ status.text }}</h2>
+                                                            </div>
+                                                        </a>
+                                                        <a v-else class="dropdown-item" href="#" data-bs-toggle="modal"
                                                             data-bs-target="#statusdetails">
                                                             <div class="thm-heading">
-                                                                <h2>Pending</h2>
+                                                                <h2>{{ status.text }}</h2>
                                                             </div>
                                                         </a>
                                                     </li>
-                                                    <li class="open-thm">
-                                                        <a class="dropdown-item" href="#">
-                                                            <div class="thm-heading">
-                                                                <h2>Open</h2>
-                                                            </div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="close-thm">
-                                                        <a class="dropdown-item" href="#">
-                                                            <div class="thm-heading">
-                                                                <h2>Close</h2>
-                                                            </div>
-
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                                </ul> -->
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-
                     <div class="tickets-details-con">
                         <div class="thm-heading">
                             <h2>Message</h2>
@@ -118,8 +111,20 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 export default {
     name: 'DetailComponent',
     props: ['item'],
+    computed: {
+        ...mapState(['ticket_status']),
+    },
+    methods: {
+        // setDetails(item, status) {
+        //     if(item.status != status) {
+        //         this.$emit('setUpdateDetails', { id: item.id, status: status })
+        //     }
+        // }
+    }
+
 }
 </script>

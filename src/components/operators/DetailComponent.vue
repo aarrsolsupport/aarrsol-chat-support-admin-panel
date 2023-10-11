@@ -706,7 +706,7 @@
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
-                    this.error_message = e.response.data.message;
+                    this.$toast.error(e.response.data.message);
                     this.$store.commit('is_loader', false);
                 })
             },
@@ -722,7 +722,7 @@
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
-                    this.error_message = e.response.data.message;
+                    this.$toast.error(e.response.data.message);
                     this.$store.commit('is_loader', false);
                 })
             }

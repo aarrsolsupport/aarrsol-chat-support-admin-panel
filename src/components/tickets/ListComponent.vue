@@ -26,7 +26,7 @@
                                 <th>
                                     <h2> User ID</h2>
                                 </th>
-                                <th class="todo border border-warning">
+                                <th>
                                     <h2> Chat ID</h2>
                                 </th>
                                 <th class="todo border border-warning">
@@ -38,7 +38,7 @@
                                 <th class="todo border border-warning">
                                     <h2> Whitelabel ID</h2>
                                 </th>
-                                <th class="todo border border-warning">
+                                <th>
                                     <h2> Status</h2>
                                 </th>
                                 <th>
@@ -64,11 +64,11 @@
                                 <td>
                                     <h2>{{ item.end_user.userid }}</h2>
                                 </td>
-                                <td class="todo border border-warning">
-                                    <h2>*TO-DO*</h2>
+                                <td>
+                                    <h2>{{ item.chat_id }}</h2>
                                 </td>
                                 <td class="todo border border-warning">
-                                    <h2>*TO-DO*</h2>
+                                    <h2>{{ item.issue_description }}</h2>
                                 </td>
                                 <td class="todo border border-warning">
                                     <h2>Clicketber555</h2>
@@ -76,7 +76,7 @@
                                 <td class="todo border border-warning">
                                     <h2>Desipath555</h2>
                                 </td>
-                                <td class="todo border border-warning">
+                                <td>
                                     <div class="status-sec">
                                         <div class="entries-select ">
                                             <div class="dropdown entries-select-dropdown">
@@ -91,8 +91,13 @@
                                                 <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
                                                     aria-labelledby="dropdownMenuButton1" >
                                                     <li v-for="(status, id) in ticket_status" :key="id"
-                                                        :class="status.theme" @click="setUpdateDetails(item, id)">
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                        :class="status.theme" @click="setDetails(item, id)">
+                                                        <a v-if="item.status == id" class="dropdown-item" href="#">
+                                                            <div class="thm-heading">
+                                                                <h2>{{ status.text }}</h2>
+                                                            </div>
+                                                        </a>
+                                                        <a v-else class="dropdown-item" href="#" data-bs-toggle="modal"
                                                             data-bs-target="#statusdetails">
                                                             <div class="thm-heading">
                                                                 <h2>{{ status.text }}</h2>
@@ -145,7 +150,7 @@ export default {
     components: {
         PaginationComponent,
         DetailComponent,
-        UpdateComponent,
+        UpdateComponent
     },
     data() {
         return {
@@ -222,7 +227,7 @@ export default {
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
-                    this.error_message = e.response.data.message;
+                    this.$toast.error(e.response.data.message);
                     this.$store.commit('is_loader', false);
                 })
             }
@@ -239,22 +244,21 @@ export default {
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
-                    this.error_message = e.response.data.message;
+                    this.$toast.error(e.response.data.message);
                     this.$store.commit('is_loader', false);
                 })
             }
         },
-        setUpdateDetails(item, status) {
+        setDetails(item, status) {
             if(item.status != status) {
-                this.update_item_details = {
-                    id: item.id,
-                    status: status
-                }
+                this.update_item_details = { id: item.id, status: status };
             }
+        },
+        setUpdateDetails(data) {
+            this.update_item_details = data;
         }
     },
     mounted() {
-        console.log(this.ticket_status)
         this.getListItems();
     },
 }

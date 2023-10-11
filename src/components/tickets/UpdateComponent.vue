@@ -27,7 +27,7 @@
 
                             <div class="operator-offcanvas-footer pb-0">
                                 <button class="thm-btn thm-border-btn grey-bg border-0"
-                                    data-bs-dismiss="modal">Back</button>
+                                    data-bs-dismiss="modal" ref="closeBtn" >Back</button>
                                 <button class="thm-btn" @click="updateItemStatus()">Update</button>
                             </div>
                         </div>
@@ -55,15 +55,19 @@ export default {
     methods: {
         updateItemStatus() {
             if(this.remark) {
-                axios.post("tickets/add-remark", {
+                axios.post("tickets/update-status", {
                     ticket_id: this.item.id,
                     status: this.item.status,
-                    remarl: this.remark
+                    remark: this.remark
                 }).then(res => {
                     console.log(['res', res])
+                    this.remark = '';
+                    // *TO-DO* Update LIst / Detail screen
+                    this.$toast.success(res.data.message);
+                    this.$refs.closeBtn.click();
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
-                    this.error_message = e.response.data.message;
+                    this.$toast.error(e.response.data.message);
                     this.$store.commit('is_loader', false);
                 })
             } else {

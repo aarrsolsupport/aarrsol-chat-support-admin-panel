@@ -682,8 +682,11 @@
         },
         watch: {
             '$store.state.change': function () {
-                alert('Refresh the page to see the changes');
-                // *TO-DO* Push in list / update list
+                this.details.name = this.$store.state.change.item.name
+                this.details.website_details.website_url = this.$store.state.change.item.website_url
+                this.details.website_details.website_id = this.$store.state.change.item.website_id
+                this.details.userid = this.$store.state.change.item.userid
+                this.details.is_active = (this.$store.state.change.item.is_active=='true')?1:0; 
             }
         },
         mounted() {

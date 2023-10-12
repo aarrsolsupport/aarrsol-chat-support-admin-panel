@@ -110,7 +110,6 @@
                         this.listItems[i].website_details.website_id = this.$store.state.change.item.website_id
                         this.listItems[i].userid = this.$store.state.change.item.userid
                         this.listItems[i].is_active = (this.$store.state.change.item.is_active=='true')?1:0;
-                        console.log(this.listItems[i],this.$store.state.change.item.is_active);
                     }
                 }
                 // *TO-DO* Push in list / update list

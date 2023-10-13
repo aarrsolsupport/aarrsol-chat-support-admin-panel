@@ -14,6 +14,7 @@ export default createStore({
             'userid': '',
         },
         isLoader: false,
+        item_data:{},
         origin_path: window.location.origin + "/",
         ticket_status: {
             0: {
@@ -57,7 +58,10 @@ export default createStore({
         },
         ticket_List(state, payload) {
             state.data = payload
-        }
+        },
+        singledata(state, payload) {
+            state.item_data = payload
+        },
     },
     actions: {
     }

@@ -56,11 +56,11 @@
                                     <div class="status-sec">
                                         <div class="entries-select ">
                                             <div class="dropdown entries-select-dropdown" v-if="item.status">
-                                                <div class="thm-heading">
+                                                <!-- <div class="thm-heading">
                                                     <span :class="ticket_status[item.status].theme">{{ ticket_status[item.status].text }}</span>
-                                                </div>
+                                                </div> -->
                                                 <!-- *TO-DO* -->
-                                                <!-- <button class="thm-btn dropdown-toggle entries-select-list"
+                                                <button class="thm-btn dropdown-toggle entries-select-list"
                                                     :class="ticket_status[item.status].theme"
                                                     type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                                     aria-expanded="false">
@@ -84,7 +84,7 @@
                                                             </div>
                                                         </a>
                                                     </li>
-                                                </ul> -->
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -116,13 +116,15 @@ export default {
     props: ['item'],
     computed: {
         ...mapState(['ticket_status']),
+        
+        
     },
     methods: {
-        // setDetails(item, status) {
-        //     if(item.status != status) {
-        //         this.$emit('setUpdateDetails', { id: item.id, status: status })
-        //     }
-        // }
+        setDetails(item, status) {
+            if(item.status != status) {
+                this.$store.commit("singledata",{ id: item.id, status: status });
+            }
+        }
     }
 
 }

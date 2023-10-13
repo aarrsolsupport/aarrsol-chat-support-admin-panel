@@ -190,6 +190,9 @@ export default {
                     this.listItems[i].status = this.$store.state.data.status
                 }
             }
+        },
+        '$store.state.item_data':function () {
+              this.setUpdateDetails(this.$store.state.item_data);
         }
     },
     computed: {
@@ -255,6 +258,8 @@ export default {
                     this.$store.commit('is_loader', false);
                 })
             }
+            this.$store.commit('singledata', item)
+        
         },
         setDetails(item, status) {
             if(item.status != status) {
@@ -265,7 +270,7 @@ export default {
             this.update_item_details = data;
         }
     },
-    mounted() {
+    created() {
         this.getListItems();
     },
 }

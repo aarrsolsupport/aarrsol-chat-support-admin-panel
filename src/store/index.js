@@ -54,6 +54,9 @@ export default createStore({
         },
         refresh_List(state, payload) {
             state.refreshData = payload
+        },
+        ticket_List(state, payload) {
+            state.data = payload
         }
     },
     actions: {

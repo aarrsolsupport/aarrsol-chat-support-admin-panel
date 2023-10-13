@@ -22,10 +22,10 @@
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item todo border border-warning">
+                            <div class="tickets-modal-item">
                                 <div class="thm-heading">
                                     <span>Issue ID</span>
-                                    <h3>{{ item.issue_description }}</h3>
+                                    <h3>{{ item.issue_id }}</h3>
                                 </div>
                             </div>
 
@@ -36,17 +36,17 @@
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item todo border border-warning">
+                            <div class="tickets-modal-item">
                                 <div class="thm-heading">
-                                    <span>Operator ID</span>
-                                    <h3>Clicketber555</h3>
+                                    <span>Opertaor ID</span>
+                                    <h3 v-if = "item.operator_user">{{ item.operator_user.userid }}</h3>
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item todo border border-warning">
+                            <div class="tickets-modal-item">
                                 <div class="thm-heading">
                                     <span>Whitelabel ID</span>
-                                    <h3>Desipath555</h3>
+                                    <h3 v-if = "item.whitelabel_user">{{ item.whitelabel_user.userid }}</h3>
                                 </div>
                             </div>
 
@@ -55,7 +55,6 @@
                                     <span>Status</span>
                                     <div class="status-sec">
                                         <div class="entries-select ">
-
                                             <div class="dropdown entries-select-dropdown" v-if="item.status">
                                                 <div class="thm-heading">
                                                     <span :class="ticket_status[item.status].theme">{{ ticket_status[item.status].text }}</span>

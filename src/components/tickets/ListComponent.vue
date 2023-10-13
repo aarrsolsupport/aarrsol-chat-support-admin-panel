@@ -71,10 +71,10 @@
                                     <h2>{{ item.issue_description }}</h2>
                                 </td>
                                 <td class="todo border border-warning">
-                                    <h2>Clicketber555</h2>
+                                    <h2>{{ item.operator_user.userid }}</h2>
                                 </td>
                                 <td class="todo border border-warning">
-                                    <h2>Desipath555</h2>
+                                    <h2>{{ item.whitelabel_user.userid  }}</h2>
                                 </td>
                                 <td>
                                     <div class="status-sec">
@@ -181,6 +181,13 @@ export default {
                 }
                 if (ref_data.refresh) {
                     this.getListItems()
+                }
+            }
+        },
+        '$store.state.data':function () {
+            for (var i = 0; i < this.listItems.length; i++) { 
+                if(this.listItems[i].id==this.$store.state.data.id ){
+                    this.listItems[i].status = this.$store.state.data.status
                 }
             }
         }

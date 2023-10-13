@@ -38,7 +38,7 @@
 
                             <div class="tickets-modal-item">
                                 <div class="thm-heading">
-                                    <span>Opertaor ID</span>
+                                    <span>Operator ID</span>
                                     <h3 v-if = "item.operator_user">{{ item.operator_user.userid }}</h3>
                                 </div>
                             </div>

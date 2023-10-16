@@ -111,6 +111,7 @@
                   }else{
                      // console.log(res.data.data.user)
                      this.$store.commit('setAuthUser', res.data.data.user)
+                     console.log(this.$store.state.authData);
                      localStorage.setItem('_token',res.data.data.access_token);
                      localStorage.setItem('authData',JSON.stringify(res.data.data.user), { encrypt: false });
                      window.location.href='/'

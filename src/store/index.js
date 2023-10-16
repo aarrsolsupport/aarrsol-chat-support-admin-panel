@@ -8,10 +8,15 @@ export default createStore({
             'change': 0, 
             'item': []
         },  // 0 - No change, 1 - added , 2 updated
+        white_lable_change: {
+            'change': 0, 
+            'item': []
+        },
         loggedIn: false,
         authData: {
             'name': '',
             'userid': '',
+            'role':'',
         },
         isLoader: false,
         origin_path: window.location.origin + "/",
@@ -54,7 +59,10 @@ export default createStore({
         },
         refresh_List(state, payload) {
             state.refreshData = payload
-        }
+        },
+        white_lable_data_Updated(state, payload) {
+            state.white_lable_change = payload
+        },
     },
     actions: {
     }

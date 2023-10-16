@@ -31,7 +31,7 @@
                             <tr v-for="(item,index) in filteredItems" :key="index">
                                 <th><h2>{{ ((pagination_data.current_page-parseInt(1))*pagination_data.per_page) + index+parseInt(1) }}</h2></th>
                                 <td class="website-link">
-                                    <router-link :to="'operator-details/' + item.id"><h2>{{ item.name }}</h2></router-link> 
+                                    <router-link :to="'whitelable-details/' + item.id"><h2>{{ item.name }}</h2></router-link> 
                                 </td>
                                 <td class="website-link"><a :href="item.website_details.website_url" target="_blank"><h2>{{ item.website_details.website_url }}</h2></a></td>
                                 <td><h2>{{ item.website_details.website_id }}</h2></td>

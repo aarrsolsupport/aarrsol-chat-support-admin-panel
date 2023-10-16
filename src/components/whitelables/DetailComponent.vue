@@ -7,7 +7,7 @@
                         <div class="tickets-details-modal-list">
                             <div class="tickets-modal-item">
                                 <div class="thm-heading">
-                                    <span>Whitelable Name</span>
+                                    <span>Operator Name</span>
                                     <h3>{{ details.name }}</h3>
                                 </div>
                             </div>
@@ -111,7 +111,7 @@
                                                     <h2> S.No</h2>
                                                 </th>
                                                 <th>
-                                                    <h2> Shitelable Name</h2>
+                                                    <h2> Operator Name</h2>
                                                 </th>
                                                 <th>
                                                     <h2> Website URL</h2>
@@ -676,14 +676,18 @@
         props: ['item_id'],
         data() {
             return {
-                resource: 'operators',
+                resource: 'white-labels',
                 details: {}
             }
         },
         watch: {
-            '$store.state.change': function () {
-                alert('Refresh the page to see the changes');
-                // *TO-DO* Push in list / update list
+            '$store.state.white_lable_change': function () {
+                console.log('lo');
+                this.details.name = this.$store.state.white_lable_change.item.name
+                this.details.website_details.website_url = this.$store.state.white_lable_change.item.website_url
+                this.details.website_details.website_id = this.$store.state.white_lable_change.item.website_id
+                this.details.userid = this.$store.state.white_lable_change.item.userid
+                this.details.is_active = (this.$store.state.white_lable_change.item.is_active=='true' || this.$store.state.white_lable_change.item.is_active==true)?1:0; 
             }
         },
         mounted() {

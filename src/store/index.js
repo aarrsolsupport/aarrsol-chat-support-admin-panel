@@ -35,14 +35,12 @@ export default createStore({
     },
     mutations: {
         setAuthUser(state, payload){
-            console.log('setAuthUser', payload)
-            // *TO-DO*
-            state.authData = payload
             if (payload == null) {
                 state.loggedIn = 0;
             } else {
                 state.loggedIn = 1;
             }
+            state.authData = payload
         },
         is_loader(state, payload) {
             state.isLoader = payload

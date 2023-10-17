@@ -103,7 +103,15 @@
         },
         watch: {
             '$store.state.change': function () {
-                alert('Refresh the page to see the changes');
+                for (var i = 0; i < this.listItems.length; i++) { 
+                    if(this.listItems[i].id==this.$store.state.change.item.id && this.$store.state.change.item.form_type ==2){
+                        this.listItems[i].name = this.$store.state.change.item.name
+                        this.listItems[i].website_details.website_url = this.$store.state.change.item.website_url
+                        this.listItems[i].website_details.website_id = this.$store.state.change.item.website_id
+                        this.listItems[i].userid = this.$store.state.change.item.userid
+                        this.listItems[i].is_active = (this.$store.state.change.item.is_active=='true')?1:0;
+                    }
+                }
                 // *TO-DO* Push in list / update list
             },
             '$store.state.refreshData': function () {

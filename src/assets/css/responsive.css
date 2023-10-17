@@ -637,10 +637,10 @@
         margin: 10px 0px 10px 0px;
     }
 
-    .assistant-con {
+    /* .assistant-con {
         border: 1px solid var(--border-color);
         padding: 7px 8px;
-    }
+    } */
 }
 
 @media screen and (max-width: 359px){

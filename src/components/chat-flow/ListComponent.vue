@@ -7,32 +7,80 @@
                         <h2>Chatbot Flow </h2>
                     </div>
                     <div class="chat-flow-borad-list">
-                        <div class="chat-flow-borad-list-con" v-if="!template_id">
-                            <div class="chat-flow-item">
-                                <button class="chat-flow-btn" @click="setupForm(1)">
-                                    <div class="chat-icon">
-                                        <img src="@/assets/images/add-message-icon.svg" alt="">
-                                    </div>
-                                    <div class="chat-flow-con thm-heading  ">
-                                        <span class="thm-btn">Add Message</span>
-                                        <p>Add a message to be sent to the user by the Bot <br> (Can include Text message /
-                                            File or Both) </p>
-                                    </div>
-                                </button>
+                        <template v-if="!template_id">
+                            <div class="chat-flow-borad-list-con">
+                                <div class="chat-flow-item">
+                                    <button class="chat-flow-btn" @click="setupForm(1)">
+                                        <div class="chat-icon">
+                                            <img src="@/assets/images/add-message-icon.svg" alt="">
+                                        </div>
+                                        <div class="chat-flow-con thm-heading  ">
+                                            <span class="thm-btn">Add Message</span>
+                                            <p>Add a message to be sent to the user by the Bot <br> (Can include Text
+                                                message /
+                                                File or Both) </p>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="chat-flow-item">
+                                    <button class="chat-flow-btn" @click="setupForm(2)">
+                                        <div class="chat-icon">
+                                            <img src="@/assets/images/add-option-icon.svg" alt="">
+                                        </div>
+                                        <div class="chat-flow-con thm-heading  ">
+                                            <span class="thm-btn">Add Option</span>
+                                            <p>Add a list of Options <br> user can choose from to procced further</p>
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="chat-flow-item">
-                                <button class="chat-flow-btn" @click="setupForm(2)">
-                                    <div class="chat-icon">
-                                        <img src="@/assets/images/add-option-icon.svg" alt="">
+                        </template>
+                        <template v-else>
+                            <blocks-tree :data="treeData" :horizontal="treeOrientation == '1'" :collapsable="true"
+                                :props="{ label: 'label', expand: 'expand', children: 'children', key: 'some_id' }">
+                                <template #node="{ data, context }">
+                                    <div class="assistant-sec personal-assistant">
+                                        <div class="assistant-item draggable-element">
+                                            <div class="assistant-con">
+                                                <div class="move-btn bg-transparent">
+                                                    <img src="@/assets/images/move-icon.svg" alt="">
+                                                </div>
+                                                <button class="assistant-heading-btn bg-transparent" @click="context.toggleExpand">
+                                                    <div class="thm-heading">
+                                                        <p>{{ data.label }} </p>
+                                                    </div>
+                                                </button>
+                                                <div class="more-action-sec">
+                                                    <button class="more-action-btn" data-bs-toggle="dropdown"><img
+                                                            src="@/assets/images/more-action.svg" alt=""></button>
+                                                    <ul class="dropdown-menu dropdown-menu-end more-action-list">
+                                                        <li>
+                                                            <button class="dropdown-item more-list-btn" type="button">
+                                                                <div class="edit-icon"><img
+                                                                        src="@/assets/images/edit-icon.svg" alt=""></div>
+                                                                <div class="thm-heading">
+                                                                    <h2>Edit</h2>
+                                                                </div>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item more-list-btn" type="button">
+                                                                <div class="edit-icon"><img
+                                                                        src="@/assets/images/update-password.svg" alt="">
+                                                                </div>
+                                                                <div class="thm-heading">
+                                                                    <h2>Update Password</h2>
+                                                                </div>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="chat-flow-con thm-heading  ">
-                                        <span class="thm-btn">Add Option</span>
-                                        <p>Add a list of Options <br> user can choose from to procced further</p>
-                                    </div>
-                                </button>
-                            </div>
-                        </div>
-
+                                </template>
+                            </blocks-tree>
+                        </template>
                         <div :class="showForm > 0 ? 'show' : ''" class="add-messag-sec offcanvas" tabindex="-1"
                             id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
                             <div class="add-messag-con">
@@ -117,7 +165,55 @@
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
+import { ref, reactive } from 'vue';
+
 export default {
+    setup() {
+        let selected = ref([]);
+        let treeOrientation = ref("0");
+        let treeData = reactive({
+            label: 'Hi, I’m your personal Victory Assistant.',
+            expand: true,
+            some_id: 1,
+            children: [
+                { label: 'child 1', some_id: 2, },
+                { label: 'child 2', some_id: 3, },
+                {
+                    label: 'subparent 1',
+                    some_id: 4,
+                    expand: false,
+                    children: [
+                        { label: 'subchild 1', some_id: 5 },
+                        {
+                            label: 'subchild 2',
+                            some_id: 6,
+                            expand: false,
+                            children: [
+                                { label: 'subchild 11', some_id: 7 },
+                                { label: 'subchild 22', some_id: 8 },
+                            ]
+                        },
+                    ]
+                },
+            ]
+        });
+
+        const toggleSelect = (node, isSelected) => {
+            isSelected ? selected.value.push(node.some_id) : selected.value.splice(selected.value.indexOf(node.some_id), 1);
+            if (node.children && node.children.length) {
+                node.children.forEach(ch => {
+                    toggleSelect(ch, isSelected)
+                })
+            }
+        }
+
+        return {
+            treeData,
+            selected,
+            toggleSelect,
+            treeOrientation
+        }
+    },
     name: 'ListComponent',
     data() {
         return {
@@ -139,19 +235,19 @@ export default {
     methods: {
         getChatFlow() {
             this.$store.commit('is_loader', true);
-            
+
             axios.post('/chat-flow/get-flow')
-            .then(res => {
-                this.$store.commit('is_loader', false);
-                console.log(['res', res])
-                if(res.data.data.template_id) {
-                    this.template_id = res.data.data.template_id
-                    // TODO
-                }
-            }).catch(e => {
-                this.$toast.error(e.response.data.message);
-                this.$store.commit('is_loader', false);
-            })
+                .then(res => {
+                    this.$store.commit('is_loader', false);
+                    console.log(['res', res])
+                    if (res.data.data.template_id) {
+                        this.template_id = res.data.data.template_id
+                        // TODO
+                    }
+                }).catch(e => {
+                    this.$toast.error(e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
         },
         closeForm() {
             this.showForm = 0;
@@ -159,12 +255,12 @@ export default {
         setupForm(type) {
             this.showError = '';
             this.showForm = type;
-            switch(type) {
-                case 1: 
+            switch (type) {
+                case 1:
                     this.message_data = '';
                     this.uploaded_files = {};
                     break;
-                case 2: 
+                case 2:
                     this.new_option = ''
                     this.categories_data = [];
                     break;
@@ -221,7 +317,7 @@ export default {
                         this.$store.commit('is_loader', false);
                     })
             } else {
-            // ADD OPTION
+                // ADD OPTION
                 if (this.categories_data.length < 2) {
                     this.showError = 'Please add at least 2 option!'
                 } else {

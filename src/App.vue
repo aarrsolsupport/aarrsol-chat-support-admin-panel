@@ -34,16 +34,16 @@ export default {
     'header-component': HeaderComponent,
     'sidebar-component': SidebarComponent,
   },
+  computed : {
+    ...mapState([
+      'isLoader', 'loggedIn', 'authData'
+    ])
+  },
   mounted(){
     if(!localStorage.getItem('_token') && localStorage.getItem('_token') == null){
       this.$router.push('/login')
     }
   },
-  computed : {
-    ...mapState([
-      'isLoader', 'loggedIn', 'authData'
-    ])
-  }
 }
 </script>
 

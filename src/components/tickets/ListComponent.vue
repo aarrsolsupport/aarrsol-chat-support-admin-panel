@@ -71,10 +71,10 @@
                                     <h2>{{ item.issue_description }}</h2>
                                 </td>
                                 <td class="todo border border-warning">
-                                    <h2>Clicketber555</h2>
+                                    <h2>{{ item.operator_user.userid }}</h2>
                                 </td>
                                 <td class="todo border border-warning">
-                                    <h2>Desipath555</h2>
+                                    <h2>{{ item.whitelabel_user.userid  }}</h2>
                                 </td>
                                 <td>
                                     <div class="status-sec">
@@ -183,6 +183,16 @@ export default {
                     this.getListItems()
                 }
             }
+        },
+        '$store.state.data':function () {
+            for (var i = 0; i < this.listItems.length; i++) { 
+                if(this.listItems[i].id==this.$store.state.data.id ){
+                    this.listItems[i].status = this.$store.state.data.status
+                }
+            }
+        },
+        '$store.state.item_data':function () {
+              this.setUpdateDetails(this.$store.state.item_data);
         }
     },
     computed: {
@@ -248,6 +258,8 @@ export default {
                     this.$store.commit('is_loader', false);
                 })
             }
+            this.$store.commit('singledata', item)
+        
         },
         setDetails(item, status) {
             if(item.status != status) {
@@ -258,7 +270,7 @@ export default {
             this.update_item_details = data;
         }
     },
-    mounted() {
+    created() {
         this.getListItems();
     },
 }

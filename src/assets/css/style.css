@@ -1462,8 +1462,8 @@ padding: 0px;
     width: fit-content;
     margin: 0 auto;
     border-radius: 6px;
-    border: 1.5px solid var(--border-color);
-    padding: 7px 12px;
+    /* border: 1.5px solid var(--border-color);
+    padding: 7px 12px; */
 }		
 
 .assistant-btn-sec{
@@ -1675,4 +1675,22 @@ padding: 0px;
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+
+.chat-flow-btn .thm-heading p {
+color: var(--noble-grey-color);
+}
+
+
+.add-messag-sec{
+	display: none;
+}
+
+.add-messag-sec.show{
+	display: block;
+}
+
+.title-option-assistant{
+	margin-top: 30px;
 }

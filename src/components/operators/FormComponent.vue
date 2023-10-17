@@ -187,8 +187,7 @@
                                 this.errorsList = res.data.data;
                             }else{
                                 //  UPDATE item data in the list *TO-DO*
-                                console.log(['Update res', res.data])
-                                this.$store.commit('data_Updated', {'change': 2, 'item': res.data});
+                                this.$store.commit('data_Updated', {'change': 2, 'item':this.item_data});
                                 this.$toast.success(res.data.message);
                                 this.$refs.closeBtn.click();
                             }

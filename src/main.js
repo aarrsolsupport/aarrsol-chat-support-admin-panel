@@ -15,12 +15,16 @@ import moment from 'moment';
 import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 
+import VueBlocksTree from 'vue3-blocks-tree';
+import 'vue3-blocks-tree/dist/vue3-blocks-tree.css';
+
 const app = createApp(App)
     .use(router)
     .use(store)
     .use(jQuery)
     .use(moment)
-    .use(ToastPlugin,{ position: 'top-right', duration: 4000, dismissible:true});
+    .use(ToastPlugin,{ position: 'top-right', duration: 4000, dismissible:true})
+    .use(VueBlocksTree,{treeName:'blocks-tree'});
 
 app.config.globalProperties.$filters = filters;
 

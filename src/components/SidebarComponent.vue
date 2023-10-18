@@ -29,13 +29,20 @@ export default {
                 { 'name': 'Chat Flow', 'path': '/chat-flow', 'icon': require('@/assets/images/chat-flow-icon.svg') },
                 { 'name': 'Operators', 'path': '/operators', 'icon': require('@/assets/images/operator-icon.svg') },
                 { 'name': 'Tickets', 'path': '/tickets', 'icon': require('@/assets/images/tickets-icon.svg') },
-            ]
+            ],
+            authUser:{}
         }
     },
     computed: {
         ...mapState([
             'origin_path'
         ]),
+    },
+    created(){
+        this.authUser =  JSON.parse(localStorage.getItem('authData'));
+        if(this.authUser.role_id == 3){
+            this.menu_items.push( { 'name': 'Agent', 'path': '/agents', 'icon': require('@/assets/images/operator-icon.svg') })
+        }
     }
 }
 </script>

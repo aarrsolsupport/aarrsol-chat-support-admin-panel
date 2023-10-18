@@ -8,6 +8,10 @@ export default createStore({
             'change': 0, 
             'item': []
         },  // 0 - No change, 1 - added , 2 updated
+        white_lable_change: {
+            'change': 0, 
+            'item': []
+        },  // 
         loggedIn: false,
         authData: {
             'name': '',
@@ -54,6 +58,9 @@ export default createStore({
         },
         refresh_List(state, payload) {
             state.refreshData = payload
+        },
+        agent_update_data(state, payload) {
+            state.agent_update_data_change = payload
         }
     },
     actions: {

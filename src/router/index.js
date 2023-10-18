@@ -29,6 +29,15 @@ const routes = createRouter({
             path: '/tickets',
             component: () => import('@/components/tickets/ListComponent.vue')
         },
+        {
+            path: '/agents',
+            component: () => import('@/components/agents/ListComponent.vue')
+        },
+        {
+            props: true,
+            path: '/agent-details/:item_id',
+            component: () => import('@/components/agents/DetailComponent.vue')
+        },
     ],
 })
 

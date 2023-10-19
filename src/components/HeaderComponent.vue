@@ -48,12 +48,9 @@
       name: 'HeaderComponent',
       computed: {
          ...mapState(['authData']),
-         username() {
-            return this.authData.name
-         },
       },
       beforeCreate() {
-         this.$store.commit('setAuthUser', {"name":"Admin","userid":"admin"})
+         this.$store.commit('setAuthUser', JSON.parse(localStorage.getItem('authData')))
       },
       methods: {
          logout() {

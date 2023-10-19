@@ -1462,8 +1462,8 @@ padding: 0px;
     width: fit-content;
     margin: 0 auto;
     border-radius: 6px;
-    /* border: 1.5px solid var(--border-color);
-    padding: 7px 12px; */
+    border: 1.5px solid var(--border-color);
+    padding: 7px 12px;
 }		
 
 .assistant-btn-sec{
@@ -1693,4 +1693,27 @@ color: var(--noble-grey-color);
 
 .title-option-assistant{
 	margin-top: 30px;
+}
+
+.chatFlowNode{
+	padding: 0 !important;
+	border: none;
+	box-shadow: none !important;
+}
+
+.chatFlowNode  .assistant-btn-con button{
+	font-size: 12px;
+	padding: 4px 6px;
+}	
+
+.node.selectedNode{
+	padding: 10px 15px;
+	border-radius: 3px;
+	box-shadow: none !important;
+	border:1.5px solid #99ACCC;
+}
+
+.node.category .assistant-con {
+ 
+    background-color: var(--body-color);
 }

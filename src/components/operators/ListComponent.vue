@@ -46,7 +46,7 @@
                                 <td> 
                                     <div class="more-action-sec">
                                         <button class="more-action-btn" data-bs-toggle="dropdown"><img src="@/assets/images/more-action.svg" alt=""></button>
-                                        <ul class="dropdown-menu dropdown-menu-end more-action-list todo border border-warning" >
+                                        <ul class="dropdown-menu dropdown-menu-end more-action-list" >
                                             <li>
                                                 <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(2, item)">
                                                     <div class="edit-icon"><img src="@/assets/images/edit-icon.svg" alt=""></div>

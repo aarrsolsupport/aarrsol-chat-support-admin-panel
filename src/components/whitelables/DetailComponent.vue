@@ -676,17 +676,18 @@
         props: ['item_id'],
         data() {
             return {
-                resource: 'operators',
+                resource: 'white-labels',
                 details: {}
             }
         },
         watch: {
-            '$store.state.change': function () {
-                this.details.name = this.$store.state.change.item.name
-                this.details.website_details.website_url = this.$store.state.change.item.website_url
-                this.details.website_details.website_id = this.$store.state.change.item.website_id
-                this.details.userid = this.$store.state.change.item.userid
-                this.details.is_active = (this.$store.state.change.item.is_active=='true')?1:0; 
+            '$store.state.white_lable_change': function () {
+                console.log('lo');
+                this.details.name = this.$store.state.white_lable_change.item.name
+                this.details.website_details.website_url = this.$store.state.white_lable_change.item.website_url
+                this.details.website_details.website_id = this.$store.state.white_lable_change.item.website_id
+                this.details.userid = this.$store.state.white_lable_change.item.userid
+                this.details.is_active = (this.$store.state.white_lable_change.item.is_active=='true' || this.$store.state.white_lable_change.item.is_active==true)?1:0; 
             }
         },
         mounted() {

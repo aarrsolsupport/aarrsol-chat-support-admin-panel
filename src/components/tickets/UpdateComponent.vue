@@ -60,11 +60,11 @@ export default {
                     status: this.item.status,
                     remark: this.remark
                 }).then(res => {
-                    console.log(['res', res])
                     this.remark = '';
                     // *TO-DO* Update LIst / Detail screen
                     this.$toast.success(res.data.message);
                     this.$refs.closeBtn.click();
+                    this.$store.commit('ticket_List', {'id': this.item.id, 'status':this.item.status});
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
                     this.$toast.error(e.response.data.message);

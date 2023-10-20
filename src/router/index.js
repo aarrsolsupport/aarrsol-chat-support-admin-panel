@@ -30,6 +30,15 @@ const routes = createRouter({
             component: () => import('@/components/tickets/ListComponent.vue')
         },
         {
+            path: '/whitelable',
+            component: () => import('@/components/whitelables/ListComponent.vue')
+        },
+        {
+            props: true,
+            path: '/whitelable-details/:item_id',
+            component: () => import('@/components/whitelables/DetailComponent.vue')
+        },
+        {
             path: '/agents',
             component: () => import('@/components/agents/ListComponent.vue')
         },

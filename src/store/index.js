@@ -11,13 +11,15 @@ export default createStore({
         white_lable_change: {
             'change': 0, 
             'item': []
-        },  // 
+        },
         loggedIn: false,
         authData: {
             'name': '',
             'userid': '',
+            'role':'',
         },
         isLoader: false,
+        item_data:{},
         origin_path: window.location.origin + "/",
         ticket_status: {
             0: {
@@ -38,14 +40,12 @@ export default createStore({
     },
     mutations: {
         setAuthUser(state, payload){
-            console.log('setAuthUser', payload)
-            // *TO-DO*
-            state.authData = payload
             if (payload == null) {
                 state.loggedIn = 0;
             } else {
                 state.loggedIn = 1;
             }
+            state.authData = payload
         },
         is_loader(state, payload) {
             state.isLoader = payload
@@ -61,7 +61,16 @@ export default createStore({
         },
         agent_update_data(state, payload) {
             state.agent_update_data_change = payload
-        }
+        },
+        ticket_List(state, payload) {
+            state.data = payload
+        },
+        singledata(state, payload) {
+            state.item_data = payload
+        },
+        white_lable_data_Updated(state, payload) {
+            state.white_lable_change = payload
+        },
     },
     actions: {
     }

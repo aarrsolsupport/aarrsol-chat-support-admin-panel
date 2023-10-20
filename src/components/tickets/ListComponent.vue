@@ -29,13 +29,13 @@
                                 <th>
                                     <h2> Chat ID</h2>
                                 </th>
-                                <th class="todo border border-warning">
+                                <th>
                                     <h2> Issue ID</h2>
                                 </th>
-                                <th class="todo border border-warning">
+                                <th>
                                     <h2> Operator ID</h2>
                                 </th>
-                                <th class="todo border border-warning">
+                                <th>
                                     <h2> Whitelabel ID</h2>
                                 </th>
                                 <th>
@@ -62,19 +62,19 @@
                                     <h2>{{ $filters.localDateTimeFormat(item.created_at) }}</h2>
                                 </td>
                                 <td>
-                                    <h2>{{ item.end_user.userid }}</h2>
+                                    <h2>{{ item.end_user ? item.end_user.userid : ''}}</h2>
                                 </td>
                                 <td>
                                     <h2>{{ item.chat_id }}</h2>
                                 </td>
-                                <td class="todo border border-warning">
+                                <td>
                                     <h2>{{ item.issue_description }}</h2>
                                 </td>
-                                <td class="todo border border-warning">
-                                    <h2>Clicketber555</h2>
+                                <td>
+                                    <h2>{{ item.operator_user ? item.operator_user.userid : '' }}</h2>
                                 </td>
-                                <td class="todo border border-warning">
-                                    <h2>Desipath555</h2>
+                                <td>
+                                    <h2>{{ item.whitelabel_user ? item.whitelabel_user.userid : ''  }}</h2>
                                 </td>
                                 <td>
                                     <div class="status-sec">
@@ -183,6 +183,16 @@ export default {
                     this.getListItems()
                 }
             }
+        },
+        '$store.state.data':function () {
+            for (var i = 0; i < this.listItems.length; i++) { 
+                if(this.listItems[i].id==this.$store.state.data.id ){
+                    this.listItems[i].status = this.$store.state.data.status
+                }
+            }
+        },
+        '$store.state.item_data':function () {
+              this.setUpdateDetails(this.$store.state.item_data);
         }
     },
     computed: {
@@ -193,7 +203,9 @@ export default {
                 return filtered_data.filter(item =>
                 (
                     item.ticket_id.toLowerCase().includes(this.search.toLowerCase())
-                    || item.end_user.userid.toLowerCase().includes(this.search.toLowerCase())
+                    || (item.end_user && item.end_user.userid.toLowerCase().includes(this.search.toLowerCase()))
+                    || (item.operator_user && item.operator_user.userid.toLowerCase().includes(this.search.toLowerCase()))
+                    || (item.whitelabel_user && item.whitelabel_user.userid.toLowerCase().includes(this.search.toLowerCase()))
                     || item.description.toLowerCase().includes(this.search.toLowerCase())
                 )
                 );
@@ -248,6 +260,8 @@ export default {
                     this.$store.commit('is_loader', false);
                 })
             }
+            this.$store.commit('singledata', item)
+        
         },
         setDetails(item, status) {
             if(item.status != status) {
@@ -258,7 +272,7 @@ export default {
             this.update_item_details = data;
         }
     },
-    mounted() {
+    created() {
         this.getListItems();
     },
 }

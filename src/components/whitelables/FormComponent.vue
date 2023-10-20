@@ -11,7 +11,7 @@
             <form>
                 <div class="operator-offcanvas-con">
                     <div class="operator-item" v-if="item_data.name != undefined ">
-                        <label for="name" class="form-label">Operator Name</label>
+                        <label for="name" class="form-label">Whitelabels Name</label>
                         <input type="text" class="form-control" placeholder="Enter Name" v-model="item_data.name" :class="v$.item_data.name.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.name">
                             <li v-for="(err, e) in errorsList.name" :key="e" class="text-danger">{{ err }}</li>
@@ -79,9 +79,9 @@
         name: 'FormComponent',
         data() {
             return {            
-                resource: 'operators',
+                resource: 'white-labels',
                 itemForm: 1,
-                form_title: "Add Operator",
+                form_title: "Add Whitelables",
                 item_data: {
                     'name': '',
                     'userid': '',
@@ -145,12 +145,12 @@
                             'password_confirmation': '',
                             'website_url': '',
                             'website_id': '',
-                            'is_active': true,
+                            'is_active':Boolean(item.is_active),
                             'form_type': type  // Add
                         }
                         break;
                     case 2: // Setup Edit form Data & requisites
-                        this.form_title = "Edit Operator"
+                        this.form_title = "Edit Whitelabels"
                         this.item_data = {
                             'id': item.id,
                             'name': item.name,
@@ -187,7 +187,7 @@
                                 this.errorsList = res.data.data;
                             }else{
                                 //  UPDATE item data in the list *TO-DO*
-                                this.$store.commit('data_Updated', {'change': 2, 'item':this.item_data});
+                                this.$store.commit('white_lable_data_Updated', {'change': 1, 'item': this.item_data});
                                 this.$toast.success(res.data.message);
                                 this.$refs.closeBtn.click();
                             }
@@ -206,7 +206,7 @@
                             }else{
                                 //  PUSH item in the list *TO-DO*
                                 console.log(['Create res', res.data])
-                                this.$store.commit('data_Updated', {'change': 1, 'item': res.data});
+                                this.$store.commit('white_lable_data_Updated', {'change': 2, 'item':this.item_data});
                                 this.$toast.success(res.data.message);
                                 this.$refs.closeBtn.click();
                             }

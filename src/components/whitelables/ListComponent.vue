@@ -10,7 +10,7 @@
                 </div>
                 <div class="operator-btn">
                     <!-- <button type="button" @click="closeForm" class="btn btn-primary">Refresh List</button> -->
-                    <button class="thm-btn" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(1, {})"> Add Operator </button>
+                    <button class="thm-btn" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(1, {})"> Add Whitelable </button>
                 </div>
             </div>
             <div class="operator-table-sec">
@@ -19,10 +19,10 @@
                         <thead>
                             <tr>
                                 <th><h2> S.No</h2></th>
-                                <th><h2> Operator Name</h2></th>
-                                <th><h2> Login ID</h2></th>
+                                <th><h2> Whitelable Name</h2></th>
                                 <th><h2> Website URL</h2></th>
                                 <th><h2> Website ID</h2></th>
+                                <th><h2> Login ID</h2></th>
                                 <th><h2> Status</h2></th>
                                 <th><h2> Action</h2></th>
                             </tr>
@@ -31,11 +31,11 @@
                             <tr v-for="(item,index) in filteredItems" :key="index">
                                 <th><h2>{{ ((pagination_data.current_page-parseInt(1))*pagination_data.per_page) + index+parseInt(1) }}</h2></th>
                                 <td class="website-link">
-                                    <router-link :to="'operator-details/' + item.id"><h2>{{ item.name }}</h2></router-link> 
+                                    <router-link :to="'whitelable-details/' + item.id"><h2>{{ item.name }}</h2></router-link> 
                                 </td>
-                                <td><h2>{{ item.userid }}</h2></td>
                                 <td class="website-link"><a :href="item.website_details.website_url" target="_blank"><h2>{{ item.website_details.website_url }}</h2></a></td>
                                 <td><h2>{{ item.website_details.website_id }}</h2></td>
+                                <td><h2>{{ item.userid }}</h2></td>
                                 <td>
                                     <div class="operator-check-con">
                                         <div class="form-check form-switch">
@@ -78,6 +78,7 @@
     import FormComponent from './FormComponent.vue'
     import PaginationComponent from '../PaginationComponent.vue'
     import axios from "axios"
+// import { pushScopeId } from 'vue'
     export default {
         name: 'ListComponent',
         components: {
@@ -86,7 +87,7 @@
         },
         data() {
             return {
-                resource: 'operators',
+                resource: 'white-labels',
 
                 search: '',
                 listItems: {},
@@ -102,14 +103,14 @@
             }
         },
         watch: {
-            '$store.state.change': function () {
+            '$store.state.white_lable_change': function () {
                 for (var i = 0; i < this.listItems.length; i++) { 
-                    if(this.listItems[i].id==this.$store.state.change.item.id && this.$store.state.change.item.form_type ==2){
-                        this.listItems[i].name = this.$store.state.change.item.name
-                        this.listItems[i].website_details.website_url = this.$store.state.change.item.website_url
-                        this.listItems[i].website_details.website_id = this.$store.state.change.item.website_id
-                        this.listItems[i].userid = this.$store.state.change.item.userid
-                        this.listItems[i].is_active = (this.$store.state.change.item.is_active=='true')?1:0;
+                    if(this.listItems[i].id==this.$store.state.white_lable_change.item.id && this.$store.state.white_lable_change.item.form_type ==2){
+                       this.listItems[i].name = this.$store.state.white_lable_change.item.name
+                        this.listItems[i].website_details.website_url = this.$store.state.white_lable_change.item.website_url
+                        this.listItems[i].website_details.website_id = this.$store.state.white_lable_change.item.website_id
+                        this.listItems[i].userid = this.$store.state.white_lable_change.item.userid
+                        this.listItems[i].is_active = (this.$store.state.white_lable_change.item.is_active=='true' || this.$store.state.white_lable_change.item.is_active==true)?1:0;
                     }
                 }
                 // *TO-DO* Push in list / update list
@@ -124,7 +125,11 @@
                         this.getListItems()
                     }
                 }
-            }
+            },
+            // 'white_lable_change' :function () {
+            //     console.Logger('ander',this.$store.state.white_lable_change);
+            //    // this.listItems.push(this.$store.state.white_lable_change);
+            // }
         },
         computed: {
             filteredItems() { 
@@ -172,6 +177,7 @@
                             this.pagination_data.from = res.data.data.list_items.from;
                             this.pagination_data.to = res.data.data.list_items.to;
                             this.pagination_data.links = res.data.data.list_items.links;
+                            console.log(this.listItems,'list')
                         }
                         this.$store.commit('is_loader', false);
                     }).catch(e => {

@@ -18,7 +18,7 @@
                 <div class="admin-sec">
                    <div class="admin-con thm-heading">
                       <span>Login With  </span>
-                      <h3 class="text-primary">*TO-DO* {{ authData.name }}</h3>
+                      <h3 class="text-primary">{{ authData.name }}</h3>
                    </div>
 
                    <div class="admin-img-sec more-action-sec">
@@ -47,13 +47,11 @@
    export default {
       name: 'HeaderComponent',
       computed: {
-         ...mapState(['authData'])
+         ...mapState(['authData']),
       },
-      // mounted() {
-         // console.log(this.$store.state.authData)
-         // this.$store.commit('setAuthUser', {"name":"Admin","userid":"admin"})
-         // console.log(this.$store.state.authData)
-      // },
+      beforeCreate() {
+         this.$store.commit('setAuthUser', JSON.parse(localStorage.getItem('authData')))
+      },
       methods: {
          logout() {
             this.$store.commit('is_loader', true);

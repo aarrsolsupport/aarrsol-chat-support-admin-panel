@@ -1678,6 +1678,47 @@ padding: 0px;
 }
 
 
+.chat-flow-btn .thm-heading p {
+color: var(--noble-grey-color);
+}
+
+
+.add-messag-sec{
+	display: none;
+}
+
+.add-messag-sec.show{
+	display: block;
+}
+
+.title-option-assistant{
+	margin-top: 30px;
+}
+
+.chatFlowNode{
+	padding: 0 !important;
+	border: none;
+	box-shadow: none !important;
+}
+
+.chatFlowNode  .assistant-btn-con button{
+	font-size: 12px;
+	padding: 4px 6px;
+}	
+
+.node.selectedNode{
+	padding: 10px 15px;
+	border-radius: 3px;
+	box-shadow: none !important;
+	border:1.5px solid #99ACCC;
+}
+
+.node.category .assistant-con {
+ 
+    background-color: var(--blue-color);
+}
+
+
 .categories-sec .entries-select-dropdown button {
     border-radius: 8px;
     border: 1px solid var(--border-color);

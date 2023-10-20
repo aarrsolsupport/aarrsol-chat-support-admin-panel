@@ -35,7 +35,7 @@ export default {
                 'operators': { 'name': 'Operators', 'path': '/operators', 'icon': require('@/assets/images/operator-icon.svg') },
                 'tickets': { 'name': 'Tickets', 'path': '/tickets', 'icon': require('@/assets/images/tickets-icon.svg') },
                 'whitelabels': { 'name': 'Whitelable', 'path': '/whitelable', 'icon': require('@/assets/images/operator-icon.svg') },
-		        'agents': { 'name': 'Agent', 'path': '/agents', 'icon': require('@/assets/images/operator-icon.svg') }
+                'agents': { 'name': 'Agent', 'path': '/agents', 'icon': require('@/assets/images/operator-icon.svg') }
             },
             menu: {
                 1: ['dashboard', 'chatflow', 'operators', 'tickets'],

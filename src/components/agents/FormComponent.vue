@@ -201,7 +201,7 @@
                                 this.errorsList = res.data.data;
                             }else{
                                 //  UPDATE item data in the list *TO-DO*
-                               this.$store.commit('agent_update_data', {'change': 2, 'item':this.item_data});
+                               this.$store.commit('agent_update_data', {'change': 1, 'item':this.item_data});
                                 this.$toast.success(res.data.message);
                                 this.$refs.closeBtn.click();
                             }
@@ -220,7 +220,7 @@
                                 this.errorsList = res.data.data;
                             }else{
                                 //  PUSH item in the list *TO-DO*
-                                this.$store.commit('white_lable_data_Updated', {'change': 2, 'item':this.item_data});
+                                this.$store.commit('agent_update_data', {'change': 2, 'item':this.item_data});
                                 this.$toast.success(res.data.message);
                                 this.$refs.closeBtn.click();
                             }

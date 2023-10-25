@@ -34,7 +34,7 @@
                                     <router-link :to="'operator-details/' + item.id"><h2>{{ item.name }}</h2></router-link> 
                                 </td>
                                 <td><h2>{{ item.userid }}</h2></td>
-                                <td class="website-link"><a :href="item.website_details.website_url" target="_blank"><h2>{{ item.website_details.website_url }}</h2></a></td>
+                                <td class="website-link"><a v-if="item.website_details" :href="item.website_details.website_url" target="_blank"><h2>{{ item.website_details.website_url }}</h2></a></td>
                                 <td><h2>{{ item.website_details.website_id }}</h2></td>
                                 <td>
                                     <div class="operator-check-con">
@@ -111,6 +111,22 @@
                         this.listItems[i].userid = this.$store.state.change.item.userid
                         this.listItems[i].is_active = (this.$store.state.change.item.is_active=='true')?1:0;
                     }
+                }
+                if(this.$store.state.change.change==1){
+                    let list = {
+                                    id: this.$store.state.change.item.data.id,
+                                    name: this.$store.state.change.item.data.name,
+                                    is_active: 1,
+                                    userid: this.$store.state.change.item.data.userid,
+                                    website_details: {
+                                        user_id: this.$store.state.change.item.data.website_details.user_id,
+                                        website_id: this.$store.state.change.item.data.website_details.website_id,
+                                        website_url: this.$store.state.change.item.data.website_details.website_url
+                                    }
+                                };
+                    this.listItems.unshift(list);
+                    if(this.listItems.length >= this.pagination_data.per_page)
+                        this.listItems.pop();
                 }
                 // *TO-DO* Push in list / update list
             },

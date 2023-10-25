@@ -121,11 +121,11 @@
                                     name: this.$store.state.white_lable_change.item.data.name,
                                     is_active: 1,
                                     userid: this.$store.state.white_lable_change.item.data.userid,
-                                    website_details: {
-                                        user_id: this.$store.state.white_lable_change.item.data.website_details.user_id,
-                                        website_id: this.$store.state.white_lable_change.item.data.website_details.website_id,
-                                        website_url: this.$store.state.white_lable_change.item.data.website_details.website_url
-                                    }
+                                    // website_details: {
+                                    //     user_id: this.$store.state.white_lable_change.item.data.website_details.user_id,
+                                    //     website_id: this.$store.state.white_lable_change.item.data.website_details.website_id,
+                                    //     website_url: this.$store.state.white_lable_change.item.data.website_details.website_url
+                                    // }
                                 };
                     this.listItems.unshift(list);
                     if(this.listItems.length >= this.pagination_data.per_page)

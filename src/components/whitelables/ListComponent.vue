@@ -103,7 +103,7 @@
             }
         },
         watch: {
-            '$store.state.white_lable_change': function () {
+            '$store.state.white_lable_change.change': function () {
                 for (var i = 0; i < this.listItems.length; i++) { 
                     if(this.listItems[i].id==this.$store.state.white_lable_change.item.id && this.$store.state.white_lable_change.item.form_type ==2){
                        this.listItems[i].name = this.$store.state.white_lable_change.item.name
@@ -112,6 +112,22 @@
                         this.listItems[i].userid = this.$store.state.white_lable_change.item.userid
                         this.listItems[i].is_active = (this.$store.state.white_lable_change.item.is_active=='true' || this.$store.state.white_lable_change.item.is_active==true)?1:0;
                     }
+                }
+                if(this.$store.state.white_lable_change==1){
+                    let list = {
+                                    id: this.$store.state.white_lable_change.item.data.id,
+                                    name: this.$store.state.white_lable_change.item.data.name,
+                                    is_active: 1,
+                                    userid: this.$store.state.white_lable_change.item.data.userid,
+                                    website_details: {
+                                        user_id: this.$store.state.white_lable_change.item.data.website_details.user_id,
+                                        website_id: this.$store.state.white_lable_change.item.data.website_details.website_id,
+                                        website_url: this.$store.state.white_lable_change.item.data.website_details.website_url
+                                    }
+                                };
+                    this.listItems.unshift(list);
+                    if(this.listItems.length >= this.pagination_data.per_page)
+                        this.listItems.pop();
                 }
                 // *TO-DO* Push in list / update list
             },

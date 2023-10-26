@@ -1,23 +1,24 @@
 <template>
   <div>
     <loader-component v-if="isLoader" />
-    <template v-if="$route.path=='/login'">
-      <router-view/>
-    </template>
-    <template v-else>
-      <header-component/>
+
+    <template v-if="authData && $route.path != '/login'">
+      <header-component />
       <section class="chat-borad-wrapper">
         <div class="container-fluid  borad-container">
           <div class="chat-borad-con">
-            <sidebar-component/>
+            <sidebar-component />
           </div>
           <div class="borad-inner-body-sec">
-            <router-view/>
+            <router-view />
           </div>
         </div>
       </section>
     </template>
-	</div>
+    <template v-else>
+      <router-view />
+    </template>
+  </div>
 </template>
 
 <script>
@@ -34,13 +35,13 @@ export default {
     'header-component': HeaderComponent,
     'sidebar-component': SidebarComponent,
   },
-  computed : {
+  computed: {
     ...mapState([
       'isLoader', 'loggedIn', 'authData'
     ])
   },
-  mounted(){
-    if(!localStorage.getItem('_token') && localStorage.getItem('_token') == null){
+  mounted() {
+    if (!localStorage.getItem('_token') && localStorage.getItem('_token') == null) {
       this.$router.push('/login')
     }
   },

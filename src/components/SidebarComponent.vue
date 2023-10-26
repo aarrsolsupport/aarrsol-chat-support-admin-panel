@@ -1,8 +1,8 @@
 <template>
-    <div class="sidebar-menu-sec" v-if="this.authData">
+    <div class="sidebar-menu-sec">
         <div class="sidebar-menu-con">
             <div class="sidebar-menu-list">
-                <div class="sidebar-menu-item" v-for="(item, index) in menu[this.authData.role_id]" :key="index" :class="$route.path == menu_items[item].path ? 'active': ''">
+                <div class="sidebar-menu-item" v-for="(item, index) in menu[authData.role_id]" :key="index" :class="$route.path == menu_items[item].path ? 'active': ''">
                     <router-link :to="menu_items[item].path">
                         <div class="menu-item-con">
                             <div class="menu-item-img header-admin-btn">
@@ -35,11 +35,13 @@ export default {
                 'operators': { 'name': 'Operators', 'path': '/operators', 'icon': require('@/assets/images/operator-icon.svg') },
                 'tickets': { 'name': 'Tickets', 'path': '/tickets', 'icon': require('@/assets/images/tickets-icon.svg') },
                 'whitelabels': { 'name': 'Whitelable', 'path': '/whitelable', 'icon': require('@/assets/images/operator-icon.svg') },
-                'agents': { 'name': 'Agent', 'path': '/agents', 'icon': require('@/assets/images/operator-icon.svg') }
+                'agents': { 'name': 'Agent', 'path': '/agents', 'icon': require('@/assets/images/operator-icon.svg') },
+                'chatrequest': { 'name': 'Chat Requests', 'path': '/chat-requests', 'icon': require('@/assets/images/operator-icon.svg') },
+                'autosuggestions': { 'name': 'Auto Suggestions', 'path': '/auto-suggestions', 'icon': require('@/assets/images/operator-icon.svg') },
             },
             menu: {
                 1: ['dashboard', 'chatflow', 'operators', 'tickets'],
-                2: ['dashboard', 'chatflow', 'whitelables', 'tickets'],
+                2: ['dashboard', 'chatflow', 'whitelabels', 'tickets'],
                 3: ['dashboard', 'chatflow', 'agents', 'tickets'],
                 4: ['dashboard', 'chatrequest', 'autosuggestions', 'tickets'],
             }

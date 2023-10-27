@@ -1,16 +1,16 @@
 <template>
     <div class="borad-inner-body">
         <div class="borad-inner-body-con">
-            <div class="search-sec">
+            <div class="search-sec" v-if="show_search">
                 <div class="search-input-sec">
-                    <input type="text" placeholder="Search" v-model="search">
+                    <input id="search" type="text" placeholder="Search" v-model="search">
                     <div class="search-icon">
                         <img src="@/assets/images/search-icon.svg" alt="">
                     </div>
                 </div>
                 <div class="operator-btn">
                     <!-- <button type="button" @click="closeForm" class="btn btn-primary">Refresh List</button> -->
-                    <button class="thm-btn" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(1, {})"> Add Agent </button>
+                    <button class="thm-btn" data-bs-toggle="offcanvas" data-bs-target="#agentoffcanvas" aria-controls="agentoffcanvas" @click="setAgForm(1, {})"> Add Agent </button>
                 </div>
             </div>
             <div class="operator-table-sec">
@@ -20,9 +20,9 @@
                             <tr>
                                 <th><h2> S.No</h2></th>
                                 <th><h2> Agent Name</h2></th>
-                                <th><h2> Agent ID</h2></th>
-                                <th><h2>Categories</h2></th>
-                                <th><h2> Is Active</h2></th>
+                                <th><h2> Login ID</h2></th>
+                                <th><h2> Categories</h2></th>
+                                <th><h2> Status</h2></th>
                                 <th><h2> Action</h2></th>
                             </tr>
                         </thead>
@@ -30,7 +30,7 @@
                             <tr v-for="(item,index) in filteredItems" :key="index">
                                 <th><h2>{{ ((pagination_data.current_page-parseInt(1))*pagination_data.per_page) + index+parseInt(1) }}</h2></th>
                                 <td class="website-link">
-                                    <router-link :to="'agent-details/' + item.id"><h2>{{ item.name }}</h2></router-link> 
+                                    <router-link :to="'/agent-details/' + item.id"><h2>{{ item.name }}</h2></router-link> 
                                 </td>
                                 <td><h2>{{ item.userid }}</h2></td>
                                 <td>
@@ -48,15 +48,15 @@
                                 <td> 
                                     <div class="more-action-sec">
                                         <button class="more-action-btn" data-bs-toggle="dropdown"><img src="@/assets/images/more-action.svg" alt=""></button>
-                                        <ul class="dropdown-menu dropdown-menu-end more-action-list todo border border-warning" >
+                                        <ul class="dropdown-menu dropdown-menu-end more-action-list" >
                                             <li>
-                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(2, item)">
+                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#agentoffcanvas" aria-controls="agentoffcanvas" @click="setAgForm(2, item)">
                                                     <div class="edit-icon"><img src="@/assets/images/edit-icon.svg" alt=""></div>
                                                     <div class="thm-heading"><h2>Edit</h2></div> 
                                                 </button>
                                             </li>
                                             <li>
-                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(3, item)">
+                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#agentoffcanvas" aria-controls="agentoffcanvas" @click="setAgForm(3, item)">
                                                     <div class="edit-icon"><img src="@/assets/images/update-password.svg" alt=""></div>
                                                     <div class="thm-heading"> <h2>Update Password</h2></div> 
                                                 </button>
@@ -74,17 +74,17 @@
             </div>
         </div>
     </div>
-    <FormComponent></FormComponent>
+    <AgFormComponent></AgFormComponent>
 </template>
 <script>
-    import FormComponent from './FormComponent.vue'
+    import AgFormComponent from './FormComponent.vue'
     import PaginationComponent from '../PaginationComponent.vue'
     import axios from "axios"
-// import { pushScopeId } from 'vue'
     export default {
         name: 'ListComponent',
+        props: ['hideSearch', 'whitelabel_id'],
         components: {
-            FormComponent,
+            AgFormComponent,
             PaginationComponent
         },
         data() {
@@ -93,7 +93,7 @@
 
                 search: '',
                 listItems: {},
-
+                show_search: this.hideSearch ? false : true, 
                 pagination_data: {
                     "from": 1,
                     "to": 10,
@@ -105,33 +105,25 @@
             }
         },
         watch: {
-            '$store.state.white_lable_change': function () {
+            '$store.state.agent_change': function () {
                 for (var i = 0; i < this.listItems.length; i++) { 
-                    if(this.listItems[i].id==this.$store.state.white_lable_change.item.id && this.$store.state.white_lable_change.item.form_type ==2){
-                       this.listItems[i].name = this.$store.state.white_lable_change.item.name
-                        // this.listItems[i].website_details.website_url = this.$store.state.white_lable_change.item.website_url
-                        // this.listItems[i].website_details.website_id = this.$store.state.white_lable_change.item.website_id
-                        this.listItems[i].userid = this.$store.state.white_lable_change.item.userid
-                        this.listItems[i].is_active = (this.$store.state.white_lable_change.item.is_active=='true' || this.$store.state.white_lable_change.item.is_active==true)?1:0;
+                    if(this.listItems[i].id==this.$store.state.agent_change.item.id && this.$store.state.agent_change.item.form_type ==2){
+                       this.listItems[i].name = this.$store.state.agent_change.item.name
+                        this.listItems[i].userid = this.$store.state.agent_change.item.userid
+                        this.listItems[i].is_active = (this.$store.state.agent_change.item.is_active == 1) ? 1 : 0;
                     }
                 }
-                if(this.$store.state.white_lable_change==1){
+                if(this.$store.state.agent_change.change==1){
                     let list = {
-                                    id: this.$store.state.white_lable_change.item.data.id,
-                                    name: this.$store.state.white_lable_change.item.data.name,
-                                    is_active: 1,
-                                    userid: this.$store.state.white_lable_change.item.data.userid,
-                                    // website_details: {
-                                    //     user_id: this.$store.state.white_lable_change.item.data.website_details.user_id,
-                                    //     website_id: this.$store.state.white_lable_change.item.data.website_details.website_id,
-                                    //     website_url: this.$store.state.white_lable_change.item.data.website_details.website_url
-                                    // }
+                                    id: this.$store.state.agent_change.item.data.id,
+                                    name: this.$store.state.agent_change.item.data.name,
+                                    is_active: (this.$store.state.agent_change.item.data.is_active == 1) ? 1 : 0,
+                                    userid: this.$store.state.agent_change.item.data.userid,
                                 };
                     this.listItems.unshift(list);
                     if(this.listItems.length >= this.pagination_data.per_page)
                         this.listItems.pop();
                 }
-                // *TO-DO* Push in list / update list
             },
             '$store.state.refreshData': function () {
                 var ref_data = this.$store.state.refreshData
@@ -143,18 +135,7 @@
                         this.getListItems()
                     }
                 }
-            },
-            '$store.state.agent_update_data_change' :function () {
-                for (var i = 0; i < this.listItems.length; i++) { 
-                    if(this.listItems[i].id==this.$store.state.agent_update_data_change.item.id && this.$store.state.agent_update_data_change.item.form_type ==2){
-                        this.listItems[i].name = this.$store.state.agent_update_data_change.item.name 
-                        this.listItems[i].userid = this.$store.state.agent_update_data_change.item.userid
-                        this.listItems[i].is_active = (this.$store.state.agent_update_data_change.item.is_active=='true' || this.$store.state.agent_update_data_change.item.is_active==true)?1:0;
-                    
-                    }
-                }
             }
-            
         },
         computed: {
             filteredItems() { 
@@ -171,8 +152,8 @@
             }
         },
         methods: {
-            setForm(type, item) {
-                this.$store.commit('data_Edit', {
+            setAgForm(type, item) {
+                this.$store.commit('ag_data_Edit', {
                     'form_type': type,
                     'form_item': item
                 })
@@ -191,6 +172,9 @@
                         url = '/'+this.resource+'/get-list?page='+this.pagination_data.current_page;
                     }
                     url += '&per_page='+this.pagination_data.per_page;
+                    if(this.whitelabel_id) {
+                        url += '&parentid='+this.whitelabel_id;
+                    }
                     axios.get(url).then(res => {
                         if(res.data.error === true){  
                             this.$toast.error(res.data.message);
@@ -215,8 +199,7 @@
                         this.$toast.error(res.data.message);
                     }else{
                         this.$toast.success(res.data.message);
-                        //  Update item in the list *TO-DO*
-                        item.is_active = Boolean(!item.is_active);
+                        item.is_active = (item.is_active == 1) ? 0 : 1 
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -230,3 +213,12 @@
         }, 
     }
 </script>
+<style scoped>
+ .operator-tab-item-two .borad-inner-body{
+margin-top: 0px;
+}
+.operator-tab-item-two .borad-inner-body .operator-table-sec{
+margin-top: 0px;
+}
+
+</style>

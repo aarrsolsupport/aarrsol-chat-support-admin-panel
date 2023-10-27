@@ -1,6 +1,6 @@
 <template>
     <!--Operator offcanvas-->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="operatoroffcanvas" aria-labelledby="operatoroffcanvasLabel">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="whitelabeloffcanvas" aria-labelledby="whitelabeloffcanvasLabel">
         <div class="offcanvas-header operator-offcanvas-sec">
             <div class="thm-heading">
                 <h4>{{ form_title }}</h4>
@@ -12,7 +12,7 @@
                 <div class="operator-offcanvas-con">
                     <div class="operator-item" v-if="item_data.name != undefined ">
                         <label for="name" class="form-label">Whitelabels Name</label>
-                        <input type="text" class="form-control" placeholder="Enter Name" v-model="item_data.name" :class="v$.item_data.name.$error ? 'border border-danger' : ''">
+                        <input id="name" type="text" class="form-control" placeholder="Enter Name" v-model="item_data.name" :class="v$.item_data.name.$error ? 'border border-danger' : ''" autocomplete="off">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.name">
                             <li v-for="(err, e) in errorsList.name" :key="e" class="text-danger">{{ err }}</li>
                         </ul>
@@ -20,7 +20,7 @@
 
                     <div class="operator-item" v-if="item_data.userid != undefined ">
                         <label for="userid" class="form-label">Login ID</label>
-                        <input type="text" class="form-control" placeholder="Enter Login ID" v-model="item_data.userid" :class="v$.item_data.userid.$error ? 'border border-danger' : ''">
+                        <input id="userid" type="text" class="form-control" placeholder="Enter Login ID" v-model="item_data.userid" :class="v$.item_data.userid.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.userid">
                             <li v-for="(err, e) in errorsList.userid" :key="e" class="text-danger">{{ err }}</li>
                         </ul>
@@ -28,7 +28,7 @@
 
                     <div class="operator-item" v-if="item_data.password != undefined ">
                         <label for="password" class="form-label">Password</label>
-                        <input type="text" class="form-control" placeholder="Enter Password" v-model="item_data.password" :class="v$.item_data.password.$error ? 'border border-danger' : ''">
+                        <input id="password" type="text" class="form-control" placeholder="Enter Password" v-model="item_data.password" :class="v$.item_data.password.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.password">
                             <li v-for="(err, e) in errorsList.password" :key="e" class="text-danger">{{ err }}</li>
                         </ul>
@@ -36,12 +36,12 @@
 
                     <div class="operator-item" v-if="item_data.password_confirmation != undefined ">
                         <label for="password_confirmation" class="form-label">Confirm Password  </label>
-                        <input type="text" class="form-control" placeholder="Enter Confirm Password" v-model="item_data.password_confirmation" :class="v$.item_data.password_confirmation.$error ? 'border border-danger' : ''">
+                        <input id="password_confirmation" type="text" class="form-control" placeholder="Enter Confirm Password" v-model="item_data.password_confirmation" :class="v$.item_data.password_confirmation.$error ? 'border border-danger' : ''">
                     </div>
 
                     <div class="operator-item" v-if="item_data.website_url != undefined ">
                         <label for="website_url" class="form-label">Website URL</label>
-                        <input type="text" class="form-control" placeholder="Enter Website URL" v-model="item_data.website_url" :class="v$.item_data.website_url.$error ? 'border border-danger' : ''">
+                        <input id="website_url" type="text" class="form-control" placeholder="Enter Website URL" v-model="item_data.website_url" :class="v$.item_data.website_url.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.website_url">
                             <li v-for="(err, e) in errorsList.website_url" :key="e" class="text-danger">{{ err }}</li>
                         </ul>
@@ -49,7 +49,7 @@
 
                     <div class="operator-item" v-if="item_data.website_id != undefined ">
                         <label for="website_id" class="form-label">Website ID</label>
-                        <input type="text" class="form-control" placeholder="Enter Website ID" v-model="item_data.website_id" :class="v$.item_data.website_id.$error ? 'border border-danger' : ''">
+                        <input id="website_id" type="text" class="form-control" placeholder="Enter Website ID" v-model="item_data.website_id" :class="v$.item_data.website_id.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.website_id">
                             <li v-for="(err, e) in errorsList.website_id" :key="e" class="text-danger">{{ err }}</li>
                         </ul>
@@ -57,15 +57,15 @@
 
                     <div class="operator-item entries-select" v-if="item_data.is_active != undefined ">
                         <label for="is_active" class="form-label">Status</label>
-                        <select class="form-select" aria-label="Default select example" v-model="item_data.is_active">
-                            <option value="true">Active</option>
-                            <option value="false">Inactive</option>
+                        <select id="is_active" class="form-select" aria-label="Default select example" v-model="item_data.is_active">
+                            <option value=1>Active</option>
+                            <option value=0>Inactive</option>
                         </select>
                     </div>
                 </div>
             </form>
             <div class="operator-offcanvas-footer">
-                <button class="thm-btn thm-border-btn" data-bs-dismiss="offcanvas" aria-label="Close" ref="closeBtn" >Close</button>
+                <button class="thm-btn thm-border-btn" data-bs-dismiss="offcanvas" aria-label="Close" ref="wlCloseBtn" >Close</button>
                 <button type="button" class="thm-btn" @click="saveItem">Save</button>
             </div>
         </div>
@@ -89,7 +89,7 @@
                     'password_confirmation': '',
                     'website_url': '',
                     'website_id': '',
-                    'is_active': true
+                    'is_active': 1
                 },
                 errorsList: {},
             }
@@ -126,13 +126,13 @@
             }
         },
         watch: {
-            '$store.state.edit': function () {
-                var e_data = this.$store.state.edit
-                this.setupForm(e_data.form_type, e_data.form_item)
+            '$store.state.wl_edit': function () {
+                var e_data = this.$store.state.wl_edit
+                this.setupWlForm(e_data.form_type, e_data.form_item)
             }
         },
         methods: {
-            setupForm(type, item) {
+            setupWlForm(type, item) {
                 this.v$.$reset();
                 this.errorsList = {};
                 this.itemForm = type;
@@ -145,7 +145,7 @@
                             'password_confirmation': '',
                             'website_url': '',
                             'website_id': '',
-                            'is_active':Boolean(item.is_active),
+                            'is_active': 1,
                             'form_type': type  // Add
                         }
                         break;
@@ -157,7 +157,7 @@
                             'userid': item.userid,
                             'website_url': item.website_details.website_url,
                             'website_id': item.website_details.website_id,
-                            'is_active': Boolean(item.is_active),
+                            'is_active': (item.is_active == 1) ? 1 : 0 ,
                             'form_type': type  // Update
                         }
                         break;
@@ -186,10 +186,11 @@
                                 this.$toast.error(res.data.message);
                                 this.errorsList = res.data.data;
                             }else{
-                                //  UPDATE item data in the list *TO-DO*
-                                this.$store.commit('white_lable_data_Updated', {'change': 1, 'item': this.item_data});
+                                if(this.item_data.form_type == 2) {
+                                    this.$store.commit('white_lable_data_Updated', {'change': 2, 'item': this.item_data});
+                                }
                                 this.$toast.success(res.data.message);
-                                this.$refs.closeBtn.click();
+                                this.$refs.wlCloseBtn.click();
                             }
                             this.$store.commit('is_loader', false);
                         }).catch(e => {
@@ -204,11 +205,9 @@
                                 this.$toast.error(res.data.message);
                                 this.errorsList = res.data.data;
                             }else{
-                                //  PUSH item in the list *TO-DO*
-                                console.log(['Create res', res.data])
-                                this.$store.commit('white_lable_data_Updated', {'change': 2, 'item':this.item_data});
+                                this.$store.commit('white_lable_data_Updated', {'change': 1, 'item': res.data});
                                 this.$toast.success(res.data.message);
-                                this.$refs.closeBtn.click();
+                                this.$refs.wlCloseBtn.click();
                             }
                             this.$store.commit('is_loader', false);
                         }).catch(e => {

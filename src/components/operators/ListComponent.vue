@@ -10,7 +10,7 @@
                 </div>
                 <div class="operator-btn">
                     <!-- <button type="button" @click="closeForm" class="btn btn-primary">Refresh List</button> -->
-                    <button class="thm-btn" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(1, {})"> Add Operator </button>
+                    <button class="thm-btn" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setOpForm(1, {})"> Add Operator </button>
                 </div>
             </div>
             <div class="operator-table-sec">
@@ -35,7 +35,7 @@
                                 </td>
                                 <td><h2>{{ item.userid }}</h2></td>
                                 <td class="website-link"><a v-if="item.website_details" :href="item.website_details.website_url" target="_blank"><h2>{{ item.website_details.website_url }}</h2></a></td>
-                                <td><h2>{{ item.website_details.website_id }}</h2></td>
+                                <td><h2 v-if="item.website_details">{{ item.website_details.website_id }}</h2></td>
                                 <td>
                                     <div class="operator-check-con">
                                         <div class="form-check form-switch">
@@ -48,13 +48,13 @@
                                         <button class="more-action-btn" data-bs-toggle="dropdown"><img src="@/assets/images/more-action.svg" alt=""></button>
                                         <ul class="dropdown-menu dropdown-menu-end more-action-list" >
                                             <li>
-                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(2, item)">
+                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setOpForm(2, item)">
                                                     <div class="edit-icon"><img src="@/assets/images/edit-icon.svg" alt=""></div>
                                                     <div class="thm-heading"><h2>Edit</h2></div> 
                                                 </button>
                                             </li>
                                             <li>
-                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setForm(3, item)">
+                                                <button class="dropdown-item more-list-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#operatoroffcanvas" aria-controls="operatoroffcanvas" @click="setOpForm(3, item)">
                                                     <div class="edit-icon"><img src="@/assets/images/update-password.svg" alt=""></div>
                                                     <div class="thm-heading"> <h2>Update Password</h2></div> 
                                                 </button>
@@ -109,14 +109,14 @@
                         this.listItems[i].website_details.website_url = this.$store.state.change.item.website_url
                         this.listItems[i].website_details.website_id = this.$store.state.change.item.website_id
                         this.listItems[i].userid = this.$store.state.change.item.userid
-                        this.listItems[i].is_active = (this.$store.state.change.item.is_active=='true')?1:0;
+                        this.listItems[i].is_active = (this.$store.state.change.item.is_active == 1) ? 1 : 0;
                     }
                 }
                 if(this.$store.state.change.change==1){
                     let list = {
                                     id: this.$store.state.change.item.data.id,
                                     name: this.$store.state.change.item.data.name,
-                                    is_active: 1,
+                                    is_active: (this.$store.state.change.item.data.is_active == 1) ? 1 : 0,
                                     userid: this.$store.state.change.item.data.userid,
                                     website_details: {
                                         user_id: this.$store.state.change.item.data.website_details.user_id,
@@ -128,7 +128,6 @@
                     if(this.listItems.length >= this.pagination_data.per_page)
                         this.listItems.pop();
                 }
-                // *TO-DO* Push in list / update list
             },
             '$store.state.refreshData': function () {
                 var ref_data = this.$store.state.refreshData
@@ -159,8 +158,8 @@
             }
         },
         methods: {
-            setForm(type, item) {
-                this.$store.commit('data_Edit', {
+            setOpForm(type, item) {
+                this.$store.commit('op_data_Edit', {
                     'form_type': type,
                     'form_item': item
                 })
@@ -203,8 +202,7 @@
                         this.$toast.error(res.data.message);
                     }else{
                         this.$toast.success(res.data.message);
-                        //  Update item in the list *TO-DO*
-                        item.is_active = Boolean(!item.is_active);
+                        item.is_active = (item.is_active == 1) ? 0 : 1 
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {

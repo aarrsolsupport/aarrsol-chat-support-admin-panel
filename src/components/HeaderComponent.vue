@@ -1,5 +1,5 @@
 <template>
-    <header class="header-wrapper">
+    <header class="header-wrapper" v-if="authData">
        <div class="container-fluid">
           <div class="header-sec">
              <div class="header-logo">

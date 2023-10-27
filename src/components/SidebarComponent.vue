@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar-menu-sec">
+    <div class="sidebar-menu-sec" v-if="authData">
         <div class="sidebar-menu-con">
             <div class="sidebar-menu-list">
                 <div class="sidebar-menu-item" v-for="(item, index) in menu[authData.role_id]" :key="index" :class="$route.path == menu_items[item].path ? 'active': ''">

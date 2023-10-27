@@ -2437,3 +2437,7 @@ width: 100%;
     border-radius: 4px;
     font-weight: 500;
 }
+
+.form-check-input[type=checkbox] {
+    border-radius: .25em;
+}

@@ -7,30 +7,23 @@
                         <div class="tickets-details-modal-list">
                             <div class="tickets-modal-item">
                                 <div class="thm-heading">
-                                    <span>Whitelable Name</span>
+                                    <span>Agent Name</span>
                                     <h3>{{ details.name }}</h3>
                                 </div>
                             </div>
-                            <template v-if="details.website_details">
-                                <div class="tickets-modal-item">
-                                    <div class="thm-heading">
-                                        <span>Website URL</span>
-                                        <a class="website-link" :href="details.website_details.website_url" target="_blank">
-                                            <h3>{{ details.website_details.website_url }}</h3>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="tickets-modal-item">
-                                    <div class="thm-heading">
-                                        <span>Website ID</span>
-                                        <h3>{{ details.website_details.website_id }}</h3>
-                                    </div>
-                                </div>
-                            </template>
                             <div class="tickets-modal-item">
                                 <div class="thm-heading">
                                     <span>Login ID</span>
                                     <h3>{{ details.userid }}</h3>
+                                </div>
+                            </div>
+                            <div class="tickets-modal-item">
+                                <div class="thm-heading">
+                                    <span>Categories</span>
+                                    <div class="Categories-btn tickets-details-item">
+                                        <button v-for="(cat, index) in details.categories" class="thm-btn grey-bg" :key="index">{{ cat.description }}</button>
+                                        <!-- <button class="thm-btn more-btn ">2 More</button>   -->
+                                    </div>
                                 </div>
                             </div>
                             <div class="tickets-modal-item">
@@ -690,7 +683,7 @@ export default {
             this.details.name = this.$store.state.agent_change.item.name
             this.details.userid = this.$store.state.agent_change.item.userid
             this.details.is_active = (this.$store.state.agent_change.item.is_active == 1) ? 1 : 0;
-            console.log(['agent_change',this.$store.state.agent_change.item.is_active])
+            this.details.categories = Object.assign({}, this.$store.state.agent_change.item.categories)
         }
     },
     mounted() {

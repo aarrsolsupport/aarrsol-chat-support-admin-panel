@@ -47,6 +47,10 @@ const routes = createRouter({
             path: '/agent-details/:item_id',
             component: () => import('@/components/agents/DetailComponent.vue')
         },
+        {
+            path: '/chats',
+            component: () => import('@/components/chats/ListComponent.vue')
+        },
     ],
 })
 

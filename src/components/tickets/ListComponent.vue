@@ -1,143 +1,145 @@
 <template>
-    <div class="borad-inner-body">
-        <div class="borad-inner-body-con">
-            <div class="search-sec bg-transparent border-0 p-0">
-                <div class="search-input-sec w-100">
-                    <input type="text" placeholder="Search" v-model="search">
-                    <div class="search-icon">
-                        <img src="@/assets/images/search-icon.svg" alt="">
+    <div class="borad-inner-body-sec">
+        <div class="borad-inner-body">
+            <div class="borad-inner-body-con">
+                <div class="search-sec bg-transparent border-0 p-0">
+                    <div class="search-input-sec w-100">
+                        <input type="text" placeholder="Search" v-model="search">
+                        <div class="search-icon">
+                            <img src="@/assets/images/search-icon.svg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="operator-table-sec tickets-table-sec">
+                    <div class="operator-table-con">
+                        <table class="table thm-heading">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <h2> S.No</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Ticket ID</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Generate At</h2>
+                                    </th>
+                                    <th>
+                                        <h2> User ID</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Chat ID</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Issue ID</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Operator ID</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Whitelabel ID</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Status</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Description</h2>
+                                    </th>
+                                    <th>
+                                        <h2> Action</h2>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in filteredItems" :key="index">
+                                    <th>
+                                        <h2>{{ ((pagination_data.current_page - parseInt(1)) * pagination_data.per_page) +
+                                            index + parseInt(1) }}</h2>
+                                    </th>
+                                    <td>
+                                        <h2 class="text-uppercase">{{ item.ticket_id }}</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ $filters.localDateTimeFormat(item.created_at) }}</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ item.end_user ? item.end_user.userid : ''}}</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ item.chat_id }}</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ item.issue_description }}</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ item.operator_user ? item.operator_user.userid : '' }}</h2>
+                                    </td>
+                                    <td>
+                                        <h2>{{ item.whitelabel_user ? item.whitelabel_user.userid : ''  }}</h2>
+                                    </td>
+                                    <td>
+                                        <div class="status-sec">
+                                            <div class="entries-select ">
+                                                <div class="dropdown entries-select-dropdown">
+                                                    <button class="thm-btn dropdown-toggle entries-select-list"
+                                                        :class="ticket_status[item.status].theme" type="button"
+                                                        id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                        <div class="thm-heading">
+                                                            <h2>{{ ticket_status[item.status].text }}</h2>
+                                                        </div>
+                                                    </button>
+                                                    <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
+                                                        aria-labelledby="dropdownMenuButton1" >
+                                                        <li v-for="(status, id) in ticket_status" :key="id"
+                                                            :class="status.theme" @click="setDetails(item, id)">
+                                                            <a v-if="item.status == id" class="dropdown-item" href="#">
+                                                                <div class="thm-heading">
+                                                                    <h2>{{ status.text }}</h2>
+                                                                </div>
+                                                            </a>
+                                                            <a v-else class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                                data-bs-target="#statusdetails">
+                                                                <div class="thm-heading">
+                                                                    <h2>{{ status.text }}</h2>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h2>{{ item.description.length > 15 ? item.description.substring(0, 15) + '...' :
+                                            item.description }}</h2>
+                                    </td>
+                                    <td>
+                                        <div class="more-action-sec">
+                                            <button class="more-action-btn thm-btn thm-border-btn view-btn"
+                                                data-bs-toggle="modal" data-bs-target="#ticketsdetails"
+                                                @click="showItemDetails(item)">
+                                                <div class="view-img">
+                                                    <img src="@/assets/images/view-action.svg" alt="">
+                                                </div>
+                                                View
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="operator-table-footer">
+                        <PaginationComponent :data="pagination_data"></PaginationComponent>
                     </div>
                 </div>
             </div>
-            <div class="operator-table-sec tickets-table-sec">
-                <div class="operator-table-con">
-                    <table class="table thm-heading">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <h2> S.No</h2>
-                                </th>
-                                <th>
-                                    <h2> Ticket ID</h2>
-                                </th>
-                                <th>
-                                    <h2> Generate At</h2>
-                                </th>
-                                <th>
-                                    <h2> User ID</h2>
-                                </th>
-                                <th>
-                                    <h2> Chat ID</h2>
-                                </th>
-                                <th>
-                                    <h2> Issue ID</h2>
-                                </th>
-                                <th>
-                                    <h2> Operator ID</h2>
-                                </th>
-                                <th>
-                                    <h2> Whitelabel ID</h2>
-                                </th>
-                                <th>
-                                    <h2> Status</h2>
-                                </th>
-                                <th>
-                                    <h2> Description</h2>
-                                </th>
-                                <th>
-                                    <h2> Action</h2>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(item, index) in filteredItems" :key="index">
-                                <th>
-                                    <h2>{{ ((pagination_data.current_page - parseInt(1)) * pagination_data.per_page) +
-                                        index + parseInt(1) }}</h2>
-                                </th>
-                                <td>
-                                    <h2 class="text-uppercase">{{ item.ticket_id }}</h2>
-                                </td>
-                                <td>
-                                    <h2>{{ $filters.localDateTimeFormat(item.created_at) }}</h2>
-                                </td>
-                                <td>
-                                    <h2>{{ item.end_user ? item.end_user.userid : ''}}</h2>
-                                </td>
-                                <td>
-                                    <h2>{{ item.chat_id }}</h2>
-                                </td>
-                                <td>
-                                    <h2>{{ item.issue_description }}</h2>
-                                </td>
-                                <td>
-                                    <h2>{{ item.operator_user ? item.operator_user.userid : '' }}</h2>
-                                </td>
-                                <td>
-                                    <h2>{{ item.whitelabel_user ? item.whitelabel_user.userid : ''  }}</h2>
-                                </td>
-                                <td>
-                                    <div class="status-sec">
-                                        <div class="entries-select ">
-                                            <div class="dropdown entries-select-dropdown">
-                                                <button class="thm-btn dropdown-toggle entries-select-list"
-                                                    :class="ticket_status[item.status].theme" type="button"
-                                                    id="dropdownMenuButton1" data-bs-toggle="dropdown"
-                                                    aria-expanded="false">
-                                                    <div class="thm-heading">
-                                                        <h2>{{ ticket_status[item.status].text }}</h2>
-                                                    </div>
-                                                </button>
-                                                <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
-                                                    aria-labelledby="dropdownMenuButton1" >
-                                                    <li v-for="(status, id) in ticket_status" :key="id"
-                                                        :class="status.theme" @click="setDetails(item, id)">
-                                                        <a v-if="item.status == id" class="dropdown-item" href="#">
-                                                            <div class="thm-heading">
-                                                                <h2>{{ status.text }}</h2>
-                                                            </div>
-                                                        </a>
-                                                        <a v-else class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#statusdetails">
-                                                            <div class="thm-heading">
-                                                                <h2>{{ status.text }}</h2>
-                                                            </div>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <h2>{{ item.description.length > 15 ? item.description.substring(0, 15) + '...' :
-                                        item.description }}</h2>
-                                </td>
-                                <td>
-                                    <div class="more-action-sec">
-                                        <button class="more-action-btn thm-btn thm-border-btn view-btn"
-                                            data-bs-toggle="modal" data-bs-target="#ticketsdetails"
-                                            @click="showItemDetails(item)">
-                                            <div class="view-img">
-                                                <img src="@/assets/images/view-action.svg" alt="">
-                                            </div>
-                                            View
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="operator-table-footer">
-                    <PaginationComponent :data="pagination_data"></PaginationComponent>
-                </div>
-            </div>
         </div>
+        <DetailComponent :item="item_details"></DetailComponent>
+        <UpdateComponent :item="update_item_details"></UpdateComponent>
     </div>
-    <DetailComponent :item="item_details"></DetailComponent>
-    <UpdateComponent :item="update_item_details"></UpdateComponent>
 </template>
 <script>
 import { mapState } from 'vuex';

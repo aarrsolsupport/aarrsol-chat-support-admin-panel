@@ -11,9 +11,7 @@
                     <div class="chat-borad-con">
                         <component :is="sidebarComponent"></component>
                     </div>
-                    <div class="borad-inner-body-sec">
-                        <router-view />
-                    </div>
+                    <router-view />
                 </div>
             </section>
         </template>

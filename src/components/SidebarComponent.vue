@@ -36,14 +36,15 @@ export default {
                 'tickets': { 'name': 'Tickets', 'path': '/tickets', 'icon': require('@/assets/images/tickets-icon.svg') },
                 'whitelabels': { 'name': 'Whitelable', 'path': '/whitelable', 'icon': require('@/assets/images/operator-icon.svg') },
                 'agents': { 'name': 'Agent', 'path': '/agents', 'icon': require('@/assets/images/operator-icon.svg') },
-                'chatrequest': { 'name': 'Chat Requests', 'path': '/chat-requests', 'icon': require('@/assets/images/operator-icon.svg') },
+                'chatrequests': { 'name': 'Chat Requests', 'path': '/chat-requests', 'icon': require('@/assets/images/operator-icon.svg') },
+                'chats': { 'name': 'Chat', 'path': '/chats', 'icon': require('@/assets/images/chat-icon.svg') },
                 'autosuggestions': { 'name': 'Auto Suggestions', 'path': '/auto-suggestions', 'icon': require('@/assets/images/operator-icon.svg') },
             },
             menu: {
                 1: ['dashboard', 'chatflow', 'operators', 'tickets'],
                 2: ['dashboard', 'chatflow', 'whitelabels', 'tickets'],
                 3: ['dashboard', 'chatflow', 'agents', 'tickets'],
-                4: ['dashboard', 'chatrequest', 'autosuggestions', 'tickets'],
+                4: ['dashboard', 'chatrequests', 'chats', 'tickets', 'autosuggestions'],
             }
         }
     },

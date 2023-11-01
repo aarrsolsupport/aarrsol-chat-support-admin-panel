@@ -41,7 +41,7 @@
                                 <td>
                                     <div class="operator-check-con">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" :id="'flexSwitchCheckDefault.'+item.id" :checked="item.is_active ?? null" @click="toggleStatus(item)">
+                                            <input class="form-check-input" type="checkbox" :id="'flexSwitchCheckDefault.'+item.id" :checked="item.is_active" @click="toggleStatus(item)">
                                         </div>   
                                     </div>   
                                 </td>

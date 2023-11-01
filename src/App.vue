@@ -45,6 +45,7 @@ export default {
         if (!localStorage.getItem('_token') && localStorage.getItem('_token') == null) {
             this.$router.push('/login')
         }
+        window.store = this.$store
     },
 }
 </script>

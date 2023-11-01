@@ -1904,7 +1904,7 @@ padding-left: 0px;
 
 .add-now-sec textarea{
 	background-color: var(--blue-color) !important;
-	border: none !important;
+	border: none;
 }
 .add-now-sec .file-upload-sec {
 	background-color: var(--blue-color) !important;

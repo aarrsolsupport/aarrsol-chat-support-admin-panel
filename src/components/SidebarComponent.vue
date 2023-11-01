@@ -37,12 +37,13 @@ export default {
                 'whitelabels': { 'name': 'Whitelable', 'path': '/whitelable', 'icon': require('@/assets/images/operator-icon.svg') },
                 'agents': { 'name': 'Agent', 'path': '/agents', 'icon': require('@/assets/images/operator-icon.svg') },
                 'chatrequest': { 'name': 'Chat Requests', 'path': '/chat-requests', 'icon': require('@/assets/images/operator-icon.svg') },
-                'autosuggestions': { 'name': 'Auto Suggestions', 'path': '/auto-suggestions', 'icon': require('@/assets/images/operator-icon.svg') },
+                'autosuggestions': { 'name': 'Auto Suggestions', 'path': '/auto-suggestions', 'icon': require('@/assets/images/auto -suggestion-icon.svg') },
+                'themesettings': { 'name': 'Theme Settings', 'path': '/theme-settings', 'icon': require('@/assets/images/auto -suggestion-icon.svg') },
             },
             menu: {
                 1: ['dashboard', 'chatflow', 'operators', 'tickets'],
                 2: ['dashboard', 'chatflow', 'whitelabels', 'tickets'],
-                3: ['dashboard', 'chatflow', 'agents', 'tickets'],
+                3: ['dashboard', 'chatflow', 'agents', 'tickets', 'themesettings'],
                 4: ['dashboard', 'chatrequest', 'autosuggestions', 'tickets'],
             }
         }

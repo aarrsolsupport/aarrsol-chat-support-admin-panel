@@ -46,6 +46,7 @@ axios.interceptors.response.use(function (response){
     {
         localStorage.removeItem('_token'); 
         router.push('/login') 
+        window.store.commit('is_loader', false);
         return error.response;
     } else {
         return error.response;

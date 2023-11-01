@@ -47,6 +47,14 @@ const routes = createRouter({
             path: '/agent-details/:item_id',
             component: () => import('@/components/agents/DetailComponent.vue')
         },
+        {
+            path: '/auto-suggestions',
+            component: () => import('@/components/autosuggestion/ListComponent.vue')
+        },
+        {
+            path: '/theme-settings',
+            component: () => import('@/components/themesetting/ListComponent.vue')
+        },
     ],
 })
 

@@ -726,6 +726,7 @@
     </div>
 </template>
 <script>
+    import axios from "axios";
    import { mapState } from 'vuex';
     export default {
         name: 'ListComponent',
@@ -739,6 +740,22 @@
                 chat_type: 0,
                 chat_list: {}
             }
-        }
+        },
+        mounted() {
+            this.getChatsList()
+        },
+        methods: {
+            getChatsList() {
+                this.$store.commit('is_loader', true);
+                axios.post('/get-chats-list', { type: this.chat_type })
+                    .then(res => {
+                        console.log(res)
+                        this.$store.commit('is_loader', false);
+                    }).catch(e => {
+                        this.$toast.error(e.response.message ?? e.response.data.message);
+                        this.$store.commit('is_loader', false);
+                    })
+            }
+        }   
     }
 </script>

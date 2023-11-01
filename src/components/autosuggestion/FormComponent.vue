@@ -143,10 +143,6 @@ export default {
                         })
                 } else {
                     // ADD
-                    let data = {
-                        form_type: 1,
-                        description: this.item_data.description
-                    }
                     let createSuggestion = new FormData();
                     createSuggestion.append('from_type', 1);
                     createSuggestion.append('description', this.item_data.description);

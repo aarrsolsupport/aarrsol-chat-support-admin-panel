@@ -90,7 +90,7 @@
                                                                 <button class="assistant-heading-btn bg-transparent"
                                                                     @click="(e) => showAddOption(data)">
                                                                     <div class="thm-heading">
-                                                                        <p>
+                                                                        <p :title="data.label">
                                                                             {{ data.node_id }}
                                                                             {{ data.label.length > 30 ?
                                                                                 data.label.substring(0, 30) +

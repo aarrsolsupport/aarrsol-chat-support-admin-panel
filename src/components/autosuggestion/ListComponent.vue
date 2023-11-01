@@ -37,7 +37,7 @@
                                         index + parseInt(1) }}</h2>
                                 </th>
                                 <td>
-                                    <h2>{{ item.description }}</h2>
+                                    <h2 :title="item.description">{{ item.description.length > 50 ? item.description.substring(0, 50) + '...' : item.description }}</h2>
                                 </td>
                                 <td>
                                     <div class="send-btn-sec justify-content-start">
@@ -55,12 +55,12 @@
                                                         </div>
                                                     </button>
                                                 </li>
-                                                <li>
+                                                <li class="todo border border-warning">
                                                     <button class="dropdown-item more-list-btn" type="button">
                                                         <div class="edit-icon"><img src="@/assets/images/document-copy.svg"
                                                                 alt=""></div>
                                                         <div class="thm-heading">
-                                                            <h2>Duplicate</h2>
+                                                            <h2>Duplicate *TO-DO*</h2>
                                                         </div>
                                                     </button>
                                                 </li>
@@ -184,7 +184,7 @@ export default {
                 this.$store.commit('is_loader', false);
             })
         },
-        updateSuggestList(data) {
+        updateSuggestList() {
             this.getListItems();
         },
         editAutoSuggestion(item) {

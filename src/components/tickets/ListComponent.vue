@@ -110,7 +110,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <h2>{{ item.description.length > 15 ? item.description.substring(0, 15) + '...' :
+                                    <h2 :title="item.description">{{ item.description.length > 15 ? item.description.substring(0, 15) + '...' :
                                         item.description }}</h2>
                                 </td>
                                 <td>

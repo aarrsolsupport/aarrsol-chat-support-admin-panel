@@ -2441,3 +2441,13 @@ width: 100%;
 .form-check-input[type=checkbox] {
     border-radius: .25em;
 }
+
+.theme-sec {
+	border: 1.5px solid var(--border-color);
+	background-color: var(--white-color);
+	padding: 20px 20px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}

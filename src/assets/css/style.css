@@ -2847,3 +2847,8 @@ border: 1.5px solid var(--border-color) !important;
 	align-items: center;
 	justify-content: space-between;
 }
+
+.media-display {
+    display: block;
+    max-width: 100px;
+}

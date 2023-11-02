@@ -1,5 +1,5 @@
 <template>
-   <div class="borad-inner-body-sec">
+    <div class="borad-inner-body-sec">
         <div class="borad-inner-body">
             <div class="borad-inner-body-con" v-if="details">
                 <div class="operator-detail-wrapper">
@@ -98,8 +98,8 @@
                                 </li>
                                 <li class="nav-item todo border border-warning" role="presentation">
                                     <button class="nav-link" id="pills-tickets-tab" data-bs-toggle="pill"
-                                        data-bs-target="#pills-tickets" type="button" role="tab" aria-controls="pills-tickets"
-                                        aria-selected="false">Tickets</button>
+                                        data-bs-target="#pills-tickets" type="button" role="tab"
+                                        aria-controls="pills-tickets" aria-selected="false">Tickets</button>
                                 </li>
                             </ul>
                         </div>
@@ -120,6 +120,69 @@
                                     <AgentComponent :whitelabel_id='item_id' :hideSearch="1"></AgentComponent>
                                 </div>
                             </div>
+                            <div class="tab-pane fade " id="pills-themesettings" role="tabpanel"
+                                aria-labelledby="pills-themesettings-tab">
+                                <div class="operator-tab-item-one">
+                                    <div class="theme-tab-sec">
+
+                                        <!-- <div class="theme-tab-list admin-con checkbox-list">
+                                            <ul class="nav nav-pills " id="pills-tab" role="tablist">
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link " id="pills-light-tab" data-bs-toggle="pill"
+                                                        data-bs-target="#pills-light" type="button" role="tab"
+                                                        aria-controls="pills-light" aria-selected="false">
+                                                        <div class="form-check">
+                                                            <span class="radio-sec"></span>
+                                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                                Light
+                                                            </label>
+                                                        </div>
+                                                    </button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link" id="pills-dark-tab" data-bs-toggle="pill"
+                                                        data-bs-target="#pills-dark" type="button" role="tab"
+                                                        aria-controls="pills-dark" aria-selected="false">
+
+                                                        <div class="form-check">
+                                                            <span class="radio-sec"></span>
+                                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                                Dark
+                                                            </label>
+                                                        </div>
+                                                    </button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link active" id="pills-custom-tab"
+                                                        data-bs-toggle="pill" data-bs-target="#pills-custom" type="button"
+                                                        role="tab" aria-controls="pills-custom" aria-selected="  true">
+                                                        <div class="form-check">
+                                                            <span class="radio-sec"></span>
+                                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                                Custom
+                                                            </label>
+                                                        </div>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div> -->
+
+                                        <div class="theme-tab-list-con">
+                                            <div class="tab-content" id="pills-tabContent">
+
+                                                <div class="tab-pane fade show active" id="pills-custom" role="tabpanel"
+                                                    aria-labelledby="pills-custom-tab">
+
+                                                    <ThemeSettingListComponent :whitelabel_id="item_id"></ThemeSettingListComponent>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -131,14 +194,16 @@
 <script>
 import AgentComponent from '../agents/ListComponent.vue';
 import ChatFlowComponent from '../chat-flow/ListComponent.vue';
-import WlFormComponent from './FormComponent.vue'
+import WlFormComponent from './FormComponent.vue';
+import ThemeSettingListComponent from '@/components/themesetting/ListComponent.vue'
 import axios from "axios"
 export default {
     name: 'DetailComponent',
     components: {
         WlFormComponent,
         ChatFlowComponent,
-        AgentComponent
+        AgentComponent,
+        ThemeSettingListComponent
     },
     props: ['item_id'],
     data() {

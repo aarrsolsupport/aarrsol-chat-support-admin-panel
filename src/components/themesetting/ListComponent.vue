@@ -1,72 +1,74 @@
 <template>
-    <div class="borad-inner-body">
-        <div class="borad-inner-body-con">
-            <div class="theme-sec">
-                <div class="theme-tab-list-con">
-                    <div id="pills-tabContent">
-                        <div class="theme-tab-form">
-                            <div class="row">
-                                <div class="col-lg-4 col-md-6 col-sm-6  ">
-                                    <div class="operator-item">
-                                        <label for="operator" class="form-label">Header Color</label>
-                                        <div class="operator-item-sec">
-                                            <input type="text" class="form-control" placeholder="Enter Name">
-                                            <div class="color-input">
-                                                <input type="color" class="color-input-item" v-model="themeColors.header_color">
+    <div class="borad-inner-body-sec">
+        <div class="borad-inner-body">
+            <div class="borad-inner-body-con">
+                <div class="theme-sec">
+                    <div class="theme-tab-list-con">
+                        <div id="pills-tabContent">
+                            <div class="theme-tab-form">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-6 col-sm-6  ">
+                                        <div class="operator-item">
+                                            <label for="operator" class="form-label">Header Color</label>
+                                            <div class="operator-item-sec">
+                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <div class="color-input">
+                                                    <input type="color" class="color-input-item" v-model="themeColors.header_color">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-6  ">
-                                    <div class="operator-item">
-                                        <label for="operator" class="form-label">Footer Color</label>
-                                        <div class="operator-item-sec">
-                                            <input type="text" class="form-control" placeholder="Enter Name">
-                                            <div class="color-input">
-                                                <input type="color" class="color-input-item" v-model="themeColors.footer_color">
+                                    <div class="col-lg-4 col-md-6 col-sm-6  ">
+                                        <div class="operator-item">
+                                            <label for="operator" class="form-label">Footer Color</label>
+                                            <div class="operator-item-sec">
+                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <div class="color-input">
+                                                    <input type="color" class="color-input-item" v-model="themeColors.footer_color">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-6  ">
-                                    <div class="operator-item">
-                                        <label for="operator" class="form-label">Text color</label>
-                                        <div class="operator-item-sec">
-                                            <input type="text" class="form-control" placeholder="Enter Name">
-                                            <div class="color-input">
-                                                <input type="color" class="color-input-item" v-model="themeColors.text_color">
+                                    <div class="col-lg-4 col-md-6 col-sm-6  ">
+                                        <div class="operator-item">
+                                            <label for="operator" class="form-label">Text color</label>
+                                            <div class="operator-item-sec">
+                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <div class="color-input">
+                                                    <input type="color" class="color-input-item" v-model="themeColors.text_color">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-6  ">
-                                    <div class="operator-item">
-                                        <label for="operator" class="form-label">Background Color</label>
-                                        <div class="operator-item-sec">
-                                            <input type="text" class="form-control" placeholder="Enter Name">
-                                            <div class="color-input">
-                                                <input type="color" class="color-input-item"
-                                                    v-model="themeColors.background_color">
+                                    <div class="col-lg-4 col-md-6 col-sm-6  ">
+                                        <div class="operator-item">
+                                            <label for="operator" class="form-label">Background Color</label>
+                                            <div class="operator-item-sec">
+                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <div class="color-input">
+                                                    <input type="color" class="color-input-item"
+                                                        v-model="themeColors.background_color">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-6  ">
-                                    <div class="operator-item">
-                                        <label for="operator" class="form-label">Upload File</label>
-                                        <div class="file-upload-sec">
-                                            <label for="file" class="file-upload"> <span><img
-                                                        src="@/assets/images/gallery-add.svg" alt=""></span> Choose File</label>
-                                            <input class="form-control profit-input d-none" type="file" name="file" id="file"
-                                                @change="uploadLogoImg">
+                                    <div class="col-lg-4 col-md-6 col-sm-6  ">
+                                        <div class="operator-item">
+                                            <label for="operator" class="form-label">Upload File</label>
+                                            <div class="file-upload-sec">
+                                                <label for="file" class="file-upload"> <span><img
+                                                            src="@/assets/images/gallery-add.svg" alt=""></span> Choose File</label>
+                                                <input class="form-control profit-input d-none" type="file" name="file" id="file"
+                                                    @change="uploadLogoImg">
+                                            </div>
+                                            <div id="fileList" class="fileList-con"></div>
                                         </div>
-                                        <div id="fileList" class="fileList-con"></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="theme-tab-btn">
-                            <a href="Javascript:void(0);" class="thm-btn" @click="setThemeSettings()">Save</a>
+                            <div class="theme-tab-btn">
+                                <a href="Javascript:void(0);" class="thm-btn" @click="setThemeSettings()">Save</a>
+                            </div>
                         </div>
                     </div>
                 </div>

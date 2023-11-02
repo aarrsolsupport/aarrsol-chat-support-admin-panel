@@ -91,16 +91,16 @@
                 <div class="operator-table-sec todo border border-warning">
                     <div class="operator-detail-tab-con">
                         <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-chat-flow" role="tabpanel"
-                                aria-labelledby="pills-chat-flow-tab">
+                            <div class="tab-pane fade show active" id="pills-user-chat-flow" role="tabpanel"
+                                aria-labelledby="pills-user-chat-flow-tab">
                                 <div class="operator-tab-item-one">
                                     <div class="thm-heading">
                                         <h2>Chatbot Flow </h2>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="pills-whiltelable" role="tabpanel"
-                                aria-labelledby="pills-whiltelable-tab">
+                            <div class="tab-pane fade" id="pills-tickets" role="tabpanel"
+                                aria-labelledby="pills-tickets-tab">
                                 <div class="operator-tab-item-two">
                                     <div class="operator-table-con">
                                         <table class="table thm-heading">

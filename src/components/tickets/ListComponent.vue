@@ -25,18 +25,18 @@
                                         <h2> Generate At</h2>
                                     </th>
                                     <th>
-                                        <h2> User ID</h2>
-                                    </th>
-                                    <th>
                                         <h2> Chat ID</h2>
                                     </th>
                                     <th>
                                         <h2> Issue ID</h2>
                                     </th>
-                                    <th>
+                                    <th v-if="authData.role_id == 1">
                                         <h2> Operator ID</h2>
                                     </th>
-                                    <th>
+                                    <th v-if="authData.role_id == 3">
+                                        <h2> Agent ID</h2>
+                                    </th>
+                                    <th v-if="authData.role_id == 1 || authData.role_id == 2">
                                         <h2> Whitelabel ID</h2>
                                     </th>
                                     <th>
@@ -63,19 +63,19 @@
                                         <h2>{{ $filters.localDateTimeFormat(item.created_at) }}</h2>
                                     </td>
                                     <td>
-                                        <h2>{{ item.end_user ? item.end_user.userid : ''}}</h2>
-                                    </td>
-                                    <td>
                                         <h2>{{ item.chat_id }}</h2>
                                     </td>
                                     <td>
                                         <h2>{{ item.issue_description }}</h2>
                                     </td>
-                                    <td>
-                                        <h2>{{ item.operator_user ? item.operator_user.userid : '' }}</h2>
+                                    <td v-if="authData.role_id == 1">
+                                        <h2>{{ item.operator_user?.userid || '' }}</h2>
                                     </td>
-                                    <td>
-                                        <h2>{{ item.whitelabel_user ? item.whitelabel_user.userid : ''  }}</h2>
+                                    <td v-if="authData.role_id == 3">
+                                        <h2>{{ item.agent_user?.userid || '' }}</h2>
+                                    </td>
+                                    <td v-if="authData.role_id == 1 || authData.role_id == 2">
+                                        <h2>{{ item.whitelabel_user?.userid || ''  }}</h2>
                                     </td>
                                     <td>
                                         <div class="status-sec">
@@ -198,7 +198,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['ticket_status']),
+        ...mapState(['ticket_status', 'authData']),
         filteredItems() {
             const filtered_data = this.listItems;
             if (this.search) {

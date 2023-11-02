@@ -25,6 +25,10 @@
 
 @media screen and (max-width: 1024px){
    
+    .operator-detail-sec {
+        padding: 10px 12px;
+    }
+
 }
 
 @media screen and (max-width: 991px){
@@ -39,7 +43,7 @@
     }
     .sidebar-menu-list {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         width: max-content;
     }
 
@@ -182,7 +186,10 @@
 
     .more-action-btn{
         width: 30px;
+    }
 
+    .agent-chat-request .more-action-btn {
+        width: auto !important; 
     }
 
     .ashboard-item-img img{
@@ -201,6 +208,38 @@
         line-height: normal;
     }
 
+    .chat-request-offcanvas{
+        display: none;
+    }
+
+    .chat-request-offcanvas-con{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .chat-request-btn {
+        display: block;
+    }
+
+    .chat-request-offcanvas-con{
+        padding: 10px;
+    }
+
+
+    .auto-message-slider-con {
+        width: 100%;
+    }
+    .chat-flow-tables .messages-body-sec {
+        height: calc(100vh - 0px);
+    }
+
+    .auto-message-slider {
+        margin: 10px 0px;
+    }
+    .agent-chat-user .messages-body-sec {
+        height: calc(100vh - 62px );
+    }
     .messages-body-sec {
         height: calc(100vh - 130px);
     }
@@ -361,6 +400,10 @@
     font-size: 13px !important; 
     font-weight: 500 !important;
 
+}
+
+.admin-con label {
+    font-size: 13px;
 }
 }
 
@@ -611,7 +654,42 @@
           }
 
 
-          .language-modal .modal-header .thm-heading h4{
+        .categories-sec .operator-item {
+            margin-left: 10px;
+        }
+
+        .categories-sec .operator-item {
+            display: block;
+            margin: 0px;
+        }
+
+        .agent-flow-sec .search-sec {
+            align-items: end;
+        }
+
+        .categories-sec .operator-item select {
+            width: 130px;
+        }
+
+        .agent-flow-sec .search-input-sec input {
+           width: 160px;
+        }
+
+        .reject-popup-modal .status-popup-sec {
+            margin-bottom: 0px;
+            background-color: var(--white-color);
+        }
+
+        .reject-popup-modal .modal-content {
+            background-color: transparent !important;
+            border: none;
+        }
+
+        .reason-sec {
+            margin: 0px;
+        }
+        
+	.language-modal .modal-header .thm-heading h4{
             font-size: 16px;
         }
 }
@@ -664,7 +742,7 @@
     }
 
     .sidebar-menu-con {
-        padding-top: 60px;
+        padding-top: 0px; /* 60px; */
         margin-left: -10px;
         margin-right: -10px;
     }
@@ -986,6 +1064,42 @@
     .language-modal .modal-header .thm-heading h4{
         font-size: 14px;
     }
+
+    .operator-detail-tab  .operator-detail-sec {
+        padding: 0px 8px;
+    }
+
+    
+    .admin-con label {
+        font-size: 12px;
+    }
+
+    .chat-request-btn .thm-btn{
+        border: 1px solid var(--border-color);
+        width: 36px;
+        height:36px;
+        padding: 1px;
+    }
+
+    .agent-chat-request .more-action-btn {
+        width: auto !important; 
+    }
+
+    .chat-request-offcanvas-con {
+        padding: 4px 0px;
+    }
+
+   .auto-message-slider .owl-nav button {
+        margin: 0px !important;
+    }
+
+    .auto-message-slider-con .owl-stage-outer {
+        padding-top: 10px;
+    }
+
+    .Categories-btn .thm-btn {
+        margin: 0px 4px;
+    }
 }
 
 @media screen and (max-width: 359px){
@@ -996,5 +1110,8 @@
 
     .search-input-sec input {
         width: 150px;
+    }
+    .categories-sec .operator-item select {
+        width: 120px;
     }
 }

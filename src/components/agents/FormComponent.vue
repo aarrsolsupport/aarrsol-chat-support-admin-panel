@@ -38,10 +38,12 @@
                         <label for="password_confirmation" class="form-label">Confirm Password  </label>
                         <input id="password_confirmation" type="text" class="form-control" placeholder="Enter Confirm Password" v-model="item_data.password_confirmation" :class="v$.item_data.password_confirmation.$error ? 'border border-danger' : ''">
                     </div>
-                    <div class="operator-item entries-select">
+                    <div class="operator-item entries-select" v-if="item_data.categories != undefined">
                         <label for="dropdownMenuButton1" class="form-label">Categories</label>
-                        <div class="categories-dropdown" v-if="selectdescription.length>0">
-                            <span  style = "margin-bottom:5px" v-for="selectedOption in selectdescription" :key="selectedOption.id" :title="selectedOption">{{ (selectedOption.length<13)?selectedOption:selectedOption/*selectedOption.slice(0, 17) + "..."*/ }}</span>
+                        <div class="categories-dropdown">
+                            <span  style = "margin-bottom:5px" v-for="(selectedOption, catid) in agentCats" :key="catid" :title="selectedOption.description">
+                                {{ (selectedOption.description.length<13)?selectedOption.description:selectedOption.description.slice(0, 13) + "..." }}
+                            </span>
                         </div>
                    
                      <div class=" categories-sec">
@@ -52,7 +54,7 @@
                            <ul class="dropdown-menu dropdown-menu-center" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(0px, 44.8px, 0px);" aria-labelledby="dropdownMenuButton1" >
                                 <li v-for="option in options" :key="option.id">
                                     <div class="categories-items categories-value-con">
-                                        <input class="form-check-input" type="checkbox" v-model="selectedOptions" :value="option.id" :id="'opt_'+option.id">
+                                        <input :id="'opt_'+option.id" class="form-check-input" type="checkbox" :checked="agentCats[option.id] ? 'checked' : null"   @change="updateAgentCats(option)">
                                         <label class="form-check-label" :for="'opt_'+option.id">{{ option.description }}</label>
                                     </div>
                                 </li>
@@ -95,11 +97,10 @@
                     'password_confirmation': '',
                     'is_active': 1
                 },
-                selectedOptions: [], // To store selected checkbox values
-                selectdescription: [],
                 options: [],
                 errorsList: {},
                 getAllcategory:[],
+                agentCats: {},
             }
         },
         setup () {
@@ -132,45 +133,53 @@
         watch: {
             '$store.state.ag_edit': function () {
                 var e_data = this.$store.state.ag_edit
-                if(e_data.form_item.categories != undefined){
-
-                    const descriptions = e_data.form_item.categories.map(category => category.description);
-                     this.selectdescription= descriptions
-                }
                 this.setupAgForm(e_data.form_type, e_data.form_item)
             },
-            'selectedOptions':function(){
-                this.selectdescription =[];
-                for(let i = 0 ; i<this.selectedOptions.length;i++){
-                    this.selectdescription.push(this.getAllcategory[this.selectedOptions[i]]);
-                }
-            }
         },
         created(){
                 this.category();
         },
         methods: {
+            updateAgentCats(option) {
+                var catId = option.id
+                if(this.agentCats[catId]) {
+                    delete(this.agentCats[catId])
+                } else {
+                    this.agentCats[catId] = { 'id': null, 'category_id': catId, 'description': option.description} 
+                }
+            },
             setupAgForm(type, item) {
                 this.v$.$reset();
                 this.errorsList = {};
                 this.itemForm = type;
                 switch(type) {
                     case 1: // Setup basic Add form requisites
+                            this.agentCats = Object.assign({})
                         this.item_data = {
                             'name': '',
                             'userid': '',
                             'password': '',
                             'password_confirmation': '',
+                            'categories': [],
                             'is_active': 1,
                             'form_type': type  // Add
                         }
                         break;
                     case 2: // Setup Edit form Data & requisites
+                    console.log(item.categories.length)
+                        if(item.categories.length > 0) {
+                            for (const element of Object.values(item.categories)) {
+                                this.agentCats[element.category_id] = { 'id': element.id, 'category_id': element.category_id, 'description': element.description} 
+                            }
+                        } else {
+                            this.agentCats = Object.assign({})
+                        }
                         this.form_title = "Edit Agents"
                         this.item_data = {
                             'id': item.id,
                             'name': item.name,
                             'userid': item.userid,
+                            'categories': [],
                             'is_active': (item.is_active == 1) ? 1 : 0 ,
                             'form_type': type  // Update
                         }
@@ -192,8 +201,7 @@
                     return false
                 }else{
                     this.$store.commit('is_loader', true);
-                    //let new_item_data = this.item_data;
-                     this.item_data.category_ids = this.selectedOptions;
+                    this.item_data.category_ids = Object.keys(this.agentCats).map(Number);
                     if(this.item_data.id) {
                         // EDIT & UPDATE
                         axios.post('/'+this.resource+'/update', this.item_data)
@@ -203,7 +211,10 @@
                                 this.errorsList = res.data.data;
                             }else{
                                 if(this.item_data.form_type == 2) {
-                                   this.$store.commit('agent_data_Updated', {'change': 2, 'item':this.item_data});
+                                   this.$store.commit('agent_data_Updated', {
+                                    'change': 2, 
+                                    'item': Object.assign({"categories": this.agentCats}, this.item_data)
+                                   });
                                 }
                                 this.$toast.success(res.data.message);
                                 this.$refs.agCloseBtn.click();
@@ -215,14 +226,17 @@
                         })
                     } else {
                         // ADD
-                        this.item_data.category_ids = this.selectedOptions;
+                        this.item_data.category_ids = Object.keys(this.agentCats).map(Number);
                         axios.post('/'+this.resource+'/create', this.item_data)
                         .then(res => {
                             if(res.data.error == true){  
                                 this.$toast.error(res.data.message);
                                 this.errorsList = res.data.data;
                             }else{
-                                this.$store.commit('agent_data_Updated', {'change': 1, 'item':res.data});
+                                this.$store.commit('agent_data_Updated', {
+                                    'change': 1, 
+                                    'item':Object.assign({"categories": this.agentCats}, res.data)
+                                });
                                 this.$toast.success(res.data.message);
                                 this.$refs.agCloseBtn.click();
                             }

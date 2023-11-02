@@ -316,6 +316,8 @@ select:focus {
   --noble-grey-color:#4D5564;
   --black-color:#000;
   --blue-color:#F6FAFD;
+  --light-primary-color:#23678D;
+  --danger-color:#FF4444;
 }
 
 body {
@@ -790,7 +792,7 @@ background-color: var(--border-color);
     display: flex;
     align-items: center;
     font-weight: 500;
-	border: 0;
+/*	border: 0; */
 	width: auto !important;
 }
 
@@ -1023,6 +1025,7 @@ background-color: var(--border-color);
 }
 .tickets-details-con .thm-heading p{
 	margin-top: 10px;
+   /* line-height: 24px; */
 }
 
 
@@ -1920,7 +1923,7 @@ padding-left: 0px;
 .send-btn-sec{
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
+	justify-content: end;
 }
 
 
@@ -2004,6 +2007,10 @@ padding-left: 0px;
 	font-size: 12px;
 	font-weight: 600;
 	color: var(--text-light-color);
+    width: auto !important;
+    height: auto !important;
+	margin-left: 0px !important;
+	background-color: transparent !important;
 }
 
 .chat-user-btn .thm-heading{
@@ -2078,7 +2085,7 @@ padding-left: 0px;
 .messages-body-sec{
 	padding: 10px 12px;
 	overflow-y: auto;
-     height: calc(100vh - 225px);
+     height: calc(100vh - 0px);
 
 }
 .message-time{
@@ -2095,6 +2102,12 @@ padding-left: 0px;
 
 .video-sec{
 	margin-top: 10px;
+}
+
+
+.video-sec iframe{
+	border-radius: 8px;
+	overflow: hidden;
 }
 
 .messages-footer-con {
@@ -2353,7 +2366,30 @@ width: 100%;
  
     background-color: var(--blue-color);
 }
+/* Whitelable pages css */
 
+.Categories-btn{
+	display: flex;	
+	align-items: center;
+}
+
+
+.Categories-btn .thm-btn{
+	margin: 0px 10px ;
+	padding: 2px 6px !important;
+	border-radius: 4px ;
+	font-weight: 500;
+}
+
+.more-btn {
+	background-color: var(--blue-color) !important;
+	color: var(--primary-color) !important;
+
+}
+
+.more-btn:hover{
+	color: var(--black-color);
+}
 
 .categories-sec .entries-select-dropdown button {
     border-radius: 8px;
@@ -2441,6 +2477,366 @@ width: 100%;
 .form-check-input[type=checkbox] {
     border-radius: .25em;
 }
+
+.tickets-details-item .thm-btn{
+	color: var(--white-color) !important;
+	background-color: var(--light-primary-color) !important;
+}
+
+.chat-agent-body{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.chat-agent-body .chat-user-tab {
+    margin-top: 0px;
+}
+
+.chat-agent-body .operator-table-sec {
+    margin-top: 0px;
+}
+
+.agent-chat-user .chat-user-tab  ul{
+	display: flex;
+	align-items: center;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	border-radius: 14px 14px 0px 0px;
+	overflow: hidden;
+}
+
+.agent-chat-user .chat-user-tab  ul li button{
+	padding: 0px;
+	margin: 0px;
+	background-color: transparent;
+	border-radius: 0px;
+	width: 100%;
+}
+
+
+.agent-chat-user .chat-user-tab  ul li{
+	width: 100%;
+}
+
+.agent-chat-user .chat-user-tab  ul li button .chat-heading{
+border-radius: 0px;
+border-bottom:2px solid var(--border-color) ;
+padding: 10px 6px;
+text-align: center;
+}
+
+.agent-chat-user .chat-user-tab  .chat-heading .thm-heading h2 {
+    justify-content: center;
+	font-size: 13px;
+}
+
+
+
+.agent-chat-user .chat-user-tab  ul li button.active .chat-heading{
+border-color: var(--primary-color);
+	}
+
+	.agent-chat-request .chat-user-tab {
+		margin-right: 0px;
+		margin-left: 10px;
+		width: 360px;
+	}
+
+	.agent-chat-request .operator-table-con .more-action-sec  .more-btn {
+		
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	font-weight: 500;
+}	
+
+.dots{
+	position: relative;
+}
+.dots span {
+		width: 9px;
+		height: 9px;
+		border-radius: 2px;
+		display: block;
+		background-color: var(--grey-color);
+		margin-left: 5px;
+}
+
+.user-active.chat-user-btn .dots span {
+    background-color: var(--success-color);
+}
+
+.chat-user-btn .thm-heading{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+
+.dots .user-active-con{
+	position: absolute;
+	top: 0;
+	width: fit-content;
+	background-color: var(--secondary-color);
+	border-radius: 4px;
+	padding: 2px 6px;
+	left: 50%;
+	transform: translate(-50%,60%);
+}
+
+
+.user-active-con::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background-color: var(--secondary-color);
+    display: block;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translate(-30%,0%);
+}
+
+.user-active-con .thm-heading p{
+	color: var(--white-color);
+}
+
+.dots-btn + .user-active-con {
+	display: none;
+}
+ 
+.dots-btn:hover + .user-active-con {
+	display: block;
+}
+
+.user-status-active + .user-active-con {
+    left: auto;
+    right: 0;
+    transform: translate(0%,100%);
+    width: max-content;
+	z-index: 9999;
+}
+
+
+
+.user-status-active + .user-active-con::before {
+    left: auto;
+	right: 0;
+    transform: translate(-30%,0%);
+
+}
+
+.agent-chat-request .operator-table-con table thead {
+    background-color: var(--body-color);
+}
+
+.chat-request-btn{
+	display: none;
+}
+
+.chat-request-btn .thm-btn{
+	background-color: transparent;
+	border: 1.5px solid var(--border-color);
+	width: 40px;
+	height: 40px;
+	padding: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: 
+	center;
+}
+
+
+.agent-chat-user .messages-body-sec {
+    height: calc(100vh - 294px );
+}
+
+.agent-chat-user .chat-user-sec {
+    height: calc(100vh - 294px )!important;
+}
+
+.tickets-details-modal  .tickets-modal-item {
+    height: auto; 
+}
+
+/* Agent css */
+
+.sidebar-menu-dots .header-admin-btn{
+	position: relative;
+}
+.sidebar-menu-dots .header-admin-btn::before{
+	content: '';
+	width: 7px;
+	height: 7px;
+	border-radius: 100%;
+	background-color: var(--primary-color);
+	position: absolute;
+	top: 0;
+	right: 0;}
+
+	.agent-flow-sec .search-sec {
+		justify-content: start;
+
+	}
+
+	.categories-sec .operator-item{
+		display: flex;
+		align-items: center;
+		margin-left: 30px;
+	}
+
+	.categories-sec .operator-item label {
+		white-space: nowrap;
+		margin-right: 10px;
+	}
+
+
+	
+	.categories-sec .operator-item select{
+		width: 150px;
+	}
+
+	.success-thm{
+		color: var(--success-color);
+		border: 1px solid #EAEEF4;
+		background: rgba(32, 207, 102, 0.10);
+	}
+
+	
+	.success-thm:hover{
+		background: rgba(9, 184, 79, 0.1) !important;
+		color: var(--success-color);
+	}
+
+	.danger-thm{
+		color: var(--danger-color);
+		border-radius: 2px;
+border: 1px solid #EAEEF4;
+background: rgba(255, 68, 68, 0.10);
+	}
+
+	.danger-thm:hover{
+	color: var(--danger-color);
+background: rgba(192, 35, 35, 0.1) !important;
+	}
+
+	.agent-flow-sec .Categories-btn .thm-btn {
+	margin: 0;
+	margin-right: 5px;
+	padding: 2px 10px !important;
+	}
+
+.danger-btn{
+	color: var(--white-color);
+background-color: var(--danger-color);
+}
+
+.reason-sec{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 10px 0px;
+}
+
+
+.reason-sec .thm-btn{
+	margin: 10px ;
+	border-color: var(--border-color);
+}
+
+.reject-popup-modal .status-popup-sec .operator-item {
+    padding: 10px 10px;
+}
+
+.agent-chat-sec .user-active-heading {
+   justify-content: space-between;
+}
+
+.blue-bg{
+background: rgba(19, 88, 127, 0.12) !important;
+border: none;
+}
+
+.ticket-body .operator-item select{
+		background-color: var(--blue-color) !important;
+		border: none !important;
+}
+
+
+.auto-message-slider-con {
+    width: 76.5vw;
+    overflow: hidden;
+}
+.agent-chat-sec .messages-footer-sec {
+	background-color: var(--white-color);
+	border: 1.5px solid var(--border-color);
+	border-radius: 10px;
+}
+
+.auto-message-slider-con .owl-stage-outer {
+    height: 41px !important;
+    padding-top: 7px;
+}
+
+.auto-message-slider-con  .owl-nav {
+	display: block !important;
+}
+
+.auto-message-slider-con .owl-prev {
+     background-image: url(../images/arrow-slider-left.svg) !important; 
+    left: 0% !important;
+}
+
+.auto-message-slider-con .owl-next {
+	background-image: url(../images/arrow-slider-right.svg) !important; 
+   right: 0% !important ;
+}
+
+.auto-message-slider-con .owl-nav button {
+background-color: var(--white-color) !important;
+border-radius: 6px !important	;
+border: 1.5px solid var(--border-color) !important;
+}
+
+.agent-chat-user .chat-user-tab {
+    white-space: nowrap;
+}
+
+.messages-item-header{
+	display: flex;
+	align-items: center;
+}
+
+.chat-flow-tables .messages-body-sec {
+    height: calc(100vh - 280px);
+}
+
+.language-modal .modal-header{
+	background-color: var(--body-color);
+	padding: 12px 10px;
+   }
+   
+   
+   .language-modal .modal-header .thm-heading h4{
+	   font-size: 18px;
+   }
+   
+   .notification-sec .more-list-btn .thm-heading span{
+	   font-size: 12px;
+	   color: var(--noble-grey-color);
+	   font-weight: 300;
+   }
+   
+   .notification-sec .more-action-list li{
+	   border-bottom: 1.5px solid var(--border-color);
+   }
+   
+   .notification-sec .more-action-list li:last-child{
+	   border: none;
+   }
 
 .theme-sec {
 	border: 1.5px solid var(--border-color);

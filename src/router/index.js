@@ -52,6 +52,10 @@ const routes = createRouter({
             component: () => import('@/components/chats/ListComponent.vue')
         },
         {
+            path: '/chat-requests',
+            component: () => import('@/components/chatrequests/ListComponent.vue')
+        },
+        {
             path: '/auto-suggestions',
             component: () => import('@/components/autosuggestion/ListComponent.vue')
         },

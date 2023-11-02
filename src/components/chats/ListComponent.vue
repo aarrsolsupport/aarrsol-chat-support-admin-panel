@@ -10,8 +10,7 @@
                                 aria-selected="true">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Open Chats<div v-if="chat_count"> ({{ chat_count }})</div>
-                                        </h2>
+                                        <h2>Open Chats<div v-if="unread_count[1]"> ({{ unread_count[1] }})</div></h2>
                                     </div>
                                 </div>
                             </button>
@@ -22,19 +21,20 @@
                                 aria-selected="false" tabindex="-1">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Closed Chats</h2>
+                                        <h2>Closed Chats<div v-if="unread_count[2]"> ({{ unread_count[2] }})</div></h2>
                                     </div>
                                 </div>
                             </button>
                         </li>
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-open-chat" role="tabpanel"
+                        <!-- tab-pane fade show active -->
+                        <div class="" :id="chat_type == 1 ? 'pills-open-chat' : 'pills-close-chat'" role="tabpanel"
                             aria-labelledby="pills-open-chat-tab">
                             <div class="chat-user-body">
                                 <div class="search-sec p-0 border-0 justify-content-center">
                                     <div class="search-input-sec">
-                                        <input type="text" placeholder="Search">
+                                        <input type="text" placeholder="Search" v-model="search">
                                         <div class="search-icon">
                                             <img src="@/assets/images/search-icon.svg" alt="">
                                         </div>
@@ -42,148 +42,22 @@
                                 </div>
                                 <div class="chat-user-sec">
                                     <div class="chat-user-tab-sec">
-
-                                        <div class="chat-user-item" onclick="openHide()">
+                                        <div v-for="(item,index) in filteredItems" :key="index" class="chat-user-item" @click="getChatsMessages(item)">
                                             <button class="chat-user-btn user-active">
                                                 <div class="thm-heading">
-                                                    <h2> Ayushmaster177</h2>
+                                                    <h2> {{item.end_user_name}}</h2>
                                                     <div class="dots">
                                                         <span class="dots-btn"></span>
                                                         <div class="user-active-con">
                                                             <div class="thm-heading">
-                                                                <p>Active</p>
+                                                                <p>Active *TO-DO*</p>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="dots">
+                                                <div class="dots" v-if="item.unread_message_count>0">
                                                     <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div class="chat-user-item user-item-active" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2> Designerhari</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn ">
-                                                <div class="thm-heading">
-                                                    <h2> Uidesigner</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Inactive</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2> Ayushmaster177</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2>Abc Designer</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2>Designerhari</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
+                                                        <span> {{item.unread_message_count}}</span>
                                                     </div>
                                                     <div class="user-active-con">
                                                         <div class="thm-heading">
@@ -197,206 +71,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="pills-close-chat" role="tabpanel"
-                            aria-labelledby="pills-close-chat-tab">
-                            <div class="chat-user-body">
-                                <div class="search-sec p-0 border-0 justify-content-center">
-                                    <div class="search-input-sec">
-                                        <input type="text" placeholder="Search">
-                                        <div class="search-icon">
-                                            <img src="@/assets/images/search-icon.svg" alt="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="chat-user-sec">
-                                    <div class="chat-user-tab-sec">
-
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2> Ayushmaster177</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-
-
-                                        <div class="chat-user-item user-item-active" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2> Designerhari</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-
-
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn ">
-                                                <div class="thm-heading">
-                                                    <h2> Uidesigner</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Inactive</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2> Ayushmaster177</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-
-
-
-
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2>Abc Designer</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-
-
-                                        <div class="chat-user-item" onclick="openHide()">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2>Designerhari</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span>2</span>
-                                                    </div>
-                                                    <div class="user-active-con">
-                                                        <div class="thm-heading">
-                                                            <p>Open Chat</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- SCROLL PAGINATION *TO-DO* -->
                     </div>
                 </template>
                 <template>
                     <div class="chat-heading">
                         <div class="thm-heading">
-                            <h2>Chats<div v-if="chat_count"> ({{ chat_count }})</div>
+                            <h2>Chats<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div>
                             </h2>
                         </div>
                     </div>
                     <div class="chat-user-body">
                         <div class="search-sec p-0 border-0 justify-content-center">
                             <div class="search-input-sec">
-                                <input type="text" placeholder="Search">
+                                <input type="text" placeholder="Search" v-model="search">
                                 <div class="search-icon">
-                                    <img src="assets/images/search-icon.svg" alt="">
+                                    <img src="@/assets/images/search-icon.svg" alt="">
                                 </div>
                             </div>
                         </div>
                         <div class="chat-user-sec">
                             <div class="chat-user-tab-sec">
-                                <div class="chat-user-item" onclick="openHide()">
+                                <div class="chat-user-item" @click="openHide()">
                                     <button class="chat-user-btn user-active">
                                         <div class="thm-heading">
                                             <h2> Ayushmaster177</h2>
@@ -421,7 +117,7 @@
                                         </div>
                                     </button>
                                 </div>
-                                <div class="chat-user-item user-item-active" onclick="openHide()">
+                                <div class="chat-user-item user-item-active" @click="openHide()">
                                     <button class="chat-user-btn user-active">
                                         <div class="thm-heading">
                                             <h2> Designerhari</h2>
@@ -446,7 +142,7 @@
                                         </div>
                                     </button>
                                 </div>
-                                <div class="chat-user-item" onclick="openHide()">
+                                <div class="chat-user-item" @click="openHide()">
                                     <button class="chat-user-btn ">
                                         <div class="thm-heading">
                                             <h2> Uidesigner</h2>
@@ -471,93 +167,17 @@
                                         </div>
                                     </button>
                                 </div>
-
-                                <div class="chat-user-item" onclick="openHide()">
-                                    <button class="chat-user-btn user-active">
-                                        <div class="thm-heading">
-                                            <h2> Ayushmaster177</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Active</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots">
-                                            <div class="user-status-active dots-btn">
-                                                <span>2</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="chat-user-item" onclick="openHide()">
-                                    <button class="chat-user-btn user-active">
-                                        <div class="thm-heading">
-                                            <h2>Abc Designer</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Active</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots">
-                                            <div class="user-status-active dots-btn">
-                                                <span>2</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="chat-user-item" onclick="openHide()">
-                                    <button class="chat-user-btn user-active">
-                                        <div class="thm-heading">
-                                            <h2>Designerhari</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Active</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots">
-                                            <div class="user-status-active dots-btn">
-                                                <span>2</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </template>
             </div>
-            <div class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec">
+            <div class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec" :class="showChat ? 'show' : ''">
                 <div class="operator-table-sec chat-flow-tables ">
                     <div class="messages-item-sec">
                         <div class="user-active-heading">
                             <div class="messages-item-header">
-                                <button class="back-arrow" onclick="openHide()">
+                                <button class="back-arrow" @click="showChat = 0">
                                     <img src="@/assets/images/back-arrow.svg" alt="">
                                 </button>
                                 <div class="thm-heading">
@@ -732,24 +352,47 @@
         name: 'ListComponent',
         computed: {
             ...mapState(['authData']),
+            filteredItems() { 
+                const filtered_data = this.listItems;
+                if (this.search) {
+                    return filtered_data.filter(item => item.end_user_name.toLowerCase().includes(this.search.toLowerCase())  );
+                }
+                return filtered_data;
+            }
         },
         data() {
             return {
                 my_chats: true,
-                chat_count: 0,
                 chat_type: 0,
-                chat_list: {}
+                unread_count: {0:0, 1:0, 2:0},
+                search: '',
+                listItems: {},
+                showChat: 0,
+                current_chat: {}
+            }
+        },
+        watch: {
+            chat_type(){
+                this.getChatsList()
             }
         },
         mounted() {
-            this.getChatsList()
+            if(this.authData && this.authData.role_id == 4 ) {
+                this.chat_type = 1
+            }
         },
         methods: {
+            getChatsMessages(item) {
+                this.current_chat = Object.assign({}, item)
+                console.log(this.current_chat)
+                this.showChat = 1
+            },
             getChatsList() {
                 this.$store.commit('is_loader', true);
                 axios.post('/get-chats-list', { type: this.chat_type })
                     .then(res => {
-                        console.log(res)
+                        this.listItems = Object.assign([],res.data.data.chats_list)
+                        this.unread_count[this.chat_type] = res.data.data.unread_count;
                         this.$store.commit('is_loader', false);
                     }).catch(e => {
                         this.$toast.error(e.response.message ?? e.response.data.message);

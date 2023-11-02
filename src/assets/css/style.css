@@ -2018,7 +2018,7 @@ padding-left: 0px;
 }
 
 
-.chat-user-btn .thm-heading::before{
+/* .chat-user-btn .thm-heading::before{
 	content: '';
 	position: absolute;
 	width: 9px;
@@ -2035,7 +2035,7 @@ padding-left: 0px;
 
 .user-active.chat-user-btn .thm-heading::before{
 	background-color: var(--success-color);
-}
+} */
 
 
 .user-item-active{

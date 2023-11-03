@@ -2852,3 +2852,20 @@ border: 1.5px solid var(--border-color) !important;
     display: block;
     max-width: 100px;
 }
+
+.tab-pane .borad-inner-body{
+	margin-top: 0px;
+	}
+.tab-pane .borad-inner-body .operator-table-sec{
+margin-top: 0px;
+}
+.tab-pane .borad-inner-body-sec {
+    margin-left: 0px;
+}
+.tab-pane .operator-table-sec {
+    margin: 0px -18px;
+}
+
+.add-messag-header::before {
+    display: none;
+}

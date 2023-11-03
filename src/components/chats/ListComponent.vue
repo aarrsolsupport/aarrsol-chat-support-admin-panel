@@ -385,7 +385,17 @@
             getChatsMessages(item) {
                 this.current_chat = Object.assign({}, item)
                 console.log(this.current_chat)
-                this.showChat = 1
+                // this.$store.commit('is_loader', true);
+                // axios.post('/get-chat-messages', { room_id: this.current_chat.id })
+                //     .then(res => {
+                //         this.showChat = 1
+                //         // this.listItems = Object.assign([],res.data.data.chats_list)
+                //         // this.unread_count[this.chat_type] = res.data.data.unread_count;
+                //         this.$store.commit('is_loader', false);
+                //     }).catch(e => {
+                //         this.$toast.error(e.response.message ?? e.response.data.message);
+                //         this.$store.commit('is_loader', false);
+                //     })
             },
             getChatsList() {
                 this.$store.commit('is_loader', true);

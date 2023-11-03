@@ -596,24 +596,4 @@ export default {
     display: flex;
     justify-content: center;
 }
-
-.operator-tab-item-one {
-    padding: 0px;
-}
-
-.operator-tab-item-one .borad-inner-body {
-    margin-top: 0px;
-}
-
-.operator-tab-item-one .borad-inner-body .operator-table-sec {
-    margin-top: 0px;
-}
-
-.operator-tab-item-one .operator-table-sec {
-    margin: 0px -18px;
-}
-
-.add-messag-header::before {
-    display: none;
-}
 </style>

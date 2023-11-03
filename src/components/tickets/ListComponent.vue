@@ -72,7 +72,7 @@
                                         <h2>{{ item.operator_user?.userid || '' }}</h2>
                                     </td>
                                     <td v-if="authData.role_id == 3">
-                                        <h2>{{ item.agent_user?.userid || '' }}</h2>
+                                        <h2>{{ item.added_by_user?.userid || '' }}</h2>
                                     </td>
                                     <td v-if="authData.role_id == 1 || authData.role_id == 2">
                                         <h2>{{ item.whitelabel_user?.userid || ''  }}</h2>

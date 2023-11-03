@@ -1,5 +1,8 @@
 import moment from 'moment';
 const filters = {
+  messageDateTimeFormat(datetime) {
+    return moment.unix(datetime).format('DD/MM/YYYY hh:mm A');
+  },
   localDateTimeFormat(datetime) {
     return moment(datetime).format('DD MMM YYYY h:mmA');
   },

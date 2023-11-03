@@ -74,10 +74,10 @@
                         <!-- SCROLL PAGINATION *TO-DO* -->
                     </div>
                 </template>
-                <template>
+                <template v-else>
                     <div class="chat-heading">
                         <div class="thm-heading">
-                            <h2>Chats<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div>
+                            <h2>My Chats<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div>
                             </h2>
                         </div>
                     </div>
@@ -92,72 +92,22 @@
                         </div>
                         <div class="chat-user-sec">
                             <div class="chat-user-tab-sec">
-                                <div class="chat-user-item" @click="openHide()">
+                                <div v-for="(item,index) in filteredItems" :key="index" class="chat-user-item" @click="getChatsMessages(item)">
                                     <button class="chat-user-btn user-active">
                                         <div class="thm-heading">
-                                            <h2> Ayushmaster177</h2>
+                                            <h2> {{item.end_user_name}}</h2>
                                             <div class="dots">
                                                 <span class="dots-btn"></span>
                                                 <div class="user-active-con">
                                                     <div class="thm-heading">
-                                                        <p>Active</p>
+                                                        <p>Active *TO-DO*</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="dots">
+                                        <div class="dots" v-if="item.unread_message_count>0">
                                             <div class="user-status-active dots-btn">
-                                                <span>2</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="chat-user-item user-item-active" @click="openHide()">
-                                    <button class="chat-user-btn user-active">
-                                        <div class="thm-heading">
-                                            <h2> Designerhari</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Active</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots">
-                                            <div class="user-status-active dots-btn">
-                                                <span>2</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="chat-user-item" @click="openHide()">
-                                    <button class="chat-user-btn ">
-                                        <div class="thm-heading">
-                                            <h2> Uidesigner</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Inactive</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots">
-                                            <div class="user-status-active dots-btn">
-                                                <span>2</span>
+                                                <span> {{item.unread_message_count}}</span>
                                             </div>
                                             <div class="user-active-con">
                                                 <div class="thm-heading">
@@ -181,17 +131,17 @@
                                     <img src="@/assets/images/back-arrow.svg" alt="">
                                 </button>
                                 <div class="thm-heading">
-                                    <h4>Designerhari</h4>
-                                    <span>Online</span>
+                                    <h4>{{ current_chat.end_user_name }}</h4>
+                                    <span>Online *TO-DO*</span>
                                 </div>
                             </div>
                             <div class="Categories-btn">
-                                <button class="thm-btn danger-thm">End Chat </button>
-                                <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
-                                    data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas">Add
-                                    Ticket</button>
-
-
+                                <template v-if="authData.role_id == 4">
+                                    <button class="thm-btn danger-thm">End Chat </button>
+                                    <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
+                                        data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas">Add
+                                        Ticket</button>
+                                </template>
                                 <div class="more-action-sec">
                                     <button class="more-action-btn" data-bs-toggle="dropdown"><img
                                             src="@/assets/images/more-action.svg" alt=""></button>
@@ -207,76 +157,24 @@
                                         </li>
                                     </ul>
                                 </div>
-
                             </div>
-
                         </div>
                         <div class="messages-body-sec">
                             <div class="messages-list-sec">
-
-                                <div class="messages-item">
+                                <div class="messages-item" v-for="(mes,i) in messages" :key="i" :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages' ">
                                     <div class="messages-item-con">
                                         <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
+                                            <span class="message-time">{{ $filters.messageDateTimeFormat(mes.sent_at_timestamp) }}</span>
                                         </div>
                                         <div class="messages-item-content thm-heading">
-                                            <p>Hi,Welcome to Clicket support</p>
+                                            <p>{{ mes.message }}</p>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="messages-item outgoing-messages">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>There is Issue With Deposit.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="messages-item ">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>Watch this video</p>
-                                        </div>
-                                        <div class="video-sec">
+                                        <div v-if="mes.file_paths" class="video-sec todo border border-warning">
                                             <iframe width="420" height="240"
                                                 src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="messages-item outgoing-messages">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>How to Deposit</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="messages-item ">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>Reference site about Lorem Ipsum, giving information on its origins, as well
-                                                as <br>
-                                                a random Lipsum generator.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
                             </div>
                         </div>
                         <div class="messages-footer-sec">
@@ -385,17 +283,18 @@
             getChatsMessages(item) {
                 this.current_chat = Object.assign({}, item)
                 console.log(this.current_chat)
-                // this.$store.commit('is_loader', true);
-                // axios.post('/get-chat-messages', { room_id: this.current_chat.id })
-                //     .then(res => {
-                //         this.showChat = 1
-                //         // this.listItems = Object.assign([],res.data.data.chats_list)
+                this.$store.commit('is_loader', true);
+                axios.post('/get-chat-messages', { room_id: this.current_chat.chat_room_id })
+                    .then(res => {
+                        console.log(['res',res])
+                        this.showChat = 1
+                        this.messages = Object.assign([],res.data.data.messages)
                 //         // this.unread_count[this.chat_type] = res.data.data.unread_count;
-                //         this.$store.commit('is_loader', false);
-                //     }).catch(e => {
-                //         this.$toast.error(e.response.message ?? e.response.data.message);
-                //         this.$store.commit('is_loader', false);
-                //     })
+                        this.$store.commit('is_loader', false);
+                    }).catch(e => {
+                        this.$toast.error(e.response.message ?? e.response.data.message);
+                        this.$store.commit('is_loader', false);
+                    })
             },
             getChatsList() {
                 this.$store.commit('is_loader', true);

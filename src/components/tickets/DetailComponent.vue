@@ -36,17 +36,17 @@
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item">
+                            <div class="tickets-modal-item" v-if="authData.role_id != 4">
                                 <div class="thm-heading">
                                     <span>Operator ID</span>
-                                    <h3 v-if = "item.operator_user">{{ item.operator_user.userid }}</h3>
+                                    <h3>{{ item.operator_user?.userid || '-' }}</h3>
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item">
+                            <div class="tickets-modal-item" v-if="authData.role_id != 4">
                                 <div class="thm-heading">
                                     <span>Whitelabel ID</span>
-                                    <h3 v-if = "item.whitelabel_user">{{ item.whitelabel_user.userid }}</h3>
+                                    <h3>{{ item.whitelabel_user?.userid || '-' }}</h3>
                                 </div>
                             </div>
 
@@ -55,17 +55,17 @@
                                     <span>Status</span>
                                     <div class="status-sec">
                                         <div class="entries-select ">
-                                            <div class="dropdown entries-select-dropdown" v-if="item.status">
+                                            <div class="dropdown entries-select-dropdown">
                                                 <!-- <div class="thm-heading">
                                                     <span :class="ticket_status[item.status].theme">{{ ticket_status[item.status].text }}</span>
                                                 </div> -->
                                                 <!-- *TO-DO* -->
                                                 <button class="thm-btn dropdown-toggle entries-select-list"
-                                                    :class="ticket_status[item.status].theme"
-                                                    type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                                    :class="ticket_status[item.status]?.theme" type="button"
+                                                    id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                                     aria-expanded="false">
                                                     <div class="thm-heading">
-                                                        <h2>{{ ticket_status[item.status].text }}</h2>
+                                                        <h2>{{ ticket_status[item.status]?.text }}</h2>
                                                     </div>
                                                 </button>
                                                 <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
@@ -90,6 +90,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="tickets-modal-item admin-checkbox admin-con"
+                                v-if="authData.role_id != 4 && authData.role_id != 1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Show to {{ authData.role_id == 3 ? 'Operator' : 'Admin' }}
+                                    </label>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="tickets-details-con">
@@ -115,14 +125,12 @@ export default {
     name: 'DetailComponent',
     props: ['item'],
     computed: {
-        ...mapState(['ticket_status']),
-        
-        
+        ...mapState(['ticket_status', 'authData']),
     },
     methods: {
         setDetails(item, status) {
-            if(item.status != status) {
-                this.$store.commit("singledata",{ id: item.id, status: status });
+            if (item.status != status) {
+                this.$store.commit("singledata", { id: item.id, status: status });
             }
         }
     }

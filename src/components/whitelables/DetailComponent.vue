@@ -91,12 +91,12 @@
                                         data-bs-target="#pills-whiltelable" type="button" role="tab"
                                         aria-controls="pills-whiltelable" aria-selected="false">Agents</button>
                                 </li>
-                                <li class="nav-item todo border border-warning" role="presentation">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="pills-themesettings-tab" data-bs-toggle="pill"
                                         data-bs-target="#pills-themesettings" type="button" role="tab"
                                         aria-controls="pills-themesettings" aria-selected="false">Theme Setting</button>
                                 </li>
-                                <li class="nav-item todo border border-warning" role="presentation">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="pills-tickets-tab" data-bs-toggle="pill"
                                         data-bs-target="#pills-tickets" type="button" role="tab"
                                         aria-controls="pills-tickets" aria-selected="false">Tickets</button>
@@ -183,6 +183,12 @@
 
                                 </div>
                             </div>
+                            <div class="tab-pane fade" id="pills-tickets" role="tabpanel"
+                                aria-labelledby="pills-tickets-tab">
+                                <div class="operator-tab-item-two">
+                                    <TicketComponent :userid='item_id' :hideSearch="1"></TicketComponent>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -195,7 +201,8 @@
 import AgentComponent from '../agents/ListComponent.vue';
 import ChatFlowComponent from '../chat-flow/ListComponent.vue';
 import WlFormComponent from './FormComponent.vue';
-import ThemeSettingListComponent from '@/components/themesetting/ListComponent.vue'
+import ThemeSettingListComponent from '@/components/themesetting/ListComponent.vue';
+import TicketComponent from '../tickets/ListComponent.vue';
 import axios from "axios"
 export default {
     name: 'DetailComponent',
@@ -203,7 +210,8 @@ export default {
         WlFormComponent,
         ChatFlowComponent,
         AgentComponent,
-        ThemeSettingListComponent
+        ThemeSettingListComponent,
+        TicketComponent
     },
     props: ['item_id'],
     data() {

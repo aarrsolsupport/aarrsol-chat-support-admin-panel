@@ -30,13 +30,13 @@
                                     <th>
                                         <h2> Issue ID</h2>
                                     </th>
-                                    <th v-if="authData.role_id == 1">
+                                    <th v-if="userData?.role_id == 1">
                                         <h2> Operator ID</h2>
                                     </th>
-                                    <th v-if="authData.role_id == 3">
+                                    <th v-if="userData?.role_id == 3">
                                         <h2> Agent ID</h2>
                                     </th>
-                                    <th v-if="authData.role_id == 1 || authData.role_id == 2">
+                                    <th v-if="userData?.role_id == 1 || userData?.role_id == 2">
                                         <h2> Whitelabel ID</h2>
                                     </th>
                                     <th>
@@ -68,13 +68,13 @@
                                     <td>
                                         <h2>{{ item.issue_description }}</h2>
                                     </td>
-                                    <td v-if="authData.role_id == 1">
+                                    <td v-if="userData?.role_id == 1">
                                         <h2>{{ item.operator_user?.userid || '' }}</h2>
                                     </td>
-                                    <td v-if="authData.role_id == 3">
+                                    <td v-if="userData?.role_id == 3">
                                         <h2>{{ item.added_by_user?.userid || '' }}</h2>
                                     </td>
-                                    <td v-if="authData.role_id == 1 || authData.role_id == 2">
+                                    <td v-if="userData?.role_id == 1 || userData?.role_id == 2">
                                         <h2>{{ item.whitelabel_user?.userid || ''  }}</h2>
                                     </td>
                                     <td>
@@ -154,12 +154,14 @@ export default {
         DetailComponent,
         UpdateComponent
     },
+    props: ['userid'],
     data() {
         return {
             resource: 'tickets',
 
             search: '',
             listItems: {},
+            userData: null,
 
             pagination_data: {
                 "from": 1,
@@ -198,7 +200,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['ticket_status', 'authData']),
+        ...mapState(['ticket_status']),
         filteredItems() {
             const filtered_data = this.listItems;
             if (this.search) {
@@ -229,6 +231,9 @@ export default {
                     url = '/' + this.resource + '/get-list?page=' + this.pagination_data.current_page;
                 }
                 url += '&per_page=' + this.pagination_data.per_page;
+                if(this.userid){
+                    url += `&userid=${this.userid}`
+                }
                 axios.get(url).then(res => {
                     if (res.data.error === true) {
                         this.$toast.error(res.data.message);
@@ -238,6 +243,7 @@ export default {
                         this.pagination_data.from = res.data.data.list_items.from;
                         this.pagination_data.to = res.data.data.list_items.to;
                         this.pagination_data.links = res.data.data.list_items.links;
+                        this.userData = res.data.data.user
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -254,6 +260,8 @@ export default {
                         this.$toast.error(res.data.message);
                     } else {
                         item.remarks = res.data.data.remarks;
+                        item.role_id = this.userData.role_id;
+                        item.user_id = this.userData.id;
                         this.item_details = item;
                     }
                     this.$store.commit('is_loader', false);

@@ -36,14 +36,14 @@
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item" v-if="authData.role_id != 4">
+                            <div class="tickets-modal-item" v-if="item.role_id != 4">
                                 <div class="thm-heading">
                                     <span>Operator ID</span>
                                     <h3>{{ item.operator_user?.userid || '-' }}</h3>
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item" v-if="authData.role_id != 4">
+                            <div class="tickets-modal-item" v-if="item.role_id == 2">
                                 <div class="thm-heading">
                                     <span>Whitelabel ID</span>
                                     <h3>{{ item.whitelabel_user?.userid || '-' }}</h3>
@@ -91,11 +91,12 @@
                                 </div>
                             </div>
                             <div class="tickets-modal-item admin-checkbox admin-con"
-                                v-if="authData.role_id != 4 && authData.role_id != 1">
+                                v-if="item.role_id != 4 && item.role_id != 1">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                                        :checked="checkScope" @click="updateScope">
                                     <label class="form-check-label" for="flexCheckDefault">
-                                        Show to {{ authData.role_id == 3 ? 'Operator' : 'Admin' }}
+                                        Show to {{ item.role_id == 3 ? 'Operator' : 'Admin' }}
                                     </label>
                                 </div>
                             </div>
@@ -120,18 +121,42 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import { mapState } from 'vuex';
 export default {
     name: 'DetailComponent',
     props: ['item'],
     computed: {
         ...mapState(['ticket_status', 'authData']),
+        checkScope() {
+            return this.item.scope == this.authData.parent_id
+        }
     },
     methods: {
         setDetails(item, status) {
             if (item.status != status) {
                 this.$store.commit("singledata", { id: item.id, status: status });
             }
+        },
+        updateScope() {
+            this.$store.commit('is_loader', true);
+            const data = {
+                "ticket_id": this.item.id,
+                "scope": this.checkScope ? 0 : 1
+            }
+            axios.post("/tickets/update-scope", data ).then(res => {
+                if (res.data.error === true) {
+                    this.$toast.error(res.data.message);
+                } else {
+                    this.item.remarks.push(res.data.data.remark);
+                    this.item.scope = this.checkScope ? this.item.user_id : this.authData.parent_id;
+                    this.$toast.success(res.data.message);
+                }
+                this.$store.commit('is_loader', false);
+            }).catch(e => {
+                this.$toast.error(e.response.data.message);
+                this.$store.commit('is_loader', false);
+            })
         }
     }
 

@@ -597,11 +597,18 @@ export default {
                     form_data.append("template_id", this.template_id ? this.template_id : 0)
                     form_data.append("form_type", type)
                     form_data.append("parent_node", JSON.stringify(this.parent_node_data))
+                    for (let i = 0; i < this.uploaded_files.length; i++) {
+                        form_data.append('file[]', this.uploaded_files[i]);
+                    }
                     form_data.append("child_node", JSON.stringify({
-                        files: this.uploaded_files, // *TO-DO*
                         message: this.new_message,
                         id: this.edit_node_id
                     }))
+                    
+                for (const [key, value] of form_data) {
+                    console.log(key, value)
+                }
+                return
                     axios.post('/chat-flow/update-default', form_data)
                         .then(res => {
                             this.$store.commit('is_loader', false);

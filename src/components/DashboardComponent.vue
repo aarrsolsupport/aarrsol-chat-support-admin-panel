@@ -3,73 +3,17 @@
       <div class="borad-inner-body">
          <div class="dashboard-list-sec">
             <div class="row">
-                  <h1 class="text-primary">*TO-DO*</h1>
-               <div class="col-lg-3 col-md-6 col-sm-6">
+               <div class="col-lg-3 col-md-6 col-sm-6" v-for="(val, attr) in statistics" :key="attr">
                   <div class="dashboard-list-con">
                      <div class="dashboard-item">
                         <div class="thm-heading">
-                           <h4>65</h4>
-                           <span>Total Operator</span>
+                           <h4>{{ val }}</h4>
+                           <span class="text-uppercase">{{ attr.replace('_', ' ') }}</span>
                         </div>
                      </div>
                      <div class="ashboard-item-img">
-                        <img src="@/assets/images/total-operator-icon.svg" alt="">
-                     </div>
-                  </div>
-               </div>
-
-               <div class="col-lg-3 col-md-6 col-sm-6">
-                  <div class="dashboard-list-con">
-                     <div class="dashboard-item">
-                        <div class="thm-heading">
-                           <h4>50</h4>
-                           <span>Active Operator</span>
-                        </div>
-                     </div>
-                     <div class="ashboard-item-img">
-                        <img src="@/assets/images/total-operator-icon.svg" alt="">
-                     </div>
-                  </div>
-               </div>
-
-               <div class="col-lg-3 col-md-6 col-sm-6">
-                  <div class="dashboard-list-con">
-                     <div class="dashboard-item">
-                        <div class="thm-heading">
-                           <h4>125</h4>
-                           <span>Resolved Tickets</span>
-                        </div>
-                     </div>
-                     <div class="ashboard-item-img">
-                        <img src="@/assets/images/resolved-tickets-icon.svg" alt="">
-                     </div>
-                  </div>
-               </div>
-
-               <div class="col-lg-3 col-md-6 col-sm-6">
-                  <div class="dashboard-list-con">
-                     <div class="dashboard-item">
-                        <div class="thm-heading">
-                           <h4>108</h4>
-                           <span>Unresolved Tickets</span>
-                        </div>
-                     </div>
-                     <div class="ashboard-item-img">
-                        <img src="@/assets/images/resolved-tickets-icon.svg" alt="">
-                     </div>
-                  </div>
-               </div>
-
-               <div class="col-lg-3 col-md-6 col-sm-6">
-                  <div class="dashboard-list-con">
-                     <div class="dashboard-item">
-                        <div class="thm-heading">
-                           <h4>20</h4>
-                           <span>Ticket to Review</span>
-                        </div>
-                     </div>
-                     <div class="ashboard-item-img">
-                        <img src="@/assets/images/resolved-tickets-icon.svg" alt="">
+                        <img v-if="attr.includes('tickets')" src="@/assets/images/resolved-tickets-icon.svg" alt="">
+                        <img v-else src="@/assets/images/total-operator-icon.svg" alt="">
                      </div>
                   </div>
                </div>
@@ -79,7 +23,32 @@
    </div>
 </template>
 <script>
+import axios from "axios";
    export default {
-      name: 'DashboardComponent'
+      name: 'DashboardComponent',
+      data() {
+         return {
+            statistics: []
+         }
+      },
+      mounted() {
+         this.getStatistics()
+      },
+      methods: {
+         getStatistics() {
+            this.$store.commit('is_loader', true);
+            axios.get('/get-stats').then(res => {
+                if (res.data.error === true) {
+                    this.$toast.error(res.data.message);
+                } else {
+                  this.statistics = res.data.data.stats
+                }
+                this.$store.commit('is_loader', false);
+            }).catch(e => {
+                this.$toast.error(e.response.data.message);
+                this.$store.commit('is_loader', false);
+            })
+         }
+      }
    }
 </script>

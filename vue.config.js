@@ -5,5 +5,6 @@ module.exports = defineConfig({
     host: 'chat-system-admin.dll',
     port: 8080,
     https: false
-  }
+  },
+  lintOnSave: false
 })

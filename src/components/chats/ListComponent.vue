@@ -10,7 +10,8 @@
                                 aria-selected="true">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Open Chats<div v-if="unread_count[1]"> ({{ unread_count[1] }})</div></h2>
+                                        <h2>Open Chats<div v-if="unread_count[1]"> ({{ unread_count[1] }})</div>
+                                        </h2>
                                     </div>
                                 </div>
                             </button>
@@ -21,7 +22,8 @@
                                 aria-selected="false" tabindex="-1">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Closed Chats<div v-if="unread_count[2]"> ({{ unread_count[2] }})</div></h2>
+                                        <h2>Closed Chats<div v-if="unread_count[2]"> ({{ unread_count[2] }})</div>
+                                        </h2>
                                     </div>
                                 </div>
                             </button>
@@ -42,10 +44,11 @@
                                 </div>
                                 <div class="chat-user-sec">
                                     <div class="chat-user-tab-sec">
-                                        <div v-for="(item,index) in filteredItems" :key="index" class="chat-user-item" @click="getChatsMessages(item)">
+                                        <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
+                                            @click="getChatsMessages(item)">
                                             <button class="chat-user-btn user-active">
                                                 <div class="thm-heading">
-                                                    <h2> {{item.end_user_name}}</h2>
+                                                    <h2> {{ item.end_user_name }}</h2>
                                                     <div class="dots">
                                                         <span class="dots-btn"></span>
                                                         <div class="user-active-con">
@@ -55,9 +58,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="dots" v-if="item.unread_message_count>0">
+                                                <div class="dots" v-if="item.unread_message_count > 0">
                                                     <div class="user-status-active dots-btn">
-                                                        <span> {{item.unread_message_count}}</span>
+                                                        <span> {{ item.unread_message_count }}</span>
                                                     </div>
                                                     <div class="user-active-con">
                                                         <div class="thm-heading">
@@ -92,10 +95,11 @@
                         </div>
                         <div class="chat-user-sec">
                             <div class="chat-user-tab-sec">
-                                <div v-for="(item,index) in filteredItems" :key="index" class="chat-user-item" @click="getChatsMessages(item)">
+                                <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
+                                    @click="getChatsMessages(item)">
                                     <button class="chat-user-btn user-active">
                                         <div class="thm-heading">
-                                            <h2> {{item.end_user_name}}</h2>
+                                            <h2> {{ item.end_user_name }}</h2>
                                             <div class="dots">
                                                 <span class="dots-btn"></span>
                                                 <div class="user-active-con">
@@ -105,9 +109,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="dots" v-if="item.unread_message_count>0">
+                                        <div class="dots" v-if="item.unread_message_count > 0">
                                             <div class="user-status-active dots-btn">
-                                                <span> {{item.unread_message_count}}</span>
+                                                <span> {{ item.unread_message_count }}</span>
                                             </div>
                                             <div class="user-active-con">
                                                 <div class="thm-heading">
@@ -161,10 +165,12 @@
                         </div>
                         <div class="messages-body-sec">
                             <div class="messages-list-sec">
-                                <div class="messages-item" v-for="(mes,i) in messages" :key="i" :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages' ">
+                                <div class="messages-item" v-for="(mes, i) in messages" :key="i"
+                                    :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
                                     <div class="messages-item-con">
                                         <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">{{ $filters.messageDateTimeFormat(mes.sent_at_timestamp) }}</span>
+                                            <span class="message-time">{{
+                                                $filters.messageDateTimeFormat(mes.sent_at_timestamp) }}</span>
                                         </div>
                                         <div class="messages-item-content thm-heading">
                                             <p>{{ mes.message }}</p>
@@ -180,33 +186,22 @@
                         <div class="messages-footer-sec">
                             <div class="auto-message-slider">
                                 <div class="auto-message-slider-con reason-sec">
-                                    <div class="owl-carousel owl-theme" id="auto-message-slider">
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#"
-                                                    class="thm-btn thm-border-btn">Welcome</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"> <a href="#" class="thm-btn thm-border-btn">Hello!
-                                                    How May i help you</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#" class="thm-btn thm-border-btn">Thank
-                                                    You!</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#"
-                                                    class="thm-btn thm-border-btn">Welcome</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"> <a href="#" class="thm-btn thm-border-btn">Hello!
-                                                    How May i help you</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#" class="thm-btn thm-border-btn">Thank
-                                                    You!</a></div>
-                                        </div>
-
-                                    </div>
+                                    <!-- <div class="owl-carousel owl-theme" id="auto-message-slider"> -->
+                                    <Carousel v-bind="settings" :breakpoints="breakpoints" class="w-100 owl-theme" >
+                                        <Slide v-for="(slide, i) in filteredSuggestions" :key="i">
+                                            <div class="item">
+                                                <div class="auto-message-con">
+                                                    <a href="#" class="thm-btn thm-border-btn">
+                                                        {{ (slide.description.length < 20) ? slide.description : slide.description.slice(0, 20) + "..." }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </Slide>
+                                        <template #addons>
+                                            <Navigation />
+                                        </template>
+                                    </Carousel>
+                                    <!-- </div> -->
                                 </div>
                             </div>
                             <div class="messages-footer-con pt-0">
@@ -243,71 +238,107 @@
         </div>
     </div>
 </template>
+<script setup>
+import 'vue3-carousel/dist/carousel.css'
+import { Carousel, Slide, Navigation } from 'vue3-carousel'
+</script>
 <script>
-    import axios from "axios";
-   import { mapState } from 'vuex';
-    export default {
-        name: 'ListComponent',
-        computed: {
-            ...mapState(['authData']),
-            filteredItems() { 
-                const filtered_data = this.listItems;
-                if (this.search) {
-                    return filtered_data.filter(item => item.end_user_name.toLowerCase().includes(this.search.toLowerCase())  );
-                }
-                return filtered_data;
+import axios from "axios";
+import { mapState } from 'vuex';
+export default {
+    name: 'ListComponent',
+    computed: {
+        ...mapState(['authData']),
+        filteredItems() {
+            const filtered_data = this.listItems;
+            if (this.search) {
+                return filtered_data.filter(item => item.end_user_name.toLowerCase().includes(this.search.toLowerCase()));
             }
+            return filtered_data;
         },
-        data() {
-            return {
-                my_chats: true,
-                chat_type: 0,
-                unread_count: {0:0, 1:0, 2:0},
-                search: '',
-                listItems: {},
-                showChat: 0,
-                current_chat: {}
+        filteredSuggestions() {
+            const filtered_data = this.suggestions;
+            if (this.input) {
+                return filtered_data.filter(item => item.description.toLowerCase().includes(this.input.toLowerCase()));
             }
+            return filtered_data;
         },
-        watch: {
-            chat_type(){
-                this.getChatsList()
-            }
-        },
-        mounted() {
-            if(this.authData && this.authData.role_id == 4 ) {
-                this.chat_type = 1
-            }
-        },
-        methods: {
-            getChatsMessages(item) {
-                this.current_chat = Object.assign({}, item)
-                console.log(this.current_chat)
-                this.$store.commit('is_loader', true);
-                axios.post('/get-chat-messages', { room_id: this.current_chat.chat_room_id })
-                    .then(res => {
-                        console.log(['res',res])
-                        this.showChat = 1
-                        this.messages = Object.assign([],res.data.data.messages)
-                //         // this.unread_count[this.chat_type] = res.data.data.unread_count;
-                        this.$store.commit('is_loader', false);
-                    }).catch(e => {
-                        this.$toast.error(e.response.message ?? e.response.data.message);
-                        this.$store.commit('is_loader', false);
-                    })
+    },
+    data() {
+        return {
+            my_chats: true,
+            chat_type: 0,
+            unread_count: { 0: 0, 1: 0, 2: 0 },
+            search: '',
+            suggestions: {},
+            listItems: {},
+            showChat: 0,
+            current_chat: {},
+            // carousel settings
+            settings: {
+                itemsToShow: 1,
+                snapAlign: 'center',
             },
-            getChatsList() {
-                this.$store.commit('is_loader', true);
-                axios.post('/get-chats-list', { type: this.chat_type })
-                    .then(res => {
-                        this.listItems = Object.assign([],res.data.data.chats_list)
-                        this.unread_count[this.chat_type] = res.data.data.unread_count;
-                        this.$store.commit('is_loader', false);
-                    }).catch(e => {
-                        this.$toast.error(e.response.message ?? e.response.data.message);
-                        this.$store.commit('is_loader', false);
-                    })
+            // breakpoints are mobile first
+            // any settings not specified will fallback to the carousel settings
+            breakpoints: {
+                // 700px and up
+                700: {
+                    itemsToShow: 3.5,
+                    snapAlign: 'center',
+                },
+                // 1024 and up
+                1024: {
+                    itemsToShow: 5.5,
+                    snapAlign: 'start',
+                },
+            },
+        }
+    },
+    watch: {
+        chat_type() {
+            this.getChatsList()
+        }
+    },
+    mounted() {
+        if (this.authData && this.authData.role_id == 4) {
+            this.chat_type = 1
+        }
+    },
+    methods: {
+        getChatsMessages(item) {
+            this.current_chat = Object.assign({}, item)
+            console.log(this.current_chat)
+            this.$store.commit('is_loader', true);
+            axios.post('/get-chat-messages', { room_id: this.current_chat.chat_room_id })
+                .then(res => {
+                    console.log(['res', res])
+                    this.showChat = 1
+                    this.messages = Object.assign([], res.data.data.messages)
+                    //         // this.unread_count[this.chat_type] = res.data.data.unread_count;
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        },
+        getChatsList() {
+            this.$store.commit('is_loader', true);
+            let body = { type: this.chat_type }
+            if (this.authData && this.authData.role_id == 4) {
+                body.auto_suggestions = true
             }
-        }   
+            axios.post('/get-chats-list', body)
+                .then(res => {
+                    this.suggestions = Object.assign([], res.data.data.auto_suggestions)
+                    this.listItems = Object.assign([], res.data.data.chats_list)
+                    this.unread_count[this.chat_type] = res.data.data.unread_count;
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        }
     }
+}
 </script>

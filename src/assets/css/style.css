@@ -2869,3 +2869,68 @@ margin-top: 0px;
 .add-messag-header::before {
     display: none;
 }
+.carousel__pagination li button{
+	width: 32px;
+	height: 6px ;
+	background-color: var(--black-theme-300);
+	margin: 5px;
+	padding: 0;
+  }
+  
+  .carousel__pagination li button.carousel__pagination-button--active{
+	background-color:  var(--primary-color-dark);
+  }
+  
+  .carousel__pagination li button::after{
+  display: none;
+  }
+  
+  .carousel__next{
+	width: 48px !important;
+	height: 56px !important;
+	border-radius: 0px 16px 16px 0px !important;
+	background: var(--black-theme-bg)!important;
+	box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.05);
+  }
+  
+  .carousel__prev{
+	width: 48px !important;
+	height: 56px !important;
+	border-radius: 16px 0px  0px 16px !important;
+	background: var(--black-theme-bg)!important;
+	box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.05);
+  }
+  
+  .carousel__next {
+	right: -20px !important;;
+  }
+  .carousel__prev {
+	left:-20px !important;
+  }
+  .carousel__next svg path{
+	opacity: 0;
+  }
+  .carousel__prev svg path{
+	opacity: 0;
+  }
+  
+  .carousel__next svg {
+	background-image: url(../images/arrow-slider-right.svg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: #fff;
+  }
+  .carousel__prev svg {
+	background-image: url(../images/arrow-slider-left.svg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: #fff;
+  }
+  
+  .carousel__slide {
+    margin: 10px 0px !important;
+}
+
+.carousel__track {
+    margin-left: 20px !important;
+}

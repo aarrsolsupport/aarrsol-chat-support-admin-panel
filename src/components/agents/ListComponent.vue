@@ -250,10 +250,3 @@ export default {
     },
 }
 </script>
-<style scoped>.operator-tab-item-two .borad-inner-body {
-    margin-top: 0px;
-}
-
-.operator-tab-item-two .borad-inner-body .operator-table-sec {
-    margin-top: 0px;
-}</style>

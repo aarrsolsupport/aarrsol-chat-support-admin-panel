@@ -1,7 +1,8 @@
 import moment from 'moment';
+import 'moment-timezone';
 const filters = {
   localDateTimeFormat(datetime) {
-    return moment(datetime).format('DD MMM YYYY h:mmA');
+    return moment.utc(datetime).tz('Asia/Kolkata').format('DD MMM YYYY h:mmA');
   },
   getTicketStatus(id) {
     switch(id) {

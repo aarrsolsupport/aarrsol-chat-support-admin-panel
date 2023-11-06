@@ -17,6 +17,7 @@
     "core-js": "^3.8.3",
     "jquery": "^3.7.1",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "sass": "^1.67.0",
     "sass-loader": "^13.3.2",
     "vue": "^3.2.13",

@@ -127,9 +127,9 @@ export default {
     name: 'DetailComponent',
     props: ['item'],
     computed: {
-        ...mapState(['ticket_status', 'authData']),
+        ...mapState(['ticket_status']),
         checkScope() {
-            return this.item.scope == this.authData.parent_id
+            return this.item.scope == this.item.parent_id
         }
     },
     methods: {
@@ -149,7 +149,7 @@ export default {
                     this.$toast.error(res.data.message);
                 } else {
                     this.item.remarks.push(res.data.data.remark);
-                    this.item.scope = this.checkScope ? this.item.user_id : this.authData.parent_id;
+                    this.item.scope = this.checkScope ? this.item.user_id : this.item.parent_id;
                     this.$toast.success(res.data.message);
                 }
                 this.$store.commit('is_loader', false);

@@ -262,6 +262,7 @@ export default {
                         item.remarks = res.data.data.remarks;
                         item.role_id = this.userData.role_id;
                         item.user_id = this.userData.id;
+                        item.parent_id = this.userData.parent_id;
                         this.item_details = item;
                     }
                     this.$store.commit('is_loader', false);

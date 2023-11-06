@@ -20,8 +20,10 @@
                                             data-bs-target="#languagemodal">Add More</button>
                                         <div class="info-sec">
                                             <button class="info-btn bg-transparent" data-bs-toggle="dropdown"
-                                                aria-expanded="true"><img src="@/assets/images/info-icon.svg" alt=""></button>
-                                            <div class="info-details-con dropdown-menu  " data-popper-placement="bottom-end">
+                                                aria-expanded="true"><img src="@/assets/images/info-icon.svg"
+                                                    alt=""></button>
+                                            <div class="info-details-con dropdown-menu  "
+                                                data-popper-placement="bottom-end">
                                                 <div class="thm-heading">
                                                     <p>You can add template <br> based on languages.</p>
                                                 </div>
@@ -46,14 +48,15 @@
                                         <template v-if="!template_id">
                                             <div class="chat-flow-borad-list-con">
                                                 <div class="chat-flow-item">
-                                                    <button class="chat-flow-btn" @click="setupForm(1)" data-bs-toggle="modal"
-                                                        data-bs-target="#exampleModal">
+                                                    <button class="chat-flow-btn" @click="setupForm(1)"
+                                                        data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                         <div class="chat-icon">
                                                             <img src="@/assets/images/add-message-icon.svg" alt="">
                                                         </div>
                                                         <div class="chat-flow-con thm-heading  ">
                                                             <span class="thm-btn">Add Message</span>
-                                                            <p>Add a message to be sent to the user by the Bot <br> (Can include
+                                                            <p>Add a message to be sent to the user by the Bot <br> (Can
+                                                                include
                                                                 Text
                                                                 message /
                                                                 File or Both) </p>
@@ -108,7 +111,10 @@
                                                                             class="dropdown-menu dropdown-menu-end more-action-list">
                                                                             <li>
                                                                                 <button class="dropdown-item more-list-btn"
-                                                                                    type="button" @click="setupEditForm(data)">
+                                                                                    type="button"
+                                                                                    @click="setupEditForm(data)"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#editModal">
                                                                                     <div class="edit-icon"><img
                                                                                             src="@/assets/images/edit-icon.svg"
                                                                                             alt="">
@@ -126,8 +132,12 @@
                                                         <div class="assistant-btn-sec show"
                                                             v-if="showMessageOption == data.node_id && data.children.length == 0">
                                                             <div class="assistant-btn-con">
-                                                                <button class="thm-btn" @click="setupForm(1, data)" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Message</button>
-                                                                <button class="thm-btn" @click="setupForm(2, data)" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Option</button>
+                                                                <button class="thm-btn" @click="setupForm(1, data)"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModal">Add Message</button>
+                                                                <button class="thm-btn" @click="setupForm(2, data)"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModal">Add Option</button>
                                                             </div>
                                                             <div>
                                                                 <input type="checkbox" :checked="data.next == 2"
@@ -147,7 +157,8 @@
                                                         <div class="add-messag-header add-operator-header operator-offcanvas-sec"
                                                             style="content: none;">
                                                             <div class="thm-heading">
-                                                                <h4 v-text="showForm == 1 ? 'Add Message' : 'Add Option'"></h4>
+                                                                <h4 v-text="showForm == 1 ? 'Add Message' : 'Add Option'">
+                                                                </h4>
                                                             </div>
                                                             <button type="button" class="btn-close text-reset"
                                                                 data-bs-dismiss="modal" aria-label="Close"
@@ -169,13 +180,14 @@
                                                                                 alt=""></span>
                                                                         Choose
                                                                         File</label>
-                                                                    <input class="form-control profit-input d-none" type="file"
-                                                                        name="file" multiple id="file" @change="uploadFiles">
+                                                                    <input class="form-control profit-input d-none"
+                                                                        type="file" name="file" multiple id="file"
+                                                                        @change="uploadFiles">
                                                                 </div>
                                                                 <div id="fileList" class="fileList-con">
                                                                     <ul v-if="uploaded_files.length">
-                                                                        <li v-for="(file, index) in uploaded_files" :key="index"
-                                                                            :id="'n_file' + index">
+                                                                        <li v-for="(file, index) in uploaded_files"
+                                                                            :key="index" :id="'n_file' + index">
                                                                             {{ file.name }}
                                                                             <span class="list-cross"
                                                                                 @click="removeFile(index)"><img
@@ -190,7 +202,8 @@
                                                                     <button class="thm-btn thm-border-btn"
                                                                         data-bs-dismiss="modal" aria-label="Close"
                                                                         @click="closeForm" ref="msgOptnBtn">Close</button>
-                                                                    <button class="thm-btn" @click="saveForm(1)">Save</button>
+                                                                    <button class="thm-btn"
+                                                                        @click="saveForm(1)">Save</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -223,7 +236,8 @@
                                                                     <button class="thm-btn thm-border-btn"
                                                                         data-bs-dismiss="modal" aria-label="Close"
                                                                         @click="closeForm" ref="msgOptnBtn">Close</button>
-                                                                    <button class="thm-btn" @click="saveForm(2)">Save</button>
+                                                                    <button class="thm-btn"
+                                                                        @click="saveForm(2)">Save</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -262,13 +276,64 @@
                                 </div>
                                 <div class="operator-item">
                                     <label for="operator" class="form-label">Title</label>
-                                    <input type="text" class="form-control " placeholder="Enter Here" aria-autocomplete="list"
-                                        v-model="new_template.template_name">
+                                    <input type="text" class="form-control " placeholder="Enter Here"
+                                        aria-autocomplete="list" v-model="new_template.template_name">
                                 </div>
                                 <div class="operator-offcanvas-footer pb-0">
                                     <button class="thm-btn thm-border-btn grey-bg border-0" data-bs-dismiss="modal"
                                         ref='closeLangBtn'>Back</button>
                                     <button class="thm-btn" @click="saveTemplateDetails">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal add-option-sec" tabindex="-1" id="editModal" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="add-messag-con">
+                        <div class="add-messag-header add-operator-header operator-offcanvas-sec" style="content: none;">
+                            <div class="thm-heading">
+                                <h4>Edit Message</h4>
+                            </div>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="add-messag-body">
+                            <div v-if="showError" class="text-danger">{{ showError }}</div>
+                            <div class="operator-item">
+                                <label for="operator" class="form-label">Message</label>
+                                <textarea type="text" class="form-control" placeholder="Enter Message" rows="3"
+                                    v-model="editMessegeData.label"></textarea>
+                            </div>
+                            <div class="operator-item">
+                                <label for="operator" class="form-label">Upload File</label>
+                                <div class="file-upload-sec">
+                                    <label for="file" class="file-upload"> <span><img src="@/assets/images/gallery-add.svg"
+                                                alt=""></span>
+                                        Choose
+                                        File</label>
+                                    <input class="form-control profit-input d-none" type="file" name="file" multiple
+                                        id="file" @change="uploadFiles">
+                                </div>
+                                <div id="fileList" class="fileList-con">
+                                    <ul v-if="uploaded_files.length">
+                                        <li v-for="(file, index) in uploaded_files" :key="index" :id="'n_file' + index">
+                                            {{ file.name }}
+                                            <span class="list-cross" @click="removeFile(index)"><img
+                                                    src="@/assets/images/cross-icon.svg" alt=""></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="add-messag-footer">
+                                <div class="operator-offcanvas-footer ">
+                                    <button class="thm-btn thm-border-btn" data-bs-dismiss="modal" aria-label="Close"
+                                        @click="closeForm" ref="msgOptnBtn">Close</button>
+                                    <button class="thm-btn" @click="updateMessage()">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -353,7 +418,10 @@ export default {
             },
             new_template: {
                 language_id: 0
-            }
+            },
+            editMessegeData: {},
+            removedMedia: null,
+            allowedFileTypes: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg']
         }
     },
     computed: {
@@ -429,23 +497,25 @@ export default {
             // this.showForm = 0;
         },
         setupEditForm(data) {
-            // *TO-DO*
+            console.log(data);
             if (data) {
                 this.showError = '';
-                switch (data.node_type) {
-                    case 'C':
-                        this.showForm = 2;
-                        // this.new_option = ''
-                        // this.categories_data = [];
-                        console.log([data, this.showForm]);
-                        break;
-                    case 'M':
-                        this.showForm = 1;
-                        this.new_message = data.label;
-                        this.edit_node_id = data.id;
-                        // this.uploaded_files = {}; // *TO-DO*
-                        break;
-                }
+                this.editMessegeData = data
+
+                // switch (data.node_type) {
+                //     case 'C':
+                //         this.showForm = 2;
+                //         // this.new_option = ''
+                //         // this.categories_data = [];
+                //         this.editMessegeData = data
+                //         break;
+                //     case 'M':
+                //         this.showForm = 1;
+                //         this.new_message = data.label;
+                //         this.edit_node_id = data.id;
+                //         // this.uploaded_files = {}; // *TO-DO*
+                //         break;
+                // }
             }
         },
         setupForm(type, data = {}) {
@@ -469,15 +539,22 @@ export default {
             }
         },
         uploadFiles(event) {
-            // if(files[i].size >= 2000000){
-            //     this.$toast.error('file size should be less than 2 MB');
-            // }
-            // if(!this.allowedFileTypes.includes(files[i].type)){
-            //     this.$toast.error('file type should be jpeg, png, jpg, gif, svg');
-            // }
-            // *TO-DO*
-            this.uploaded_files = Array.from(event.target.files);
-            // console.log(this.uploadFiles)
+            this.uploaded_files = [];
+            let mediaFiles = event.target.files;
+            for (let i = 0; i < mediaFiles.length; i++) {
+                if (mediaFiles[i].size >= 2000000) {
+                    this.$toast.error('file size should be less than 2 MB');
+                    this.uploaded_files = [];
+                    return
+                }
+                if (!this.allowedFileTypes.includes(mediaFiles[i].type)) {
+                    this.$toast.error('file type should be jpeg, png, jpg, gif, svg');
+                    this.uploaded_files = [];
+                    return
+                }
+                this.uploaded_files.push(mediaFiles[i]);
+            }
+            console.log(this.uploaded_files);
         },
         removeFile(index) {
             this.uploaded_files.splice(index, 1)
@@ -547,7 +624,7 @@ export default {
                             }
                             this.closeForm()
                         }).catch(e => {
-                        console.error(e)
+                            console.error(e)
                             // this.$toast.error(e.response.message ?? e.response.data.message);
                             this.$store.commit('is_loader', false);
                         })
@@ -586,6 +663,52 @@ export default {
                     })
                 }
             }
+        },
+        updateMessage() {
+            // Edit MESSAGE
+            if (!(this.editMessegeData.label || this.uploaded_files.length)) {
+                this.showError = 'Please add message or upload a file!'
+            } else {
+                this.showError = ''
+                // this.$store.commit('is_loader', true);
+                const form_data = new FormData();
+                form_data.append("template_id", this.template_id ? this.template_id : 0);
+                form_data.append("message", this.editMessegeData.label);
+                form_data.append("deleted_media", this.removedMedia);
+                form_data.append("media", this.uploaded_files);
+
+                for (const [key, value] of form_data) {
+                    console.log(key, value)
+                }
+
+                // axios.post('/chat-flow/update-default', form_data)
+                //     .then(res => {
+                //         this.$store.commit('is_loader', false);
+                //         console.log([
+                //             !this.parent_node_data.id,
+                //             this.edit_node_id,
+                //             res
+                //         ])
+                //         if (!this.parent_node_data.id) {
+                //             if (res.data.data.template_id) {
+                //                 this.template_id = res.data.data.template_id
+                //                 this.resetTreeData(res.data.data.flow)
+                //             }
+                //         } else {
+                //             if (this.edit_node_id) {
+                //                 // TODO find Node & Update text
+                //             } else {
+                //                 this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
+                //             }
+                //         }
+                //         this.closeForm()
+                //     }).catch(e => {
+                //         console.error(e)
+                //         // this.$toast.error(e.response.message ?? e.response.data.message);
+                //         this.$store.commit('is_loader', false);
+                //     })
+            }
+
         }
     }
 }

@@ -20,7 +20,7 @@
     </div>
     <div class="entries-pages">
         <div class="thm-heading">
-            <h2>Showing {{ data.from }} to {{ data.to }} of {{ data.total }} entries</h2>
+            <h2>Showing {{ data.from ?? 0 }} to {{ data.to ?? 0 }} of {{ data.total ?? 0 }} entries</h2>
         </div>
         <div class="entries-pagination">
             <nav aria-label="Page navigation example">

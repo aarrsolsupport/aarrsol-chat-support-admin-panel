@@ -44,7 +44,8 @@
                                 </div>
                                 <div class="chat-user-sec">
                                     <div class="chat-user-tab-sec">
-                                        <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item" :class="(current_chat.chat_room_id == item.chat_room_id) ? 'user-item-active' : ''"
+                                        <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
+                                            :class="(current_chat.chat_room_id == item.chat_room_id) ? 'user-item-active' : ''"
                                             @click="getChatsMessages(item)">
                                             <button class="chat-user-btn user-active">
                                                 <div class="thm-heading">
@@ -126,7 +127,7 @@
                     </div>
                 </template>
             </div>
-            <div class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec" :class="showChat ? 'show' : ''">
+            <div v-if="current_chat.chat_room_id" class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec" :class="showChat && current_chat.length ? 'show' : ''">
                 <div class="operator-table-sec chat-flow-tables ">
                     <div class="messages-item-sec">
                         <div class="user-active-heading">
@@ -187,13 +188,14 @@
                             <div class="auto-message-slider">
                                 <div class="auto-message-slider-con reason-sec">
                                     <!-- <div class="owl-carousel owl-theme" id="auto-message-slider"> -->
-                                    <Carousel v-bind="settings" :breakpoints="breakpoints" class="w-100 owl-theme" >
+                                    <Carousel v-bind="settings" :breakpoints="breakpoints" class="w-100 owl-theme">
                                         <Slide v-for="(slide, i) in filteredSuggestions" :key="i">
                                             <div class="item">
                                                 <div class="auto-message-con">
-                                                    <a @click="input = slide.description" href="#" class="thm-btn thm-border-btn">
-                                                        {{ (slide.description.length < 20) ? slide.description : slide.description.slice(0, 20) + "..." }}
-                                                    </a>
+                                                    <a @click="input = slide.description" href="#"
+                                                        class="thm-btn thm-border-btn">
+                                                        {{ (slide.description.length < 20) ? slide.description :
+                                                            slide.description.slice(0, 20) + "..." }} </a>
                                                 </div>
                                             </div>
                                         </Slide>
@@ -235,6 +237,42 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!--Operator offcanvas-->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="addticketoffcanvas" aria-labelledby="operatoroffcanvasLabel">
+        <div class="offcanvas-header operator-offcanvas-sec ">
+            <div class="thm-heading">
+                <h4>Add Ticket</h4>
+            </div>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body operator-offcanvas-body add-messag-body add-now-sec ticket-body">
+            <form>
+                <div class="operator-offcanvas-con">
+                    <div class="operator-item">
+                        <label for="operator" class="form-label">Categories</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected="">All</option>
+                            <option value="1">How to deposit </option>
+                            <option value="2">How to Login </option>
+                            <option value="2">How to Register </option>
+
+                        </select>
+                    </div>
+                    <div class="operator-item">
+                        <label for="operator" class="form-label">Message</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                            placeholder="Enter Name"></textarea>
+                    </div>
+                    
+                </div>
+                <div class="operator-offcanvas-footer">
+                    <button class="thm-btn thm-border-btn" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
+                    <button class="thm-btn">Generate</button>
+                </div>
+            </form>
         </div>
     </div>
 </template>

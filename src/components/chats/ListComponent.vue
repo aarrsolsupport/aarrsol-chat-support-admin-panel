@@ -44,11 +44,11 @@
                                 </div>
                                 <div class="chat-user-sec">
                                     <div class="chat-user-tab-sec">
-                                        <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
+                                        <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item" :class="(current_chat.chat_room_id == item.chat_room_id) ? 'user-item-active' : ''"
                                             @click="getChatsMessages(item)">
                                             <button class="chat-user-btn user-active">
                                                 <div class="thm-heading">
-                                                    <h2> {{ item.end_user_name }}</h2>
+                                                    <h2>{{ item.end_user_name }}</h2>
                                                     <div class="dots">
                                                         <span class="dots-btn"></span>
                                                         <div class="user-active-con">
@@ -141,7 +141,7 @@
                             </div>
                             <div class="Categories-btn">
                                 <template v-if="authData.role_id == 4">
-                                    <button class="thm-btn danger-thm">End Chat </button>
+                                    <button class="thm-btn danger-thm" v-if="current_chat.status == 1">End Chat </button>
                                     <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
                                         data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas">Add
                                         Ticket</button>
@@ -183,7 +183,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="messages-footer-sec">
+                        <div class="messages-footer-sec" v-if="current_chat.status == 1">
                             <div class="auto-message-slider">
                                 <div class="auto-message-slider-con reason-sec">
                                     <!-- <div class="owl-carousel owl-theme" id="auto-message-slider"> -->
@@ -310,7 +310,7 @@ export default {
             this.current_chat = Object.assign({}, item)
             console.log(this.current_chat)
             this.$store.commit('is_loader', true);
-            axios.post('/get-chat-messages', { room_id: this.current_chat.chat_room_id })
+            axios.post('chat/get-messages', { room_id: this.current_chat.chat_room_id })
                 .then(res => {
                     console.log(['res', res])
                     this.showChat = 1

@@ -137,7 +137,7 @@
             },
         },
         created(){
-                this.category();
+            this.category();
         },
         methods: {
             updateAgentCats(option) {
@@ -252,7 +252,7 @@
                 if( url != null ) {
                     this.$store.commit('is_loader', true);
                     
-                    url = '/'+this.resource+'/get-category';
+                    url = '/get-categories';
                     axios.get(url).then(res => {
                         if(res.data.error === true){  
                             this.$toast.error(res.data.message);

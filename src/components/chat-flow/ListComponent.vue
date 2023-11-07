@@ -176,7 +176,7 @@
                                                                 </h4>
                                                             </div>
                                                             <button type="button" class="btn-close text-reset"
-                                                                data-bs-dismiss="modal" aria-label="Close"
+                                                                data-bs-dismiss="modal" aria-label="Close" ref="addCloseFrm"
                                                                 @click="closeForm"></button>
                                                         </div>
                                                         <div class="add-messag-body" v-if="showForm == 1">
@@ -400,6 +400,15 @@ export default {
             }
         }
 
+        const updateNode = (node, tree) => {
+
+            if (tree.node_id === node.node_id) {
+                Object.assign(tree, node);
+            } else if (tree.children) {
+                tree.children.forEach(child => updateNode(node, child));
+            }
+        }
+
         const deleteNode = (node, tree) => {
 
             let parent = tree.children ? tree.children.find(p => p.node_id == node.node_id) : null;
@@ -418,7 +427,8 @@ export default {
             treeData,
             tryAddLeaf,
             deleteNode,
-            resetTreeData
+            resetTreeData,
+            updateNode
         }
     },
     components: {
@@ -527,6 +537,7 @@ export default {
             // this.showForm = 0;
         },
         setupEditDeleteForm(data) {
+            console.log(data);
             if (data) {
                 data.files = data.files?.split('\n') || null
                 this.nodeData = data
@@ -625,23 +636,17 @@ export default {
                     axios.post('/chat-flow/update-default', form_data)
                         .then(res => {
                             this.$store.commit('is_loader', false);
-                            console.log([
-                                !this.parent_node_data.id,
-                                this.edit_node_id,
-                                res
-                            ])
+                            // this.edit_node_id = res.data.data.node.id
                             if (!this.parent_node_data.id) {
                                 if (res.data.data.template_id) {
                                     this.template_id = res.data.data.template_id
                                     this.resetTreeData(res.data.data.flow)
                                 }
                             } else {
-                                if (this.edit_node_id) {
-                                    // TODO find Node & Update text
-                                } else {
-                                    this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
-                                }
+                                this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
                             }
+                            this.updateNode(res.data.data.node, this.treeData)
+                            this.$refs.addCloseFrm.click();
                             this.closeForm()
                         }).catch(e => {
                             console.error(e)
@@ -675,6 +680,8 @@ export default {
                                 this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, element)
                             });
                         }
+                        this.updateNode(res.data.data.node, this.treeData)
+                        this.$refs.addCloseFrm.click();
                         this.closeForm()
                     }).catch(e => {
                         console.error(e)
@@ -710,6 +717,7 @@ export default {
                     .then(res => {
                         this.$store.commit('is_loader', false);
                         if (!res.data.error) {
+                            this.resetTreeData(res.data.data.flow)
                             this.$toast.success(res.data.message);
                         }
                         this.closeForm()

@@ -112,7 +112,7 @@
                                                                             <li>
                                                                                 <button class="dropdown-item more-list-btn"
                                                                                     type="button"
-                                                                                    @click="setupEditForm(data)"
+                                                                                    @click="setupEditDeleteForm(data)"
                                                                                     data-bs-toggle="modal"
                                                                                     data-bs-target="#editModal">
                                                                                     <div class="edit-icon"><img
@@ -121,6 +121,21 @@
                                                                                     </div>
                                                                                     <div class="thm-heading">
                                                                                         <h2>Edit</h2>
+                                                                                    </div>
+                                                                                </button>
+                                                                            </li>
+                                                                            <li>
+                                                                                <button class="dropdown-item more-list-btn"
+                                                                                    type="button"
+                                                                                    @click="setupEditDeleteForm(data)"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#statusdetails">
+                                                                                    <div class="edit-icon"><img
+                                                                                            src="@/assets/images/delete-icon.svg"
+                                                                                            alt="">
+                                                                                    </div>
+                                                                                    <div class="thm-heading">
+                                                                                        <h2>Delete</h2>
                                                                                     </div>
                                                                                 </button>
                                                                             </li>
@@ -303,13 +318,12 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="add-messag-body">
-                            <div v-if="showError" class="text-danger">{{ showError }}</div>
                             <div class="operator-item">
                                 <label for="operator" class="form-label">Message</label>
                                 <textarea type="text" class="form-control" placeholder="Enter Message" rows="3"
-                                    v-model="editMessegeData.label"></textarea>
+                                    v-model="nodeData.label"></textarea>
                             </div>
-                            <div class="operator-item">
+                            <div class="operator-item" v-if="nodeData.node_type == 'M'">
                                 <label for="operator" class="form-label">Upload File</label>
                                 <div class="file-upload-sec">
                                     <label for="file" class="file-upload"> <span><img src="@/assets/images/gallery-add.svg"
@@ -320,10 +334,18 @@
                                         id="file" @change="uploadFiles">
                                 </div>
                                 <div id="fileList" class="fileList-con">
-                                    <ul v-if="uploaded_files.length">
+                                    <ul>
+                                        <li v-for="(file, index) in nodeData.files" :key="index" :id="'n_file' + index">
+                                            {{ file }}
+                                            <span class="list-cross" @click="removeFile(index)"><img
+                                                    src="@/assets/images/cross-icon.svg" alt=""></span>
+                                            <span class="media-display">
+                                                <img :src="mediaBaseUrl + file">
+                                            </span>
+                                        </li>
                                         <li v-for="(file, index) in uploaded_files" :key="index" :id="'n_file' + index">
                                             {{ file.name }}
-                                            <span class="list-cross" @click="removeFile(index)"><img
+                                            <span class="list-cross" @click="removeMediaFile(index)"><img
                                                     src="@/assets/images/cross-icon.svg" alt=""></span>
                                         </li>
                                     </ul>
@@ -341,9 +363,12 @@
                 </div>
             </div>
         </div>
+
+        <UpdateComponent :nodeData="nodeData" :template_id="template_id" @refreshTree="refreshTree"></UpdateComponent>
     </div>
 </template>
 <script>
+import UpdateComponent from './UpdateComponent.vue'
 import axios from "axios";
 import { mapState } from "vuex";
 import { reactive } from 'vue';
@@ -396,6 +421,9 @@ export default {
             resetTreeData
         }
     },
+    components: {
+        UpdateComponent
+    },
     data() {
         return {
             templates: [
@@ -419,9 +447,10 @@ export default {
             new_template: {
                 language_id: 0
             },
-            editMessegeData: {},
-            removedMedia: null,
-            allowedFileTypes: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg']
+            nodeData: {},
+            removedMedia: [],
+            allowedFileTypes: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg'],
+            mediaBaseUrl: ''
         }
     },
     computed: {
@@ -463,6 +492,7 @@ export default {
                     if (res.data.data.templates) {
                         this.templates = res.data.data.templates
                         this.template_id = res.data.data.default.template_id
+                        this.mediaBaseUrl = res.data.data.media_base_url
                         this.resetTreeData(res.data.data.default.flow)
                     }
                 }).catch(e => {
@@ -496,26 +526,10 @@ export default {
             this.$refs.msgOptnBtn.click()
             // this.showForm = 0;
         },
-        setupEditForm(data) {
-            console.log(data);
+        setupEditDeleteForm(data) {
             if (data) {
-                this.showError = '';
-                this.editMessegeData = data
-
-                // switch (data.node_type) {
-                //     case 'C':
-                //         this.showForm = 2;
-                //         // this.new_option = ''
-                //         // this.categories_data = [];
-                //         this.editMessegeData = data
-                //         break;
-                //     case 'M':
-                //         this.showForm = 1;
-                //         this.new_message = data.label;
-                //         this.edit_node_id = data.id;
-                //         // this.uploaded_files = {}; // *TO-DO*
-                //         break;
-                // }
+                data.files = data.files?.split('\n') || null
+                this.nodeData = data
             }
         },
         setupForm(type, data = {}) {
@@ -554,9 +568,12 @@ export default {
                 }
                 this.uploaded_files.push(mediaFiles[i]);
             }
-            console.log(this.uploaded_files);
         },
         removeFile(index) {
+            this.removedMedia.push(this.nodeData.files[index])
+            this.nodeData.files.splice(index, 1)
+        },
+        removeMediaFile(index) {
             this.uploaded_files.splice(index, 1)
         },
         addOption() {
@@ -604,11 +621,7 @@ export default {
                         message: this.new_message,
                         id: this.edit_node_id
                     }))
-                    
-                for (const [key, value] of form_data) {
-                    console.log(key, value)
-                }
-                return
+
                     axios.post('/chat-flow/update-default', form_data)
                         .then(res => {
                             this.$store.commit('is_loader', false);
@@ -673,49 +686,41 @@ export default {
         },
         updateMessage() {
             // Edit MESSAGE
-            if (!(this.editMessegeData.label || this.uploaded_files.length)) {
+            if (!(this.nodeData.label || this.uploaded_files.length)) {
                 this.showError = 'Please add message or upload a file!'
             } else {
                 this.showError = ''
-                // this.$store.commit('is_loader', true);
-                const form_data = new FormData();
-                form_data.append("template_id", this.template_id ? this.template_id : 0);
-                form_data.append("message", this.editMessegeData.label);
-                form_data.append("deleted_media", this.removedMedia);
-                form_data.append("media", this.uploaded_files);
+                this.$store.commit('is_loader', true);
 
-                for (const [key, value] of form_data) {
-                    console.log(key, value)
+                const form_data = new FormData();
+
+                form_data.append("child_node", JSON.stringify({
+                    message: this.nodeData.label,
+                    id: this.nodeData.id,
+                    node_type: this.nodeData.node_type == 'M' ? 1 : 2
+                }))
+
+                this.removedMedia.length > 0 ? form_data.append("deleted_files", this.removedMedia) : null;
+
+                for (let i = 0; i < this.uploaded_files.length; i++) {
+                    form_data.append('file[]', this.uploaded_files[i]);
                 }
 
-                // axios.post('/chat-flow/update-default', form_data)
-                //     .then(res => {
-                //         this.$store.commit('is_loader', false);
-                //         console.log([
-                //             !this.parent_node_data.id,
-                //             this.edit_node_id,
-                //             res
-                //         ])
-                //         if (!this.parent_node_data.id) {
-                //             if (res.data.data.template_id) {
-                //                 this.template_id = res.data.data.template_id
-                //                 this.resetTreeData(res.data.data.flow)
-                //             }
-                //         } else {
-                //             if (this.edit_node_id) {
-                //                 // TODO find Node & Update text
-                //             } else {
-                //                 this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
-                //             }
-                //         }
-                //         this.closeForm()
-                //     }).catch(e => {
-                //         console.error(e)
-                //         // this.$toast.error(e.response.message ?? e.response.data.message);
-                //         this.$store.commit('is_loader', false);
-                //     })
+                axios.post('/chat-flow/update-node-details', form_data)
+                    .then(res => {
+                        this.$store.commit('is_loader', false);
+                        if (!res.data.error) {
+                            this.$toast.success(res.data.message);
+                        }
+                        this.closeForm()
+                    }).catch(e => {
+                        this.$toast.error(e.response.message || e.response.data.message);
+                        this.$store.commit('is_loader', false);
+                    })
             }
-
+        },
+        refreshTree() {
+            this.deleteNode(this.nodeData, this.treeData)
         }
     }
 }

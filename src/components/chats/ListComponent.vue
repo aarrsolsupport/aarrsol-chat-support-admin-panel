@@ -191,7 +191,7 @@
                                         <Slide v-for="(slide, i) in filteredSuggestions" :key="i">
                                             <div class="item">
                                                 <div class="auto-message-con">
-                                                    <a href="#" class="thm-btn thm-border-btn">
+                                                    <a @click="input = slide.description" href="#" class="thm-btn thm-border-btn">
                                                         {{ (slide.description.length < 20) ? slide.description : slide.description.slice(0, 20) + "..." }}
                                                     </a>
                                                 </div>
@@ -212,7 +212,7 @@
                                         </div>
                                     </button>
                                     <div class="messages-type-input">
-                                        <input type="text" placeholder="Write something.....">
+                                        <input type="text" placeholder="Write something....." v-model="input">
                                     </div>
                                     <div class="messages-type-right">
                                         <button type="button" class="header-admin-btn">
@@ -293,6 +293,7 @@ export default {
                     snapAlign: 'start',
                 },
             },
+            input: ""
         }
     },
     watch: {

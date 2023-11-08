@@ -127,7 +127,8 @@
                     </div>
                 </template>
             </div>
-            <div v-if="current_chat.chat_room_id" class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec" :class="showChat && current_chat.length ? 'show' : ''">
+            <div v-if="current_chat.chat_room_id" class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec"
+                :class="showChat && current_chat.length ? 'show' : ''">
                 <div class="operator-table-sec chat-flow-tables ">
                     <div class="messages-item-sec">
                         <div class="user-active-heading">
@@ -142,9 +143,11 @@
                             </div>
                             <div class="Categories-btn">
                                 <template v-if="authData.role_id == 4">
-                                    <button class="thm-btn danger-thm" v-if="current_chat.status == 1">End Chat </button>
+                                    <button class="thm-btn danger-thm" v-if="current_chat.status == 1"
+                                        @click="callForEndChat(current_chat.chat_room_id)">End Chat </button>
                                     <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
-                                        data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas">Add
+                                        data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas"
+                                        @click="callForCatagory()">Add
                                         Ticket</button>
                                 </template>
                                 <div class="more-action-sec">
@@ -152,7 +155,8 @@
                                             src="@/assets/images/more-action.svg" alt=""></button>
                                     <ul class="dropdown-menu dropdown-menu-end more-action-list">
                                         <li>
-                                            <button class="dropdown-item more-list-btn" type="button">
+                                            <button class="dropdown-item more-list-btn" type="button"
+                                                @click="callForDeleteChat(current_chat.chat_room_id)">
                                                 <div class="edit-icon"><img src="@/assets/images/delete-icon.svg" alt="">
                                                 </div>
                                                 <div class="thm-heading">
@@ -253,24 +257,22 @@
                 <div class="operator-offcanvas-con">
                     <div class="operator-item">
                         <label for="operator" class="form-label">Categories</label>
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected="">All</option>
-                            <option value="1">How to deposit </option>
-                            <option value="2">How to Login </option>
-                            <option value="2">How to Register </option>
-
+                        <select class="form-select" aria-label="Default select example" v-model="ticketDetails.issue_id">
+                            <option selected="" value="select">Select</option>
+                            <option v-for="(items, index) in catagories" :key="index" :value="items.id">{{ items.description
+                            }}</option>
                         </select>
                     </div>
                     <div class="operator-item">
                         <label for="operator" class="form-label">Message</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                            placeholder="Enter Name"></textarea>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter Message"
+                            v-model="ticketDetails.description"></textarea>
                     </div>
-                    
+
                 </div>
                 <div class="operator-offcanvas-footer">
                     <button class="thm-btn thm-border-btn" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
-                    <button class="thm-btn">Generate</button>
+                    <button class="thm-btn" @click.prevent="callForAddTicket()">Generate</button>
                 </div>
             </form>
         </div>
@@ -331,7 +333,12 @@ export default {
                     snapAlign: 'start',
                 },
             },
-            input: ""
+            input: "",
+            catagories: null,
+            ticketDetails: {
+                issue_id: 'select',
+                description: ''
+            }
         }
     },
     watch: {
@@ -354,7 +361,7 @@ export default {
                     console.log(['res', res])
                     this.showChat = 1
                     this.messages = Object.assign([], res.data.data.messages)
-                    //         // this.unread_count[this.chat_type] = res.data.data.unread_count;
+                    // this.unread_count[this.chat_type] = res.data.data.unread_count;
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
                     this.$toast.error(e.response.message ?? e.response.data.message);
@@ -372,6 +379,67 @@ export default {
                     this.suggestions = Object.assign([], res.data.data.auto_suggestions)
                     this.listItems = Object.assign([], res.data.data.chats_list)
                     this.unread_count[this.chat_type] = res.data.data.unread_count;
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        },
+        callForEndChat(roomId) {
+            this.$store.commit('is_loader', true);
+            axios.post('/chat/end-chat', { room_id: roomId })
+                .then(res => {
+                    let position = this.listItems.findIndex(item => item.chat_room_id == roomId);
+                    this.listItems.splice(position, 1)
+                    this.current_chat.status = 2;
+                    this.$toast.success(res.data.message)
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        },
+        callForCatagory() {
+            this.$store.commit('is_loader', true);
+
+            axios.get('/get-categories').then(res => {
+                if (res.data.error === true) {
+                    this.$toast.error(res.data.message);
+                } else {
+                    this.catagories = res.data.data.details;
+                }
+                this.$store.commit('is_loader', false);
+            }).catch(e => {
+                this.$toast.error(e.response.data.message);
+                this.$store.commit('is_loader', false);
+            })
+        },
+        callForAddTicket() {
+            this.$store.commit('is_loader', true);
+            let data = this.ticketDetails
+            data.end_user_id = this.current_chat.end_user_id
+            data.chat_id = this.current_chat.chat_room_id
+
+            axios.post('/tickets/create', data).then(res => {
+                if (res.data.error === true) {
+                    this.$toast.error(res.data.message);
+                } else {
+                    this.$toast.success(res.data.message)
+                }
+                this.$store.commit('is_loader', false);
+            }).catch(e => {
+                this.$toast.error(e.response.data.message);
+                this.$store.commit('is_loader', false);
+            })
+        },
+        callForDeleteChat(roomId) {
+            this.$store.commit('is_loader', true);
+            axios.post('/chat/delete-chat', { room_id: roomId })
+                .then(res => {
+                    let position = this.listItems.findIndex(item => item.chat_room_id == roomId);
+                    this.listItems.splice(position, 1);
+                    this.current_chat = {};
+                    this.$toast.success(res.data.message)
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
                     this.$toast.error(e.response.message ?? e.response.data.message);

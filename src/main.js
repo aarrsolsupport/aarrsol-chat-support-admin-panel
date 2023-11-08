@@ -7,6 +7,7 @@ import filters from './helpers/filters'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../src/assets/styles.scss';
 import 'bootstrap/dist/js/bootstrap.bundle'
+import 'vue3-emoji-picker/css'
 
 import jQuery from "jquery"
 window.$ = window.jQuery = require('jquery');

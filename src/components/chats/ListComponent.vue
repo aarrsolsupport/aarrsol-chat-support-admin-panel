@@ -214,7 +214,9 @@
                                 <div class="messages-input">
                                     <button type="button" class="header-admin-btn">
                                         <div class="admin-img">
-                                            <img src="@/assets/images/emoji-icon.svg" alt="">
+                                            <EmojiPicker :native="true" @select="onSelectEmoji" v-if="showEmoji" />
+                                            <img class="emoji-icon" src="@/assets/images/emoji-icon.svg" alt=""
+                                                @click="toggleEmojiPicker()">
                                         </div>
                                     </button>
                                     <div class="messages-type-input">
@@ -280,6 +282,7 @@
 </template>
 <script setup>
 import 'vue3-carousel/dist/carousel.css'
+import EmojiPicker from 'vue3-emoji-picker'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 </script>
 <script>
@@ -287,6 +290,12 @@ import axios from "axios";
 import { mapState } from 'vuex';
 export default {
     name: 'ListComponent',
+    components: {
+        EmojiPicker,
+        Carousel,
+        Slide,
+        Navigation
+    },
     computed: {
         ...mapState(['authData']),
         filteredItems() {
@@ -338,7 +347,10 @@ export default {
             ticketDetails: {
                 issue_id: 'select',
                 description: ''
-            }
+            },
+            emojis: [],
+            showEmoji: false,
+            media: null,
         }
     },
     watch: {
@@ -445,7 +457,45 @@ export default {
                     this.$toast.error(e.response.message ?? e.response.data.message);
                     this.$store.commit('is_loader', false);
                 })
-        }
+        },
+        onSelectEmoji(emoji) {
+            this.input += emoji.i
+            this.emojis.push(emoji.i)
+            console.log(emoji.i)
+        },
+        toggleEmojiPicker() {
+            this.showEmoji = !this.showEmoji
+        },
+        uplaodImg(event) {
+            this.media = [];
+            let mediaFiles = event.target.files;
+            for (let i = 0; i < mediaFiles.length; i++) {
+                this.media.push(mediaFiles[i]);
+            }
+        },
     }
 }
 </script>
+
+<style>
+.v3-emoji-picker {
+    position: relative;
+    top: -11rem;
+    right: -7.5rem;
+}
+
+.emoji-icon {
+    position: absolute;
+    top: 15px;
+    left: 24px;
+}
+
+.attachment-icon {
+    height: 50px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+</style>

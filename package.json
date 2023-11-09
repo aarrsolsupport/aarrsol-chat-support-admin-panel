@@ -28,6 +28,7 @@
     "vue-toast-notification": "^3.1.1",
     "vue3-blocks-tree": "^0.6.1",
     "vue3-carousel": "^0.3.1",
+    "vue3-emoji-picker": "^1.1.8",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

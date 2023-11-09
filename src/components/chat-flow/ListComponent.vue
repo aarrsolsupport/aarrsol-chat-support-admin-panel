@@ -42,7 +42,7 @@
                                 aria-labelledby="pills-chat-flow-tab">
                                 <div class="operator-tab-item-one">
                                     <div class="thm-heading p-2">
-                                        <h2>Chatbot Flow {{ template_id }}</h2>
+                                        <h2>Chatbot Flow</h2>
                                     </div>
                                     <div class="chat-flow-borad-list">
                                         <template v-if="!template_id">
@@ -475,6 +475,10 @@ export default {
         },
         saveTemplateDetails() {
             this.$store.commit('is_loader', true);
+            if(this.user_id) {
+                this.new_template.user_id = this.user_id
+            }
+            console.log(this.new_template)
             axios.post('/chat-flow/update-template-details', this.new_template)
                 .then(res => {
                     // Add New Template
@@ -532,6 +536,7 @@ export default {
             // this.closeForm()
         },
         closeForm() {
+            console.log('close')
             this.parent_node_data = { type: '', id: 0 }
             this.$refs.msgOptnBtn.click()
             // this.showForm = 0;
@@ -644,8 +649,8 @@ export default {
                                 }
                             } else {
                                 this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
+                                this.updateNode(res.data.data.node, this.treeData)
                             }
-                            this.updateNode(res.data.data.node, this.treeData)
                             this.$refs.addCloseFrm.click();
                             this.closeForm()
                         }).catch(e => {

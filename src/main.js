@@ -74,15 +74,15 @@ if (typeof io !== 'undefined') {
         },
     });
     
-    window.Echo.connector.socket.on("connect", function () {
-        console.log("---------CONNECTED---------");
-    });
+    // window.Echo.connector.socket.on("connect", function () {
+    //     console.log("---------CONNECTED---------");
+    // });
     
-    window.Echo.connector.socket.on("reconnecting", function () {
-        console.log("---------CONNECTING---------");
-    });
+    // window.Echo.connector.socket.on("reconnecting", function () {
+    //     console.log("---------CONNECTING---------");
+    // });
     
-    window.Echo.connector.socket.on("disconnect", function () {
-        console.log("---------DISCONNECTED---------");
-    });
+    // window.Echo.connector.socket.on("disconnect", function () {
+    //     console.log("---------DISCONNECTED---------");
+    // });
 }

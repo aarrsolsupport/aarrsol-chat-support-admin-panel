@@ -11,7 +11,7 @@
                                         <div class="operator-item">
                                             <label for="operator" class="form-label">Header Color</label>
                                             <div class="operator-item-sec">
-                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <input type="text" class="form-control" placeholder="Select">
                                                 <div class="color-input">
                                                     <input type="color" class="color-input-item" v-model="themeColors.header_color">
                                                 </div>
@@ -22,7 +22,7 @@
                                         <div class="operator-item">
                                             <label for="operator" class="form-label">Footer Color</label>
                                             <div class="operator-item-sec">
-                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <input type="text" class="form-control" placeholder="Select">
                                                 <div class="color-input">
                                                     <input type="color" class="color-input-item" v-model="themeColors.footer_color">
                                                 </div>
@@ -33,7 +33,7 @@
                                         <div class="operator-item">
                                             <label for="operator" class="form-label">Text color</label>
                                             <div class="operator-item-sec">
-                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <input type="text" class="form-control" placeholder="Select">
                                                 <div class="color-input">
                                                     <input type="color" class="color-input-item" v-model="themeColors.text_color">
                                                 </div>
@@ -44,7 +44,7 @@
                                         <div class="operator-item">
                                             <label for="operator" class="form-label">Background Color</label>
                                             <div class="operator-item-sec">
-                                                <input type="text" class="form-control" placeholder="Enter Name">
+                                                <input type="text" class="form-control" placeholder="Select">
                                                 <div class="color-input">
                                                     <input type="color" class="color-input-item"
                                                         v-model="themeColors.background_color">

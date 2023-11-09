@@ -56,7 +56,7 @@
                                                             </div>
                                                         </button>
                                                     </li>
-                                                    <li class="todo border border-warning">
+                                                    <!-- <li class="todo border border-warning">
                                                         <button class="dropdown-item more-list-btn" type="button">
                                                             <div class="edit-icon"><img src="@/assets/images/document-copy.svg"
                                                                     alt=""></div>
@@ -64,7 +64,7 @@
                                                                 <h2>Duplicate *TO-DO*</h2>
                                                             </div>
                                                         </button>
-                                                    </li>
+                                                    </li> -->
                                                     <li>
                                                         <button class="dropdown-item more-list-btn" type="button"
                                                             @click="deleteSuggestions(item.id)">

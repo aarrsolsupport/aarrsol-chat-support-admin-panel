@@ -116,8 +116,10 @@ export default {
                     let updateSuggestion = new FormData();
                     updateSuggestion.append('description', this.item_data.description);
                     updateSuggestion.append('id', this.item_data.id);
-                    for (let i = 0; i < this.item_data.media.length; i++) {
-                        updateSuggestion.append('file[]', this.item_data.media[i]);
+                    if(this.item_data.media) {
+                        for (let i = 0; i < this.item_data.media.length; i++) {
+                            updateSuggestion.append('file[]', this.item_data.media[i]);
+                        }
                     }
                     for (let i = 0; i < this.removedMedia.length; i++) {
                         updateSuggestion.append('deleted_files[]', this.removedMedia[i]);
@@ -146,8 +148,10 @@ export default {
                     let createSuggestion = new FormData();
                     createSuggestion.append('from_type', 1);
                     createSuggestion.append('description', this.item_data.description);
-                    for (let i = 0; i < this.item_data.media.length; i++) {
-                        createSuggestion.append('file[]', this.item_data.media[i]);
+                    if(this.item_data.media) {
+                        for (let i = 0; i < this.item_data.media.length; i++) {
+                            createSuggestion.append('file[]', this.item_data.media[i]);
+                        }
                     }
 
                     axios.post('/' + this.resource + '/create', createSuggestion)

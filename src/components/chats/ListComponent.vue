@@ -223,7 +223,7 @@
                                         <input type="text" placeholder="Write something....." v-model="input">
                                     </div>
                                     <div class="messages-type-right">
-                                        <button type="button" class="header-admin-btn">
+                                        <button type="button" class="header-admin-btn" @click="showAudio()">
                                             <div class="admin-img">
                                                 <img src="@/assets/images/circle-microphone.svg" alt="">
                                             </div>
@@ -252,7 +252,7 @@
             <div class="thm-heading">
                 <h4>Add Ticket</h4>
             </div>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" ref="closeAddTicketBtn"></button>
         </div>
         <div class="offcanvas-body operator-offcanvas-body add-messag-body add-now-sec ticket-body">
             <form>
@@ -279,11 +279,15 @@
             </form>
         </div>
     </div>
+
+    <tapir-widget :time="2" buttonColor="green" v-if="audio" class="audio-messege" />
 </template>
 <script setup>
-import 'vue3-carousel/dist/carousel.css'
-import EmojiPicker from 'vue3-emoji-picker'
-import { Carousel, Slide, Navigation } from 'vue3-carousel'
+import 'vue3-carousel/dist/carousel.css';
+import EmojiPicker from 'vue3-emoji-picker';
+import { Carousel, Slide, Navigation } from 'vue3-carousel';
+import TapirWidget from 'vue-audio-tapir';
+import 'vue-audio-tapir/dist/vue-audio-tapir.css';
 </script>
 <script>
 import axios from "axios";
@@ -294,7 +298,8 @@ export default {
         EmojiPicker,
         Carousel,
         Slide,
-        Navigation
+        Navigation,
+        TapirWidget
     },
     computed: {
         ...mapState(['authData']),
@@ -351,6 +356,7 @@ export default {
             emojis: [],
             showEmoji: false,
             media: null,
+            audio: false
         }
     },
     watch: {
@@ -436,6 +442,7 @@ export default {
                 if (res.data.error === true) {
                     this.$toast.error(res.data.message);
                 } else {
+                    this.$refs.closeAddTicketBtn.click();
                     this.$toast.success(res.data.message)
                 }
                 this.$store.commit('is_loader', false);
@@ -473,6 +480,9 @@ export default {
                 this.media.push(mediaFiles[i]);
             }
         },
+        showAudio() {
+            this.audio = !this.audio
+        },
     }
 }
 </script>
@@ -497,5 +507,11 @@ export default {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+}
+
+.audio-messege {
+    top: 15rem;
+    right: 20rem;
+    position: absolute;
 }
 </style>

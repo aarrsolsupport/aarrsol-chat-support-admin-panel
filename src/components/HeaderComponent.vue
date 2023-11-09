@@ -52,6 +52,17 @@
       beforeCreate() {
          this.$store.commit('setAuthUser', JSON.parse(localStorage.getItem('authData')))
       },
+      created() {
+         var user = this.authData;
+         console.log(['Header created', user])
+         // if (user && user.id != "") {
+            window.Echo.connect();
+            window.Echo.channel("message-channel").listen(".receive-messages", (data) => {
+               alert('LISTENED')
+                  console.log(['____MessageEvent____', data, user])
+               });
+         // }
+      },
       methods: {
          logout() {
             this.$store.commit('is_loader', true);

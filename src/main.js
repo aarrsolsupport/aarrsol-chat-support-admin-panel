@@ -18,7 +18,7 @@ import 'vue-toast-notification/dist/theme-bootstrap.css';
 import VueBlocksTree from 'vue3-blocks-tree';
 import 'vue3-blocks-tree/dist/vue3-blocks-tree.css';
 import Vuex from 'vuex'; 
-// import StoreData from'./store.js';
+
 
 const app = createApp(App)
     .use(Vuex)
@@ -55,3 +55,33 @@ axios.interceptors.response.use(function (response){
         return error.response;
     }
 })
+
+import Echo from 'laravel-echo';
+window.io = require('socket.io-client');
+// Have this in case you stop running your laravel echo server
+if (typeof io !== 'undefined') {
+    window.Echo = new Echo({
+        namespace: 'App\\Events',
+        broadcaster: 'socket.io',
+        host: 'http://admin.chat-system.dll'+':2096',
+        authEndpoint: "/api/broadcasting/auth",
+        transports: ['websocket'],
+        auth: {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('_token'),
+            },
+        },
+    });
+    
+    window.Echo.connector.socket.on("connect", function () {
+        console.log("---------CONNECTED---------");
+    });
+    
+    window.Echo.connector.socket.on("reconnecting", function () {
+        console.log("---------CONNECTING---------");
+    });
+    
+    window.Echo.connector.socket.on("disconnect", function () {
+        console.log("---------DISCONNECTED---------");
+    });
+}

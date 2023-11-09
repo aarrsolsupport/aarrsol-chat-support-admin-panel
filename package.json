@@ -23,6 +23,7 @@
     "sass-loader": "^13.3.2",
     "socket.io-client": "^2.4.0",
     "vue": "^3.2.13",
+    "vue-audio-tapir": "^1.5.0",
     "vue-infinite-loading": "^2.4.5",
     "vue-router": "^4.2.4",
     "vue-toast-notification": "^3.1.1",

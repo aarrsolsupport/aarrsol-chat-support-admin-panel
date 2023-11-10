@@ -400,14 +400,23 @@ export default {
             }
         }
 
-        const updateNode = (node, tree) => {
-
-            if (tree.node_id === node.node_id) {
-                Object.assign(tree, node);
-            } else if (tree.children) {
-                tree.children.forEach(child => updateNode(node, child));
+        const updateNode = (nodeArray, tree, type) => {
+            if (type == 2) {
+                nodeArray.forEach(nodeItem => {
+                    if (tree.node_id === nodeItem.node_id) {
+                        Object.assign(tree, nodeItem);
+                    } else if (tree.children) {
+                        tree.children.forEach(child => updateNode([nodeItem], child, type));
+                    }
+                });
+            } else {
+                if (tree.node_id === nodeArray.node_id) {
+                    Object.assign(tree, nodeArray);
+                } else if (tree.children) {
+                    tree.children.forEach(child => updateNode(nodeArray, child, type));
+                }
             }
-        }
+        };
 
         const deleteNode = (node, tree) => {
 
@@ -475,7 +484,7 @@ export default {
         },
         saveTemplateDetails() {
             this.$store.commit('is_loader', true);
-            if(this.user_id) {
+            if (this.user_id) {
                 this.new_template.user_id = this.user_id
             }
             console.log(this.new_template)
@@ -536,7 +545,6 @@ export default {
             // this.closeForm()
         },
         closeForm() {
-            console.log('close')
             this.parent_node_data = { type: '', id: 0 }
             this.$refs.msgOptnBtn.click()
             // this.showForm = 0;
@@ -640,7 +648,6 @@ export default {
 
                     axios.post('/chat-flow/update-default', form_data)
                         .then(res => {
-                            this.$store.commit('is_loader', false);
                             // this.edit_node_id = res.data.data.node.id
                             if (!this.parent_node_data.id) {
                                 if (res.data.data.template_id) {
@@ -649,9 +656,10 @@ export default {
                                 }
                             } else {
                                 this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
-                                this.updateNode(res.data.data.node, this.treeData)
+                                this.updateNode(res.data.data.node, this.treeData, type)
                             }
                             this.$refs.addCloseFrm.click();
+                            this.$store.commit('is_loader', false);
                             this.closeForm()
                         }).catch(e => {
                             console.error(e)
@@ -685,7 +693,7 @@ export default {
                                 this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, element)
                             });
                         }
-                        this.updateNode(res.data.data.node, this.treeData)
+                        this.updateNode(res.data.data.node, this.treeData, type)
                         this.$refs.addCloseFrm.click();
                         this.closeForm()
                     }).catch(e => {

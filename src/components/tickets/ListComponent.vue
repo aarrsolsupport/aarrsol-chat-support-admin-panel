@@ -3,11 +3,52 @@
         <div class="borad-inner-body">
             <div class="borad-inner-body-con">
                 <div class="search-sec bg-transparent border-0 p-0">
-                    <div class="search-input-sec w-100">
+                    <div class="search-input-sec">
                         <input type="text" placeholder="Search" v-model="search">
                         <div class="search-icon">
                             <img src="@/assets/images/search-icon.svg" alt="">
                         </div>
+                    </div>
+                    <div class="dropdown entries-select-dropdown ms-3">
+                        <button class="thm-btn dropdown-toggle entries-select-list" :class="statusFilters.class"
+                            type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"
+                            ref="closeStatusFilter">
+                            <div class="thm-heading">
+                                <h2>{{ statusFilters.statusName }}</h2>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
+                            aria-labelledby="dropdownMenuButton1">
+                            <li @click="setStatus(null, 'All', '')">
+                                <a class="dropdown-item" href="#">
+                                    <div class="thm-heading">
+                                        <h2>All</h2>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="pending-thm" @click="setStatus(2, 'Pending', 'pending-thm')">
+                                <a class="dropdown-item" href="#">
+                                    <div class="thm-heading">
+                                        <h2>Pending</h2>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="open-thm" @click="setStatus(0, 'Open', 'open-thm')">
+                                <a class="dropdown-item" href="#">
+                                    <div class="thm-heading">
+                                        <h2>Open</h2>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="close-thm" @click="setStatus(1, 'Close', 'close-thm')">
+                                <a class="dropdown-item" href="#">
+                                    <div class="thm-heading">
+                                        <h2>Close</h2>
+                                    </div>
+
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="operator-table-sec tickets-table-sec">
@@ -75,7 +116,7 @@
                                         <h2>{{ item.added_by_user?.userid || '' }}</h2>
                                     </td>
                                     <td v-if="userData?.role_id == 1 || userData?.role_id == 2">
-                                        <h2>{{ item.whitelabel_user?.userid || ''  }}</h2>
+                                        <h2>{{ item.whitelabel_user?.userid || '' }}</h2>
                                     </td>
                                     <td>
                                         <div class="status-sec">
@@ -90,7 +131,7 @@
                                                         </div>
                                                     </button>
                                                     <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
-                                                        aria-labelledby="dropdownMenuButton1" >
+                                                        aria-labelledby="dropdownMenuButton1">
                                                         <li v-for="(status, id) in ticket_status" :key="id"
                                                             :class="status.theme" @click="setDetails(item, id)">
                                                             <a v-if="item.status == id" class="dropdown-item" href="#">
@@ -111,7 +152,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <h2 :title="item.description">{{ item.description.length > 15 ? item.description.substring(0, 15) + '...' :
+                                        <h2 :title="item.description">{{ item.description.length > 15 ?
+                                            item.description.substring(0, 15) + '...' :
                                             item.description }}</h2>
                                     </td>
                                     <td>
@@ -174,6 +216,11 @@ export default {
 
             item_details: {},
             update_item_details: {},
+            statusFilters: {
+                status: null,
+                class: '',
+                statusName: 'All'
+            }
         }
     },
     watch: {
@@ -188,15 +235,15 @@ export default {
                 }
             }
         },
-        '$store.state.data':function () {
-            for (var i = 0; i < this.listItems.length; i++) { 
-                if(this.listItems[i].id==this.$store.state.data.id ){
+        '$store.state.data': function () {
+            for (var i = 0; i < this.listItems.length; i++) {
+                if (this.listItems[i].id == this.$store.state.data.id) {
                     this.listItems[i].status = this.$store.state.data.status
                 }
             }
         },
-        '$store.state.item_data':function () {
-              this.setUpdateDetails(this.$store.state.item_data);
+        '$store.state.item_data': function () {
+            this.setUpdateDetails(this.$store.state.item_data);
         }
     },
     computed: {
@@ -212,6 +259,11 @@ export default {
                     || (item.whitelabel_user && item.whitelabel_user.userid.toLowerCase().includes(this.search.toLowerCase()))
                     || item.description.toLowerCase().includes(this.search.toLowerCase())
                 )
+                );
+            }
+            if (this.statusFilters.status != null) {
+                return filtered_data.filter(item =>
+                    item.status === this.statusFilters.status
                 );
             }
             return filtered_data;
@@ -231,7 +283,7 @@ export default {
                     url = '/' + this.resource + '/get-list?page=' + this.pagination_data.current_page;
                 }
                 url += '&per_page=' + this.pagination_data.per_page;
-                if(this.userid){
+                if (this.userid) {
                     url += `&userid=${this.userid}`
                 }
                 axios.get(url).then(res => {
@@ -272,15 +324,21 @@ export default {
                 })
             }
             this.$store.commit('singledata', item)
-        
+
         },
         setDetails(item, status) {
-            if(item.status != status) {
+            if (item.status != status) {
                 this.update_item_details = { id: item.id, status: status };
             }
         },
         setUpdateDetails(data) {
             this.update_item_details = data;
+        },
+        setStatus(status, statusName, className) {
+            this.statusFilters.status = status;
+            this.statusFilters.class = className;
+            this.statusFilters.statusName = statusName
+            this.$refs.closeStatusFilter.click();
         }
     },
     created() {

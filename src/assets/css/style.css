@@ -563,7 +563,7 @@ header{
 	border-radius: 8px;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-start;
 }
 
 
@@ -874,6 +874,7 @@ background-color: var(--border-color);
     padding: 6px 24px;
     width: 101px;
     text-align: left;
+	height: 2.4rem;
 }
 
 .entries-select-dropdown button .thm-heading::before {

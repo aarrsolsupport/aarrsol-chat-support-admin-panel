@@ -8,6 +8,13 @@
                 </a>
              </div>
              <div class="admin-notification">
+                <!-- <div class="notification-sec">
+                   <button type="button" class="header-admin-btn">
+                      <div class="notification-img">
+                         <img src="@/assets/images/chat-icon.svg" alt="">
+                      </div>
+                   </button>
+                </div> -->
                 <div class="notification-sec">
                    <button type="button" class="header-admin-btn">
                       <div class="notification-img">
@@ -53,15 +60,8 @@
          this.$store.commit('setAuthUser', JSON.parse(localStorage.getItem('authData')))
       },
       created() {
-         var user = this.authData;
-         // console.log(['Header created', user])
-         // if (user && user.id != "") {
-            window.Echo.connect();
-            window.Echo.channel("message-channel").listen(".receive-messages", (data) => {
-               // alert('LISTENED')
-                  // console.log(['____MessageEvent____', data, user])
-               });
-         // }
+         window.Echo.disconnect();
+         window.Echo.connect();
       },
       methods: {
          logout() {

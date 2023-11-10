@@ -128,7 +128,7 @@
                 </template>
             </div>
             <div v-if="current_chat.chat_room_id" class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec"
-                :class="showChat && current_chat.length ? 'show' : ''">
+                :class="showChat && current_chat.chat_room_id ? 'show' : ''">
                 <div class="operator-table-sec chat-flow-tables ">
                     <div class="messages-item-sec">
                         <div class="user-active-heading">
@@ -234,7 +234,7 @@
                                             </div>
                                         </button>
                                         <div class="send-btn-sec">
-                                            <button class="thm-btn">Send</button>
+                                            <button class="thm-btn" @click="sendMessage">Send</button>
                                         </div>
                                     </div>
                                 </div>
@@ -320,6 +320,7 @@ export default {
     },
     data() {
         return {
+            messages: [],
             my_chats: true,
             chat_type: 0,
             unread_count: { 0: 0, 1: 0, 2: 0 },
@@ -372,13 +373,18 @@ export default {
     methods: {
         getChatsMessages(item) {
             this.current_chat = Object.assign({}, item)
-            console.log(this.current_chat)
+            this.current_chat.user_id = this.authData.id
+            console.log(['current_chat',this.current_chat])
             this.$store.commit('is_loader', true);
             axios.post('chat/get-messages', { room_id: this.current_chat.chat_room_id })
                 .then(res => {
                     console.log(['res', res])
                     this.showChat = 1
                     this.messages = Object.assign([], res.data.data.messages)
+                    window.Echo.channel("message-channel."+this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
+                        this.messages.push(data)
+                        this.current_chat.last_message_timestamp = data.sent_at_timestamp
+                    });
                     // this.unread_count[this.chat_type] = res.data.data.unread_count;
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -483,6 +489,26 @@ export default {
         showAudio() {
             this.audio = !this.audio
         },
+        sendMessage() {
+            console.log({ 
+                chat_room_id: this.current_chat.chat_room_id, 
+                sender_type: 2, 
+                sender_id: this.current_chat.user_id, 
+                message: this.input 
+            })
+            axios.post('chat/send-message', { 
+                chat_room_id: this.current_chat.chat_room_id, 
+                sender_type: 2, 
+                sender_id: this.current_chat.user_id, 
+                message: this.input 
+            })
+            .then(res => {
+                this.input = null
+                console.log(res)
+            }).catch(e => {
+                console.error(e);
+            })
+        }
     }
 }
 </script>

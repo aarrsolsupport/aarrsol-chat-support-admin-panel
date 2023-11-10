@@ -48,6 +48,7 @@ axios.interceptors.response.use(function (response){
     // console.error(['error' , error])
     if(error.response.status == 401)
     {
+        localStorage.removeItem('authData'); 
         localStorage.removeItem('_token'); 
         router.push('/login') 
         window.store.commit('is_loader', false);

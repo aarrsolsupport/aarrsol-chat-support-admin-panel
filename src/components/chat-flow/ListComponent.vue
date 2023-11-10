@@ -436,6 +436,7 @@ export default {
     },
     data() {
         return {
+            resource: 'chat-flow',
             templates: [
                 { flow: {} }
             ],
@@ -479,7 +480,7 @@ export default {
                 this.new_template.user_id = this.user_id
             }
             console.log(this.new_template)
-            axios.post('/chat-flow/update-template-details', this.new_template)
+            axios.post('/' + this.resource + '/update-template-details', this.new_template)
                 .then(res => {
                     // Add New Template
                     if (res.data.data.template_id) {
@@ -500,7 +501,7 @@ export default {
         },
         getChatTemplates() {
             this.$store.commit('is_loader', true);
-            axios.post('/chat-flow/get-chat-templates', { userid: this.user_id })
+            axios.post('/' + this.resource + '/get-chat-templates', { userid: this.user_id })
                 .then(res => {
                     this.$store.commit('is_loader', false);
                     if (res.data.data.templates) {
@@ -518,7 +519,7 @@ export default {
         getChatFlow(template_id = 0) {
             if (this.template_id != template_id) {
                 this.$store.commit('is_loader', true);
-                axios.post('/chat-flow/get-flow', { template_id: template_id })
+                axios.post('/' + this.resource + '/get-flow', { template_id: template_id })
                     .then(res => {
                         this.$store.commit('is_loader', false);
                         if (res.data.data.template_id) {
@@ -605,7 +606,7 @@ export default {
         },
         initiateLiveChat(node) {
             this.$store.commit('is_loader', true);
-            axios.post('/chat-flow/set-next', {
+            axios.post('/' + this.resource + '/set-next', {
                 id: node.id,
                 type: node.node_type,
                 next: (3 - node.next), //  3-2 = 1 , 3-1 = 2
@@ -638,7 +639,7 @@ export default {
                         id: this.edit_node_id
                     }))
 
-                    axios.post('/chat-flow/update-default', form_data)
+                    axios.post('/' + this.resource + '/update-default', form_data)
                         .then(res => {
                             this.$store.commit('is_loader', false);
                             // this.edit_node_id = res.data.data.node.id
@@ -673,7 +674,7 @@ export default {
                     form_data.append("child_node", JSON.stringify({
                         options: this.categories_data,
                     }))
-                    axios.post('/chat-flow/update-default', form_data).then(res => {
+                    axios.post('/' + this.resource + '/update-default', form_data).then(res => {
                         this.$store.commit('is_loader', false);
                         if (this.parent_node_data.id == 0) {
                             if (res.data.data.template_id) {
@@ -718,7 +719,7 @@ export default {
                     form_data.append('file[]', this.uploaded_files[i]);
                 }
 
-                axios.post('/chat-flow/update-node-details', form_data)
+                axios.post('/' + this.resource + '/update-node-details', form_data)
                     .then(res => {
                         this.$store.commit('is_loader', false);
                         if (!res.data.error) {

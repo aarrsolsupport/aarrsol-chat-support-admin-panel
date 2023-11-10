@@ -156,7 +156,7 @@ export default {
                     name: this.$store.state.agent_change.item.data.name,
                     is_active: (this.$store.state.agent_change.item.data.is_active == 1) ? 1 : 0,
                     userid: this.$store.state.agent_change.item.data.userid,
-                    categories: Object.assign({}, this.$store.state.agent_change.item.data.categories),
+                    categories: Object.assign({}, this.$store.state.agent_change.item.categories),
                 };
                 this.listItems.unshift(list);
                 if (this.listItems.length >= this.pagination_data.per_page)

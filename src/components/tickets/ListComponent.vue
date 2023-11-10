@@ -2,14 +2,14 @@
     <div class="borad-inner-body-sec">
         <div class="borad-inner-body">
             <div class="borad-inner-body-con">
-                <div class="search-sec bg-transparent border-0 p-0">
+                <div class="search-sec bg-transparent border-0 p-0 ticket-filter-search-sec">
                     <div class="search-input-sec">
                         <input type="text" placeholder="Search" v-model="search">
                         <div class="search-icon">
                             <img src="@/assets/images/search-icon.svg" alt="">
                         </div>
                     </div>
-                    <div class="dropdown entries-select-dropdown ms-3">
+                    <div class="dropdown entries-select-dropdown ms-3 ticket-filter">
                         <button class="thm-btn dropdown-toggle entries-select-list" :class="statusFilters.class"
                             type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"
                             ref="closeStatusFilter">
@@ -346,3 +346,13 @@ export default {
     },
 }
 </script>
+
+<style>
+.ticket-filter-search-sec {
+    justify-content: flex-start;
+}
+
+.ticket-filter button {
+    height: 2.4rem;
+}
+</style>

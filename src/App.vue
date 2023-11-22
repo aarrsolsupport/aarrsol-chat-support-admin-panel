@@ -1,7 +1,7 @@
 <template>
     <div>
         <loader-component v-if="isLoader" />
-        <template v-if=" $route.path == '/login' ||  $route.path == '/support-chat' ">
+        <template v-if="$route.path == '/login' || $route.name == 'support-chat'">
             <router-view />
         </template>
         <template v-else-if="authData">

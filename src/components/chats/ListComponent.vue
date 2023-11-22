@@ -313,7 +313,12 @@ export default {
         filteredSuggestions() {
             const filtered_data = this.suggestions;
             if (this.input) {
-                return filtered_data.filter(item => item.description.toLowerCase().includes(this.input.toLowerCase()));
+                let dataToReturn = filtered_data.filter(item => item.description.toLowerCase().includes(this.input.toLowerCase()));
+                if (dataToReturn.length) {
+                    return dataToReturn
+                }
+                return filtered_data;
+
             }
             return filtered_data;
         },
@@ -374,14 +379,14 @@ export default {
         getChatsMessages(item) {
             this.current_chat = Object.assign({}, item)
             this.current_chat.user_id = this.authData.id
-            console.log(['current_chat',this.current_chat])
+            console.log(['current_chat', this.current_chat])
             this.$store.commit('is_loader', true);
             axios.post('chat/get-messages', { room_id: this.current_chat.chat_room_id })
                 .then(res => {
                     console.log(['res', res])
                     this.showChat = 1
                     this.messages = Object.assign([], res.data.data.messages)
-                    window.Echo.channel("message-channel."+this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
+                    window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
                         this.messages.push(data)
                         this.current_chat.last_message_timestamp = data.sent_at_timestamp
                     });

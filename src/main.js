@@ -4,9 +4,8 @@ import router from './router'
 import store from './store'
 import filters from './helpers/filters'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
 import '../src/assets/styles.scss';
-import 'bootstrap/dist/js/bootstrap.bundle'
+import './assets/js/bootstrap.bundle.min.js'
 import 'vue3-emoji-picker/css'
 
 import jQuery from "jquery"

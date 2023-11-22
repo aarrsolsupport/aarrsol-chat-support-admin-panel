@@ -65,7 +65,8 @@ const routes = createRouter({
         },
 
         {
-            path: '/support-chat',
+            path: '/support-chat/:ref_id/:user_ip/:user_id?',
+            name: 'support-chat',
             component: () => import('@/components/EndUserChatComponent.vue')
         },
     ],

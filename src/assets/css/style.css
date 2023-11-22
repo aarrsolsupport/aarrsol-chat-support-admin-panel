@@ -1206,11 +1206,6 @@ background-color: var(--border-color);
 	margin: 10px;
 }
 
-.chat-icon{
-	display: block;
-	margin-bottom: 10px;
-}
-
 .chat-flow-con {
 	display: block;
 }
@@ -1949,12 +1944,6 @@ padding-left: 0px;
 
 /* user chat sec */
 
-.chat-heading {
-	background-color: var(--body-color);
-	padding: 12px 10px;
-	border-radius: 12px 12px 0px 0px;
-}
-
 
 .chat-heading .thm-heading h2{
 	display: flex;
@@ -2072,33 +2061,12 @@ padding-left: 0px;
 	margin-right: 4px;
 }
 
-
-.messages-item-content{
-	border-radius: 0px 8px 8px 8px;
-	border: 1px solid var(--body-color);
-	padding: 10px 12px;
-	width: fit-content;
-	background-color: var(--blue-color);
-	margin-top: 6px;
-}
-
 .messages-body-sec{
 	padding: 10px 12px;
 	overflow-y: auto;
      height: calc(100vh - 0px);
 
 }
-.message-time{
-	font-weight: 500 !important;
-	font-size: 12px !important;
-}
-
-.outgoing-messages {
-    display: flex;
-    justify-content: end;
-    text-align: end;
-}
-
 
 .video-sec{
 	margin-top: 10px;

@@ -60,7 +60,7 @@
          this.$store.commit('setAuthUser', JSON.parse(localStorage.getItem('authData')))
       },
       created() {
-         window.Echo.disconnect();
+         //window.Echo.disconnect();
          window.Echo.connect();
       },
       methods: {

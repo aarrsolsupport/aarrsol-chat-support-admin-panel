@@ -387,7 +387,7 @@
 
                <button class="voice-bar-btn">
                   <div class="voice-bar-sec voice-mic-sec">
-                     <img src="assets/images/mic-icon.svg" alt="">
+                     <img src="@/assets/images/mic-icon.svg" alt="">
                   </div>
                </button>
                <div class="sub-messages-con text-center mt-3">

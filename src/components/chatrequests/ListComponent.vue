@@ -6,7 +6,7 @@
                     <div class="search-input-sec">
                         <input type="text" placeholder="Search">
                         <div class="search-icon">
-                            <img src="assets/images/search-icon.svg" alt="">
+                            <img src="@/assets/images/search-icon.svg" alt="">
                         </div>
                     </div>
 
@@ -186,7 +186,7 @@
 
                             <div class="menu-item-con">
                                 <div class="menu-item-img header-admin-btn">
-                                    <img src="assets/images/reject-icon.svg" alt="">
+                                    <img src="@/assets/images/reject-icon.svg" alt="">
                                 </div>
                                 <div class="thm-heading">
                                     <p>Are you sure want to Reject?</p>

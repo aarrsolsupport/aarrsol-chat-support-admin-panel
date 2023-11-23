@@ -488,7 +488,7 @@ export default {
             if (this.user_id) {
                 this.new_template.user_id = this.user_id
             }
-            console.log(this.new_template)
+            //console.log(this.new_template)
             axios.post('/' + this.resource + '/update-template-details', this.new_template)
                 .then(res => {
                     // Add New Template
@@ -617,11 +617,11 @@ export default {
             axios.post('/' + this.resource + '/set-next', {
                 id: node.id,
                 type: node.node_type,
-                next: (3 - node.next), //  3-2 = 1 , 3-1 = 2
+                next: ( node.next == 2 ) ? 1 : 2
             })
                 .then(() => {
                     this.$store.commit('is_loader', false);
-                    node.next = 3 - node.next
+                    node.next = ( node.next == 2 ) ? 1 : 2;
                 }).catch(e => {
                     this.$toast.error(e.response.message ?? e.response.data.message);
                     this.$store.commit('is_loader', false);

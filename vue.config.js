@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     host: '0.0.0.0',
-    port: process.env.VUE_APP_API_PORT,
+    port: process.env.VUE_APP_ADMIN_PORT,
     https: false,
     client: {
       webSocketURL: {

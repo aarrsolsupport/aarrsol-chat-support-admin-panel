@@ -37,35 +37,43 @@
             </div>
             <div class="modal-body chat-modal-body">
                 <section class="chatbot-wrapper" style="height: 100vh;">
-                    <div class="messages-container" v-if="chatComponent == 'lang'">
+                    <div class="messages-container" v-if="chatComponent == 'lang' || chatComponent == 'opt'">
                         <div class="messages-list-sec">
-
-                            <div class="messages-item">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">21-02-2023 06:00 AM </span>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <p>Hi, I’m your personal Victory Assistant</p>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <p>Choose your language from the list below</p>
+                                <div class="messages-item">
+                                    <div class="messages-item-con">
+                                        <div class="sub-messages-con">
+                                            <span class="message-time">21-02-2023 06:00 AM </span>
+                                        </div>
+                                        <div class="messages-item-content">
+                                            <p>Choose your language from the list below</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
 
-                            <div class="messages-item outgoing-messages">
-                                <div class="season-message-tab">
-                                    <ul>
-                                        <li><button type="button" class="thm-btn">हिन्दी</button> </li>
-                                        <li><button type="button" class="thm-btn">English</button></li>
-                                        <li><button type="button" class="thm-btn">ગુજરાતી</button></li>
-                                        <li><button type="button" class="thm-btn">தமிழ்</button></li>
-                                        <li><button type="button" class="thm-btn">पंजाबी</button></li>
-                                    </ul>
+                                <div class="messages-item outgoing-messages">
+                                    <div class="season-message-tab">
+                                        <ul>
+                                            <li v-for="(item, i_value, index) in nextActionData" :key="index">
+                                                <button type="button" class="thm-btn"
+                                                    @click="callForSelectLanguageAndOptions(i_value, item)">
+                                                    {{ item }}
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <!-- <div class="messages-item outgoing-messages" v-if="selectedLang">
+                                    <div class="messages-item-con">
+                                        <div class="sub-messages-con">
+                                            <span class="message-time">21-02-2023 06:00 AM </span>
+                                        </div>
+                                        <div class="messages-item-content">
+                                            <p>{{ selectedLang }}</p>
+                                        </div>
+                                    </div>
+                                </div> -->
 
                         </div>
                     </div>
@@ -78,7 +86,7 @@
                                         <label for="nameinput" class="form-label">User Name</label>
                                         <div class="assistant-input-sec">
                                             <input type="text" class="form-control" id="nameinput" placeholder="Enter Name"
-                                                v-model="userId">
+                                                v-model="userName">
                                             <button type="submit" class="thm-btn"
                                                 @click="callForAddUserid()">Submit</button>
                                         </div>
@@ -405,24 +413,32 @@ export default {
             headerColor: null,
             refId: '',
             userId: null,
+            userName: null,
             chat_id: '',
             chatComponent: null,
             chatTextBox: false,
-            userIp: null
+            userIp: null,
+            nextActionData: null,
+            selectedLang: null,
+            roomData: {
+                roomId: null,
+            }
         }
     },
     mounted() {
         this.refId = this.$route.params.ref_id;
-        this.userId = this.$route.params.user_id;
+        this.userName = this.$route.params.user_id;
         this.userIp = this.$route.params.user_ip;
         this.getChatWindow()
-        // window.Echo.connect();
-        // console.log("message-channel."+this.room_id)
-        // window.Echo.channel("message-channel."+this.room_id).listen(".receive-messages", (data) => {
-        //     this.messages.push(data)
-        // });
     },
     methods: {
+        startSocketBrodcast() {
+            window.Echo.connect();
+            window.Echo.channel("message-channel." + this.room_id).listen(".receive-messages", (data) => {
+                // this.messages.push(data)
+                console.log(data);
+            });
+        },
         sendMessage() {
             axios.post('/chat/send-message', { chat_room_id: this.room_id, sender_type: 1, sender_id: this.end_user_id, message: this.input })
                 .then(res => {
@@ -436,7 +452,7 @@ export default {
             const requestData = {
                 ref_id: this.refId,
             };
-            this.userId ? requestData.user_id = this.userId : ''
+            this.userName ? requestData.user_id = this.userName : ''
 
             axios.post('/chat-support/get-data', requestData)
                 .then(res => {
@@ -453,7 +469,7 @@ export default {
                 })
         },
         getChatMessages() {
-            axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userId, chat_id: this.chat_id })
+            axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: this.chat_id })
                 .then(res => {
                     console.log(res)
                 }).catch(e => {
@@ -461,15 +477,36 @@ export default {
                 })
         },
         callForAddUserid() {
-            axios.post('/chat-support/add-userid', { ref_id: this.refId, user_id: this.userId, ip_address: this.userIp })
+            axios.post('/chat-support/add-userid', { ref_id: this.refId, user_id: this.userName, ip_address: this.userIp })
                 .then(res => {
-                    this.chatComponent = res.data.data.next_action.next_action
+                    this.chatComponent = res.data.data.next_action.next_action;
+                    this.nextActionData = res.data.data.next_action.data;
+                    this.roomData.roomId = res.data.data.next_action.room_id;
+                    this.userId = res.data.data.user_id
+                    this.startSocketBrodcast();
                 }).catch(e => {
                     console.error(e);
                 })
         },
         cloaseChatModal() {
             window.parent.postMessage('closeModal', '*');
+        },
+        callForSelectLanguageAndOptions(typeId, lang) {
+            this.selectedLang = lang;
+            let data = {
+                room_id: this.roomData.roomId,
+                type: this.chatComponent,
+                type_id: typeId
+            }
+            this.chatComponent == 'opt' ? data.user_id = this.userId : ''
+
+            axios.post('/chat-support/send-selected-option', data)
+                .then(res => {
+                    this.chatComponent = res.data.data.next_action;
+                    this.nextActionData = res.data.data.data;
+                }).catch(e => {
+                    console.error(e);
+                })
         }
     }
 }

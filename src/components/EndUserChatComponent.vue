@@ -37,8 +37,63 @@
             </div>
             <div class="modal-body chat-modal-body">
                 <section class="chatbot-wrapper" style="height: 100vh;">
-                    <!-- LANGUAGE -->
-                    <div class="messages-container" v-if="chatComponent == 'lang' || chatComponent == 'opt'">
+                    <!-- ADD USER -->
+                    <div class="messages-container" v-if="chatComponent == 'add_user'">
+                        <div class="messages-list-sec">
+
+                            <div class="messages-item">
+                                <div class="messages-item-con">
+                                    <div class="assistant-input">
+                                        <label for="nameinput" class="form-label">User Name</label>
+                                        <div class="assistant-input-sec">
+                                            <input type="text" class="form-control" id="nameinput" placeholder="Enter Name"
+                                                v-model="userName">
+                                            <button type="submit" class="thm-btn"
+                                                @click="callForAddUserid()">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                    <!-- CHAT LIST -->
+                    <div class="messages-container" v-if="chatComponent == 'chat_list'">
+                        <div class="messages-list-sec pb-3">
+
+                            <div class="messages-item" v-if="startNewChat">
+                                <button type="button" class="messages-item-user start-chat"
+                                    @click="callForCreateChatRoom()">
+                                    <div class="user-details messages-item-content bg-transparent mt-0">
+                                        <p>Start a new chat</p>
+                                    </div>
+                                    <div class="chat-icon">
+                                        <img src="@/assets/images/start-chat-icon.svg" alt="">
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="messages-item" v-for="(chat, c_index) in chatList" :key="c_index">
+                                <button type="button" class="messages-item-user" :class="{ active: chat.status == 1 }" @click="getChatMessages(chat)">
+                                    <div class="user-img">
+                                        <img src="@/assets/images/user-img1.png" alt="">
+                                    </div>
+                                    <div class="user-details chat-heading">
+                                        <h2>{{ chat.agent_name || '-' }}</h2>
+                                        <div class="sub-messages-con">
+                                            <span class="message-time ms-0">{{
+                                                $filters.messageDateTimeFormat(chat.last_message_timestamp) }}</span>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- MAIN CHAT SECTION -->
+                    <div class="messages-container" v-if="chatComponent == 'lang' || chatComponent == 'opt' || chatComponent == 'live_agent'">
                         <div class="messages-list-sec">
                             <div v-html="html" v-for="(html, index) in messagesList" :key="index"></div>
                             <div class="messages-item outgoing-messages">
@@ -90,231 +145,6 @@
                                 </div>
                             </div> -->
                     </div>
-                    <!-- ADD USER -->
-                    <div class="messages-container" v-if="chatComponent == 'add_user'">
-                        <div class="messages-list-sec">
-
-                            <div class="messages-item">
-                                <div class="messages-item-con">
-                                    <div class="assistant-input">
-                                        <label for="nameinput" class="form-label">User Name</label>
-                                        <div class="assistant-input-sec">
-                                            <input type="text" class="form-control" id="nameinput" placeholder="Enter Name"
-                                                v-model="userName">
-                                            <button type="submit" class="thm-btn"
-                                                @click="callForAddUserid()">Submit</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
-                        </div>
-                    </div>
-                    <!-- MAIN CHAT NOT REQ REFRENCE ONLY -->
-                    <div class="messages-container" v-if="false">
-                        <div class="messages-list-sec">
-
-                            <div class="messages-item">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">21-02-2023 06:00 AM </span>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <p>Hi, I’m your personal Victory Assistant</p>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <p>Choose your language from the list below</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="messages-item outgoing-messages d-none">
-                                <div class="season-message-tab">
-                                    <ul>
-                                        <li><button type="button" class="thm-btn">हिन्दी</button> </li>
-                                        <li><button type="button" class="thm-btn">English</button></li>
-                                        <li><button type="button" class="thm-btn">ગુજરાતી</button></li>
-                                        <li><button type="button" class="thm-btn">தமிழ்</button></li>
-                                        <li><button type="button" class="thm-btn">पंजाबी</button></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="messages-item outgoing-messages">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">21-02-2023 06:00 AM </span>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <p>English</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="messages-item">
-                                <div class="messages-item-con">
-                                    <div class="messages-item-content">
-                                        <p>Please Choose an option from below👎</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="messages-item outgoing-messages ">
-                                <div class="season-message-tab">
-                                    <ul>
-                                        <li><button type="button" class="thm-btn" data-bs-toggle="modal"
-                                                data-bs-target="#morechatmodal">There is a issue with bel slip</button>
-                                        </li>
-                                        <li><button type="button" class="thm-btn" data-bs-toggle="modal"
-                                                data-bs-target="#morechatmodal">Issue with Login</button></li>
-                                        <li><button type="button" class="thm-btn" data-bs-toggle="modal"
-                                                data-bs-target="#morechatmodal">Issue with Wallet</button></li>
-                                        <li><button type="button" class="thm-btn" data-bs-toggle="modal"
-                                                data-bs-target="#morechatmodal">Live Chat</button></li>
-                                    </ul>
-                                </div>
-                                <div class="previous-restart-sec">
-                                    <button type="button" class="thm-btn">Previous option</button>
-                                    <button type="button" class="thm-btn">Restart Chat</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- CHAT LIST -->
-                    <div class="messages-container" v-if="chatComponent == 'chat_list'">
-                        <div class="messages-list-sec pb-3">
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user start-chat"
-                                    @click="callForCreateChatRoom()">
-                                    <div class="user-details messages-item-content bg-transparent mt-0">
-                                        <p>Start a new chat</p>
-                                    </div>
-                                    <div class="chat-icon">
-                                        <img src="@/assets/images/start-chat-icon.svg" alt="">
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  active">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img1.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  ">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img2.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  ">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img3.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  ">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img4.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  ">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img1.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  ">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img2.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  ">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img3.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                            <div class="messages-item">
-                                <button type="button" class="messages-item-user  ">
-                                    <div class="user-img">
-                                        <img src="@/assets/images/user-img4.png" alt="">
-                                    </div>
-                                    <div class="user-details chat-heading">
-                                        <h2>Designer Hari</h2>
-                                        <div class="sub-messages-con">
-                                            <span class="message-time ms-0">21-02-2023 06:00 AM </span>
-                                        </div>
-                                    </div>
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
                 </section>
                 <section class="messages-type-wrapper" v-if="chatTextBox">
                     <div class="messages-type-sec">
@@ -331,7 +161,8 @@
                                 </div>
                             </div>
                             <div class="messages-type-btn-sec">
-                                <button class="messages-type-btn" @click="sendMessage"><img src="@/assets/images/send-icon.svg" alt=""></button>
+                                <button class="messages-type-btn" @click="sendMessage"><img
+                                        src="@/assets/images/send-icon.svg" alt=""></button>
                             </div>
                         </div>
                     </div>
@@ -403,7 +234,7 @@
 
                <button class="voice-bar-btn">
                   <div class="voice-bar-sec voice-mic-sec">
-                     <img src="@/assets/images/mic-icon.svg" alt="">
+                     <img src="assets/images/mic-icon.svg" alt="">
                   </div>
                </button>
                <div class="sub-messages-con text-center mt-3">
@@ -432,11 +263,13 @@ export default {
             userName: null,
             chat_id: '',
             chatComponent: null,
-            chatTextBox: true,
+            chatTextBox: false,
             userIp: null,
             nextActionData: null,
             roomId: null,
-            messagesList: []
+            messagesList: [],
+            chatList: null,
+            startNewChat: false
         }
     },
     mounted() {
@@ -449,39 +282,35 @@ export default {
         startSocketBrodcast() {
             window.Echo.connect();
             window.Echo.channel("message-channel." + this.roomId).listen(".receive-messages", (data) => {
-                if (data.sender_type == 0 || data.sender_type == 2) {
-                    let html = `<div class="messages-item">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
-                                        </div>
-                                        <div class="messages-item-content">`
-                    html += `<p>${data.message}</p>
-                                        </div>
+                let outgoingClass = data.sender_type == 1 ? 'outgoing-messages' : '';
+                let html = `<div class="messages-item ${outgoingClass}">
+                                <div class="messages-item-con">
+                                    <div class="sub-messages-con">
+                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
                                     </div>
-                                </div>`
-                    this.messagesList.push(html)
-                } else if (data.sender_type == 1) {
-                    let html = ` <div class="messages-item outgoing-messages">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
-                                        </div>
-                                        <div class="messages-item-content">
-                                            <p>${data.message}</p>
-                                        </div>
+                                    <div class="messages-item-content">
+                                        <p>${data.message}</p>
                                     </div>
-                                </div>`
-                    this.messagesList.push(html)
+                                </div>
+                            </div>`
+                this.messagesList.push(html)
+                
+                this.chatComponent = data.next.next_action;
+                this.nextActionData = data.next.data;
+                if(this.chatComponent == 'live_agent') {
+                    this.chatTextBox = true
                 }
-                // this.messages.push(data)
-                console.log(data);
+                if(this.nextActionData == 'end') {
+                    this.chatTextBox = false
+                }
+                // console.log(data);
             });
         },
         sendMessage() {
-            axios.post('/chat/send-message', { room_id: this.roomId, user_id: this.userId, message: this.input })
+            axios.post('/chat-support/send-message', { room_id: this.roomId, user_id: this.userId, message: this.input })
                 .then(res => {
-                    console.log(res)
+                    this.input = '';
+                    // console.log(res)
                 }).catch(e => {
                     console.error(e);
                 })
@@ -490,17 +319,21 @@ export default {
             this.$store.commit('is_loader', true);
             const requestData = {
                 ref_id: this.refId,
+                ip_address: this.userIp
             };
             this.userName ? requestData.user_id = this.userName : ''
 
             axios.post('/chat-support/get-data', requestData)
                 .then(res => {
-                    console.log(res)
                     if (res.status == 200) {
-                        this.domainName = res.data.data.white_lable_details.website_id
-                        this.headerColor = res.data.data.settings.header_color
-                        this.chatComponent = res.data.data.component
-                        this.userId = res.data.data.end_user_id
+                        this.domainName = res.data.data.white_lable_details.website_id;
+                        this.headerColor = res.data.data.settings.header_color;
+                        this.chatComponent = res.data.data.component;
+                        this.userId = res.data.data.end_user_id;
+                        this.chatList = res.data.data.chats;
+                        if(!res.data.data.open_chats) {
+                            this.startNewChat = true;
+                        }
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -508,10 +341,31 @@ export default {
                     this.$store.commit('is_loader', false);
                 })
         },
-        getChatMessages() {
-            axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: this.chat_id })
+        getChatMessages(data) {
+            axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: data.chat_id })
                 .then(res => {
-                    console.log(res)
+                    let data = res.data.data.messages;
+                    for (let i = 0; i < data.length; i++) {
+                        let outgoingClass = data[i].sender_type == 1 ? 'outgoing-messages' : '';
+                        let html = `<div class="messages-item ${outgoingClass}">
+                                <div class="messages-item-con">
+                                    <div class="sub-messages-con">
+                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                                    </div>
+                                    <div class="messages-item-content">
+                                        <p>${data[i].message}</p>
+                                    </div>
+                                </div>
+                            </div>`
+                        this.messagesList.unshift(html)
+                    }
+                    this.chatComponent = 'live_agent'
+                    this.userId = res.data.data.end_user_id;
+                    this.roomId = res.data.data.chat_room_id;
+                    if(data.agent_name) {
+                        this.chatTextBox = true;
+                    }
+                    this.startSocketBrodcast();
                 }).catch(e => {
                     console.error(e);
                 })
@@ -530,33 +384,20 @@ export default {
                 })
         },
         cloaseChatModal() {
-            window.parent.postMessage('closeModal', '*');
+            window.parent.postMessage('closeChatModal', '*');
         },
         callForSelectLanguageAndOptions(typeId, lang) {
-            if (this.chatComponent == 'lang') {
-                let langHtml = ` <div class="messages-item outgoing-messages">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.getDateTIme()}</span>
-                                        </div>
-                                        <div class="messages-item-content">
-                                            <p>${lang}</p>
-                                        </div>
-                                    </div>
-                                </div>`
-                this.messagesList.push(langHtml);
-            }
+           
             let data = {
                 room_id: this.roomId,
                 type: this.chatComponent,
-                type_id: typeId
+                type_id: typeId,
+                user_id: this.userId
             }
-            this.chatComponent == 'opt' ? data.user_id = this.userId : ''
 
             axios.post('/chat-support/send-selected-option', data)
                 .then(res => {
-                    this.chatComponent = res.data.data.next_action;
-                    this.nextActionData = res.data.data.data;
+
                 }).catch(e => {
                     console.error(e);
                 })
@@ -569,7 +410,6 @@ export default {
                     this.roomId = res.data.data.room_id;
                     this.optionOrLanguage();
                     this.startSocketBrodcast();
-                    console.log(res)
                 }).catch(e => {
                     console.error(e);
                 })
@@ -603,7 +443,6 @@ export default {
             }
         },
         getDateTIme() {
-
             return moment(new Date()).format('DD/MM/YYYY hh:mm A');
         }
     }

@@ -34,10 +34,11 @@ app.config.globalProperties.$filters = filters;
 app.mount('#app');
       
 import axios from "axios"
-axios.defaults.baseURL = 'http://admin.chat-system.dll/api/'
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Authorization'] ='Bearer ' + localStorage.getItem('_token');
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
 // This code will catch 401 status returend requests 
 axios.interceptors.response.use(function (response){
@@ -62,16 +63,19 @@ window.io = require('socket.io-client');
 // Have this in case you stop running your laravel echo server
 if (typeof io !== 'undefined') {
     window.Echo = new Echo({
-        namespace: 'App\\Events',
         broadcaster: 'socket.io',
-        host: 'http://admin.chat-system.dll'+':2096',
+        namespace: 'App\\Events',
+        host: process.env.VUE_APP_WEBSOCKETS_SERVER+':2096',
         authEndpoint: "/api/broadcasting/auth",
-        transports: ['websocket'],
+        // authEndpoint: process.env.VUE_APP_API_BASE_URL+ ":" + process.env.VUE_APP_API_PORT + "/api/broadcasting/auth",
+        // wsHost: process.env.VUE_APP_WEBSOCKETS_SERVER,
+        // wsPort: 2096,
         auth: {
             headers: {
-              Authorization: 'Bearer ' + localStorage.getItem('_token'),
+                Authorization: 'Bearer ' + localStorage.getItem('_token'),
             },
         },
+        transports: ['websocket'],
     });
     
     // window.Echo.connector.socket.on("connect", function () {

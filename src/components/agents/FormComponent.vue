@@ -166,8 +166,7 @@
                         }
                         break;
                     case 2: // Setup Edit form Data & requisites
-                    console.log(item.categories.length)
-                        if(item.categories.length > 0) {
+                        if(item.categories) {
                             for (const element of Object.values(item.categories)) {
                                 this.agentCats[element.category_id] = { 'id': element.id, 'category_id': element.category_id, 'description': element.description} 
                             }

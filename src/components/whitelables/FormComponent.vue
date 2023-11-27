@@ -205,6 +205,7 @@
                                 this.$toast.error(res.data.message);
                                 this.errorsList = res.data.data;
                             }else{
+                                res.data.data.is_active = this.item_data.is_active
                                 this.$store.commit('white_lable_data_Updated', {'change': 1, 'item': res.data});
                                 this.$toast.success(res.data.message);
                                 this.$refs.wlCloseBtn.click();

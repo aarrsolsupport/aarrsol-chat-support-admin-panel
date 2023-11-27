@@ -182,7 +182,7 @@
                                         </div>
                                         <div v-if="mes.file_paths" class="video-sec todo border border-warning">
                                             <iframe width="420" height="240"
-                                                src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
+                                                :src="mediaUrl + mes.file_paths"></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -230,7 +230,11 @@
                                         </button>
                                         <button type="button" class="header-admin-btn">
                                             <div class="admin-img">
-                                                <img src="@/assets/images/images-pin-icon.svg" alt="">
+                                                <label for="file" class="attachment-icon"><input
+                                                        class="form-control profit-input d-none" type="file" name="file"
+                                                        multiple id="file">
+                                                    <span><img src="@/assets/images/images-pin-icon.svg" alt=""></span>
+                                                </label>
                                             </div>
                                         </button>
                                         <div class="send-btn-sec">
@@ -252,7 +256,8 @@
             <div class="thm-heading">
                 <h4>Add Ticket</h4>
             </div>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" ref="closeAddTicketBtn"></button>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"
+                ref="closeAddTicketBtn"></button>
         </div>
         <div class="offcanvas-body operator-offcanvas-body add-messag-body add-now-sec ticket-body">
             <form>
@@ -362,7 +367,8 @@ export default {
             emojis: [],
             showEmoji: false,
             media: null,
-            audio: false
+            audio: false,
+            mediaUrl: null
         }
     },
     watch: {
@@ -376,6 +382,13 @@ export default {
         }
     },
     methods: {
+        startSocketBrodcast() {
+            window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
+                this.messages.push(data)
+                console.log(data);
+                this.current_chat.last_message_timestamp = data.sent_at_timestamp
+            });
+        },
         getChatsMessages(item) {
             this.current_chat = Object.assign({}, item)
             this.current_chat.user_id = this.authData.id
@@ -383,13 +396,10 @@ export default {
             this.$store.commit('is_loader', true);
             axios.post('chat/get-messages', { room_id: this.current_chat.chat_room_id })
                 .then(res => {
-                    console.log(['res', res])
                     this.showChat = 1
-                    this.messages = Object.assign([], res.data.data.messages)
-                    window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
-                        this.messages.push(data)
-                        this.current_chat.last_message_timestamp = data.sent_at_timestamp
-                    });
+                    this.messages = Object.assign([], res.data.data.messages);
+                    this.mediaUrl = res.data.data.media_base_url
+                    this.startSocketBrodcast();
                     // this.unread_count[this.chat_type] = res.data.data.unread_count;
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -479,7 +489,6 @@ export default {
         onSelectEmoji(emoji) {
             this.input += emoji.i
             this.emojis.push(emoji.i)
-            console.log(emoji.i)
         },
         toggleEmojiPicker() {
             this.showEmoji = !this.showEmoji

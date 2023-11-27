@@ -42,99 +42,33 @@
                                         <h2>Requested At /Action At </h2>
                                     </th>
                                     <th>
-                                        <h2>Action</h2>
+                                        <h2 class="text-center">Action</h2>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr v-for="(chat, c_index) in chatRequestsList" :key="c_index">
                                     <td>
-                                        <h2> 1</h2>
+                                        <h2>{{ c_index + 1 }}</h2>
                                     </td>
                                     <td>
-                                        <h2>Example User</h2>
+                                        <h2>{{ chat.user_id }}</h2>
                                     </td>
                                     <td>
-                                        <h2>How to Deposit</h2>
+                                        <h2>{{ chat.issue_name }}</h2>
                                     </td>
                                     <td>
-                                        <h2>02 Jan 2023 6:30AM</h2>
-                                    </td>
-                                    <td>
-                                        <div class="Categories-btn">
-                                            <button class="thm-btn success-thm">Accept</button>
-                                            <button class="thm-btn danger-thm" data-bs-toggle="modal"
-                                                data-bs-target="#rejectdetails">Reject</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h2> 1</h2>
-                                    </td>
-                                    <td>
-                                        <h2>Example User</h2>
-                                    </td>
-                                    <td>
-                                        <h2>How to Deposit</h2>
-                                    </td>
-                                    <td>
-                                        <h2>02 Jan 2023 6:30AM</h2>
+                                        <h2>{{ $filters.messageDateTimeFormat(chat.requested_at_timestamp) }}</h2>
                                     </td>
                                     <td>
                                         <div class="Categories-btn">
-                                            <button class="thm-btn success-thm">Accept</button>
+                                            <button class="thm-btn success-thm"
+                                                @click="acceptChatRequests(chat, c_index)">Accept</button>
                                             <button class="thm-btn danger-thm" data-bs-toggle="modal"
-                                                data-bs-target="#rejectdetails">Reject</button>
+                                                data-bs-target="#rejectdetails" v-if="false">Reject</button>
                                         </div>
                                     </td>
                                 </tr>
-
-                                <tr>
-                                    <td>
-                                        <h2> 1</h2>
-                                    </td>
-                                    <td>
-                                        <h2>Example User</h2>
-                                    </td>
-                                    <td>
-                                        <h2>How to Deposit</h2>
-                                    </td>
-                                    <td>
-                                        <h2>02 Jan 2023 6:30AM</h2>
-                                    </td>
-                                    <td>
-                                        <div class="Categories-btn">
-                                            <button class="thm-btn success-thm">Accept</button>
-                                            <button class="thm-btn danger-thm" data-bs-toggle="modal"
-                                                data-bs-target="#rejectdetails">Reject</button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-
-                                <tr>
-                                    <td>
-                                        <h2> 1</h2>
-                                    </td>
-                                    <td>
-                                        <h2>Example User</h2>
-                                    </td>
-                                    <td>
-                                        <h2>How to Deposit</h2>
-                                    </td>
-                                    <td>
-                                        <h2>02 Jan 2023 6:30AM</h2>
-                                    </td>
-                                    <td>
-                                        <div class="Categories-btn">
-                                            <button class="thm-btn success-thm">Accept</button>
-                                            <button class="thm-btn danger-thm" data-bs-toggle="modal"
-                                                data-bs-target="#rejectdetails">Reject</button>
-                                        </div>
-                                    </td>
-                                </tr>
-
 
                             </tbody>
                         </table>
@@ -217,14 +151,57 @@
         </div>
     </div>
 </template>
+
 <script>
+import axios from 'axios';
 export default {
     name: 'ChatRequestListComponent',
     data() {
         return {
-
+            chatRequestsList: null
         }
+    },
+    mounted() {
+        this.getChatRequests();
+    },
+    methods: {
+        getChatRequests() {
+            this.$store.commit('is_loader', true);
+
+            axios.get('/get-chat-requests')
+                .then(res => {
+                    if (res.status == 200) {
+                        this.chatRequestsList = res.data.data;
+                    }
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                    console.error(e);
+                })
+        },
+        acceptChatRequests(chat, position) {
+            this.$store.commit('is_loader', true);
+            axios.post('/accept-chat-request', { room_id: chat.id })
+                .then(res => {
+                    if (res.status == 200) {
+                        this.chatRequestsList.splice(position, 1);
+                        console.log(res);
+                    }
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                    console.error(e);
+                })
+        },
     }
 
 }
 </script>
+
+<style>
+.Categories-btn {
+    justify-content: center;
+}
+</style>

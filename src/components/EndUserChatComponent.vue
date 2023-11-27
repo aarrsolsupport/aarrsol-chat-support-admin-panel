@@ -1,24 +1,4 @@
 <template>
-    <!-- <div class="messages-body-sec">
-        <div class="messages-list-sec">
-            <div class="messages-item" v-for="(mes, i) in messages" :key="i"
-                :class="(end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
-                <div class="messages-item-con">
-                    <div class="sub-messages-con thm-heading">
-                        <span class="message-time">{{
-                            $filters.messageDateTimeFormat(mes.sent_at_timestamp) }}</span>
-                    </div>
-                    <div class="messages-item-content thm-heading">
-                        <p>{{ mes.message }}</p>
-                    </div>
-                    <div v-if="mes.file_paths" class="video-sec todo border border-warning">
-                        <iframe width="420" height="240" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <div class="modal-dialog  thm-chat-modal-sec">
         <div class="modal-content">
 
@@ -77,7 +57,7 @@
                             </div>
 
                             <div class="messages-item" v-for="(chat, c_index) in chatList" :key="c_index">
-                                <button type="button" class="messages-item-user" :class="{ active: chat.status == 1 }" @click="getChatMessages(chat)">
+                                <button type="button" class="messages-item-user" :class="{ active: chat.status != 2 }" @click="getChatMessages(chat)">
                                     <div class="user-img">
                                         <img src="@/assets/images/user-img1.png" alt="">
                                     </div>
@@ -109,41 +89,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="messages-item">
-                            <div class="messages-item-con">
-                                <div class="sub-messages-con">
-                                    <span class="message-time">21-02-2023 06:00 AM </span>
-                                </div>
-                                <div class="messages-item-content">
-                                    <p>Choose your language from the list below</p>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="messages-item outgoing-messages">
-                            <div class="season-message-tab">
-                                <ul>
-                                    <li v-for="(item, i_value, index) in nextActionData" :key="index">
-                                        <button type="button" class="thm-btn"
-                                            @click="callForSelectLanguageAndOptions(i_value, item)">
-                                            {{ item }}
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="messages-item outgoing-messages" v-if="selectedLang">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">21-02-2023 06:00 AM </span>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <p>{{ selectedLang }}</p>
-                                    </div>
-                                </div>
-                            </div> -->
                     </div>
                 </section>
                 <section class="messages-type-wrapper" v-if="chatTextBox">
@@ -253,7 +198,7 @@ export default {
     data() {
         return {
             messages: [],
-            agent_id: 42,
+            agent_id: null,
             end_user_id: 1,
             input: "",
             domainName: null,
@@ -269,7 +214,8 @@ export default {
             roomId: null,
             messagesList: [],
             chatList: null,
-            startNewChat: false
+            startNewChat: false,
+            chatFlow : 1
         }
     },
     mounted() {
@@ -295,9 +241,15 @@ export default {
                             </div>`
                 this.messagesList.push(html)
                 
-                this.chatComponent = data.next.next_action;
                 this.nextActionData = data.next.data;
-                if(this.chatComponent == 'live_agent') {
+                if(this.chatFlow == 1 && data.sender_type == 2) {
+                    this.chatFlow = 2;
+                    this.agent_id = data.sender_id
+                }
+                if(this.chatComponent != 'live_agent') {
+                    this.chatComponent = data.next.next_action;
+                }
+                if(this.chatComponent == 'live_agent' && data.sender_type == 2) {
                     this.chatTextBox = true
                 }
                 if(this.nextActionData == 'end') {
@@ -362,7 +314,8 @@ export default {
                     this.chatComponent = 'live_agent'
                     this.userId = res.data.data.end_user_id;
                     this.roomId = res.data.data.chat_room_id;
-                    if(data.agent_name) {
+                    if(res.data.data.status != 2 && res.data.data.agent_id) {
+                        this.chatFlow = 2;
                         this.chatTextBox = true;
                     }
                     this.startSocketBrodcast();

@@ -214,7 +214,7 @@ export default {
             roomId: null,
             messagesList: [],
             chatList: null,
-            startNewChat: false,
+            startNewChat: true,
             chatFlow : 1
         }
     },
@@ -312,6 +312,10 @@ export default {
                         this.messagesList.unshift(html)
                     }
                     this.chatComponent = 'live_agent'
+                    if(res.data.data.current_options?.data) {
+                        this.nextActionData = res.data.data.current_options?.data;
+                        this.chatComponent = res.data.data.current_options?.next_action;
+                    }
                     this.userId = res.data.data.end_user_id;
                     this.roomId = res.data.data.chat_room_id;
                     if(res.data.data.status != 2 && res.data.data.agent_id) {

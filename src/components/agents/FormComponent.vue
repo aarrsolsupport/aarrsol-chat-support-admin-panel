@@ -232,7 +232,7 @@
                                 this.$toast.error(res.data.message);
                                 this.errorsList = res.data.data;
                             }else{
-                                res.data.data.is_active = 1
+                                res.data.data.is_active = this.item_data.is_active
                                 this.$store.commit('agent_data_Updated', {
                                     'change': 1, 
                                     'item':Object.assign({"categories": this.agentCats}, res.data)

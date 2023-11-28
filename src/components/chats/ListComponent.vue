@@ -186,6 +186,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="img-preview">
+                                    <img :src="media" alt="" v-for="media in mediaPreviewBlobs" :key="media.id">
+                                </div>
                             </div>
                         </div>
                         <div class="messages-footer-sec" v-if="current_chat.status == 1">
@@ -232,13 +235,13 @@
                                             <div class="admin-img">
                                                 <label for="file" class="attachment-icon"><input
                                                         class="form-control profit-input d-none" type="file" name="file"
-                                                        multiple id="file">
+                                                        multiple id="file" @change="uplaodImg">
                                                     <span><img src="@/assets/images/images-pin-icon.svg" alt=""></span>
                                                 </label>
                                             </div>
                                         </button>
                                         <div class="send-btn-sec">
-                                            <button class="thm-btn" @click="sendMessage">Send</button>
+                                            <button class="thm-btn" @click="sendMessage" @keyup.enter="sendMessage">Send</button>
                                         </div>
                                     </div>
                                 </div>
@@ -368,7 +371,8 @@ export default {
             showEmoji: false,
             media: null,
             audio: false,
-            mediaUrl: null
+            mediaUrl: null,
+            mediaPreviewBlobs: null
         }
     },
     watch: {
@@ -385,7 +389,6 @@ export default {
         startSocketBrodcast() {
             window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
                 this.messages.push(data)
-                console.log(data);
                 this.current_chat.last_message_timestamp = data.sent_at_timestamp
             });
         },
@@ -495,30 +498,31 @@ export default {
         },
         uplaodImg(event) {
             this.media = [];
+            this.mediaPreviewBlobs = [];
             let mediaFiles = event.target.files;
             for (let i = 0; i < mediaFiles.length; i++) {
                 this.media.push(mediaFiles[i]);
+                this.mediaPreviewBlobs.push(URL.createObjectURL(mediaFiles[i]))
             }
         },
         showAudio() {
             this.audio = !this.audio
         },
         sendMessage() {
-            console.log({ 
-                chat_room_id: this.current_chat.chat_room_id, 
-                sender_type: 2, 
-                sender_id: this.current_chat.user_id, 
-                message: this.input 
-            })
-            axios.post('chat/send-message', { 
-                chat_room_id: this.current_chat.chat_room_id, 
-                sender_type: 2, 
-                sender_id: this.current_chat.user_id, 
-                message: this.input 
-            })
+
+            let messageData = new FormData();
+            messageData.append('chat_room_id', this.current_chat.chat_room_id)
+            messageData.append('sender_type', 2)
+            messageData.append('sender_id', this.current_chat.user_id)
+            messageData.append('message', this.input )
+
+            for (let i = 0; i < this.media.length; i++) {
+                messageData.append('file[]', this.media[i]);
+            }
+
+            axios.post('chat/send-message', messageData)
             .then(res => {
                 this.input = null
-                console.log(res)
             }).catch(e => {
                 console.error(e);
             })
@@ -554,4 +558,5 @@ export default {
     right: 20rem;
     position: absolute;
 }
+
 </style>

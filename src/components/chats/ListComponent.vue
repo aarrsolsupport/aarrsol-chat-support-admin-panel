@@ -1,7 +1,7 @@
 <template>
     <div class="borad-inner-body-sec chat-user-wrapper  agent-chat-user">
         <div class="borad-inner-body">
-            <div class="chat-user-tab ">
+            <div class="chat-user-tab chats-tabs-item-con">
                 <template v-if="authData.role_id == 4">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation" @click="chat_type = 1">

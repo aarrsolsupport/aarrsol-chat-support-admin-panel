@@ -341,8 +341,8 @@ header{
 
 .thm-chat-modal-sec  .btn-close {
    background-image: url(../images/chat-close.svg);
-   width: 10px;
-   height: 10px;
+   width: 24px;
+   height: 24px;
    background-size: cover;
    opacity: initial;
 }
@@ -601,7 +601,7 @@ header{
     height: 100vh;
     overflow-y: auto;
     padding: 12px;
-    padding-bottom: 22rem;
+    padding-bottom: 32rem;
 }
 
 
@@ -801,3 +801,20 @@ background: #b6c1d9;
 .user-details.chat-heading {
     text-align: left;
 }	
+
+.img-preview img{
+	max-width: 100px;
+}
+
+.chat-user-tab.chats-tabs-item-con ul li button {
+    background-color: transparent !important;
+    color: #000 !important;
+}
+
+.chat-user-tab.chats-tabs-item-con ul li button .thm-heading h2{
+    color: #000 !important;
+}
+
+.chat-user-tab.chats-tabs-item-con ul li button.active  {
+	background-color: var(--primary-color);
+}

@@ -2347,6 +2347,7 @@ width: 100%;
 	padding: 2px 6px !important;
 	border-radius: 4px ;
 	font-weight: 500;
+	width: fit-content;
 }
 
 .more-btn {

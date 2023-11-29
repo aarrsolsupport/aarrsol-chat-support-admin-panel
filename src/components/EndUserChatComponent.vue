@@ -444,7 +444,6 @@ export default {
 
                     for (let i = 0; i < messages.length; i++) {
                         const message = messages[i];
-                        const outgoingClass = message.sender_type === 1 ? 'outgoing-messages' : '';
 
                         if (!message.message && message.file_paths) {
                             this.renderMedia(message, true);

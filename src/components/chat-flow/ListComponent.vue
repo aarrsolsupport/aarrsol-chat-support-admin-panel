@@ -775,7 +775,7 @@ export default {
 } */
 
 .operator-details-chat-flow-sec .chat-flow-borad-list {
-    height: calc(97vh - 150px);
+    height: calc(92vh - 150px);
     min-width: auto;
 }
 

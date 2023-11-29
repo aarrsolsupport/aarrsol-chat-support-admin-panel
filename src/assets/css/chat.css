@@ -805,3 +805,16 @@ background: #b6c1d9;
 .img-preview img{
 	max-width: 100px;
 }
+
+.chat-user-tab.chats-tabs-item-con ul li button {
+    background-color: transparent !important;
+    color: #000 !important;
+}
+
+.chat-user-tab.chats-tabs-item-con ul li button .thm-heading h2{
+    color: #000 !important;
+}
+
+.chat-user-tab.chats-tabs-item-con ul li button.active  {
+	background-color: var(--primary-color);
+}

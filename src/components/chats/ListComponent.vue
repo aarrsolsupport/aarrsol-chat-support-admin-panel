@@ -429,9 +429,6 @@ export default {
         if (this.authData && this.authData.role_id == 4) {
             this.chat_type = 1
         }
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-            this.handlerFunction(stream);
-        });
     },
     methods: {
         startSocketBrodcast() {
@@ -592,8 +589,12 @@ export default {
             this.userFileName = "audio-record";
         },
         startRecord() {
-            var audioChunks = [];
-            this.voiceRecord.rec.start();
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                this.handlerFunction(stream);
+                this.voiceRecord.rec.start();
+            }).catch((error) => {
+                this.$toast.error('please allow microphone access!!');
+            });
         },
         stopRecord() {
             this.voiceRecord.rec.stop();

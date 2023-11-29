@@ -84,6 +84,13 @@
                             <div class="messages-item outgoing-messages" v-if="audioPreview">
                                 <audio id="recordedAudio"></audio>
                             </div>
+                            <div class="messages-item" v-if="chatStatus == 0">
+                                <div class="messages-item-con">
+                                    <div class="messages-item-content">
+                                        <p>Waiting For Agent</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -241,6 +248,7 @@ export default {
                 }
 
                 this.nextActionData = data.next.data;
+                this.chatStatus = data.next.status;
 
                 if (this.chatFlow === 1 && data.sender_type === 2) {
                     this.chatFlow = 2;
@@ -255,7 +263,7 @@ export default {
                     this.chatTextBox = true;
                 }
 
-                if (this.chatComponent === 'end') {
+                if (this.chatComponent === 'end' && this.chatStatus == 2) {
                     this.chatTextBox = false;
                     this.renderEndChatMessage(data);
                 }
@@ -395,15 +403,15 @@ export default {
 
                         } else {
                             let html = `<div class="messages-item ${outgoingClass}">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
-                                        </div>
-                                        <div class="messages-item-content">
-                                            <p>${data[i].message}</p>
-                                        </div>
-                                    </div>
-                                </div>`
+                                            <div class="messages-item-con">
+                                                <div class="sub-messages-con">
+                                                    <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                                                </div>
+                                                <div class="messages-item-content">
+                                                    <p>${data[i].message}</p>
+                                                </div>
+                                            </div>
+                                        </div>`
                             data[i].message ? this.messagesList.unshift(html) : '';
                         }
                     }
@@ -416,6 +424,7 @@ export default {
 
                     this.userId = res.data.data.end_user_id;
                     this.roomId = res.data.data.chat_room_id;
+                    this.chatStatus = res.data.data.status;
 
                     if (res.data.data.status != 2 && res.data.data.agent_id) {
                         this.chatFlow = 2;

@@ -4,7 +4,8 @@
          <div class="dashboard-list-sec">
             <div class="row">
                <div class="col-lg-3 col-md-6 col-sm-6" v-for="(val, attr) in statistics" :key="attr">
-                  <div class="dashboard-list-con">
+                  <a :href="getRedirectLink(attr)">
+                  <div class="dashboard-list-con" >
                      <div class="dashboard-item">
                         <div class="thm-heading">
                            <h4>{{ val }}</h4>
@@ -15,7 +16,7 @@
                         <img v-if="attr.includes('tickets')" src="@/assets/images/resolved-tickets-icon.svg" alt="">
                         <img v-else src="@/assets/images/total-operator-icon.svg" alt="">
                      </div>
-                  </div>
+                  </div></a>
                </div>
             </div>
          </div>
@@ -35,6 +36,19 @@ import axios from "axios";
          this.getStatistics()
       },
       methods: {
+         getRedirectLink(attr) {
+            if(attr.includes('agents')) {
+               return "/agents";
+            } else if(attr.includes('chats')) {
+               return "/chats";
+            } else if(attr.includes('operators')) {
+               return "/operators";
+            } else if(attr.includes('tickets')) {
+               return "/tickets";
+            } else if(attr.includes('whitelables')) {
+               return "/whitelables";
+            }
+         },
          getStatistics() {
             this.$store.commit('is_loader', true);
             axios.get('/get-stats').then(res => {

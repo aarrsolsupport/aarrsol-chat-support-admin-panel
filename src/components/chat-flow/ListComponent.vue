@@ -35,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="operator-table-sec chat-flow-tables ">
+                <div class="operator-table-sec chat-flow-tables" :class="user_id ? 'operator-details-chat-flow2-sec' : 'operator-details-chat-flow-sec'">
                     <div class="chat-flow-borad-sec">
                         <div class="operator-detail-tab-con">
                             <div class="tab-pane fade show" id="pills-chat-flow" role="tabpanel"
@@ -44,9 +44,9 @@
                                     <div class="thm-heading p-2">
                                         <h2>Chatbot Flow</h2>
                                     </div>
-                                    <div class="chat-flow-borad-list">
+                                    <div class="chat-flow-borad-list operator-details-chat-flow " >
                                         <template v-if="!template_id">
-                                            <div class="chat-flow-borad-list-con">
+                                            <div class="chat-flow-borad-list-con ">
                                                 <div class="chat-flow-item">
                                                     <button class="chat-flow-btn" @click="setupForm(1)"
                                                         data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -752,5 +752,45 @@ export default {
     width: 100%;
     display: flex;
     justify-content: center;
+}
+.operator-details-chat-flow{
+    min-width: max-content;
+}
+
+
+/* .operator-details-chat-flow-sec.operator-table-sec {
+    margin-top: 15px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border-color);
+    background-color: var(--white-color);
+    height: calc(100vh - 196px);
+    overflow: auto;
+} */
+/* position: relative; */
+/* .org-tree-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    min-width: max-content;
+} */
+
+.operator-details-chat-flow-sec .chat-flow-borad-list {
+    height: calc(97vh - 150px);
+    min-width: auto;
+}
+
+
+.operator-details-chat-flow2-sec .chat-flow-borad-list {
+    height: calc(81vh - 150px);
+    min-width: auto;
+}
+
+.operator-details-chat-flow2-sec .org-tree-container{
+    min-width: max-content;
+
+}
+
+ .operator-details-chat-flow-sec .org-tree-container{
+    min-width: max-content;
 }
 </style>

@@ -464,7 +464,7 @@ export default {
                         this.chatComponent = respData.next_action.next_action;
 
                         if (this.chatComponent === 'chat_list') {
-                            this.chatList = respData.this.next_action.data;
+                            this.chatList = respData.next_action.data;
                         } else {
                             this.nextActionData = respData.next_action.data;
                         }
@@ -480,7 +480,8 @@ export default {
                     }
                 })
                 .catch(e => {
-                    this.$toast.error(e.data.message);
+                    console.error(e);
+                    // this.$toast.error(e.data.message);
                 });
         },
         cloaseChatModal() {

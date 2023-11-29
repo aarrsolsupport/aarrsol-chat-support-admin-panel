@@ -181,13 +181,15 @@
                                             <p>{{ mes.message }}</p>
                                         </div>
                                         <div v-if="mes.file_paths" class="video-sec todo border border-warning">
-                                            <iframe width="420" height="240"
-                                                :src="mediaUrl + mes.file_paths"></iframe>
+                                            <img :src="mediaUrl + mes.file_paths" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="img-preview">
                                     <img :src="media" alt="" v-for="media in mediaPreviewBlobs" :key="media.id">
+                                </div>
+                                <div class="messages-item outgoing-messages">
+                                    <audio id="recordedAudio"></audio>
                                 </div>
                             </div>
                         </div>
@@ -226,7 +228,7 @@
                                         <input type="text" placeholder="Write something....." v-model="input">
                                     </div>
                                     <div class="messages-type-right">
-                                        <button type="button" class="header-admin-btn" @click="showAudio()">
+                                        <button type="button" class="header-admin-btn" data-bs-toggle="modal" data-bs-target="#voiceModal" @click="startRecord()">
                                             <div class="admin-img">
                                                 <img src="@/assets/images/circle-microphone.svg" alt="">
                                             </div>
@@ -288,14 +290,54 @@
         </div>
     </div>
 
-    <tapir-widget :time="2" buttonColor="green" v-if="audio" class="audio-messege" />
+    <!-- VOICE MESSEGE -->
+
+    <div class="modal fade" id="voiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog open-modal-sec   voice-modal-sec">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="voice-heading">
+                        <h3>Chat with voice</h3>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="voice-heading text-center sub-messages-con">
+                        <span>Hi I am Listening. Try saying</span>
+                        <h2>Live Casino</h2>
+                    </div>
+                    <button class="voice-bar-btn">
+                        <div class="voice-bar-sec">
+                            <div class="bars-con">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                </div>
+                <div class="previous-restart-sec">
+                    <button class="thm-btn m-auto bg-transparent" @click="stopRecord()"
+                        data-bs-dismiss="modal">Next</button>
+                    <!-- Duplicate -->
+                    <!-- <button class="thm-btn m-auto bg-transparent" data-bs-toggle="modal"
+                  data-bs-target="#micModal" @click="stopRecord()">Next</button> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </template>
 <script setup>
 import 'vue3-carousel/dist/carousel.css';
 import EmojiPicker from 'vue3-emoji-picker';
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
-import TapirWidget from 'vue-audio-tapir';
-import 'vue-audio-tapir/dist/vue-audio-tapir.css';
 </script>
 <script>
 import axios from "axios";
@@ -307,7 +349,6 @@ export default {
         Carousel,
         Slide,
         Navigation,
-        TapirWidget
     },
     computed: {
         ...mapState(['authData']),
@@ -370,9 +411,13 @@ export default {
             emojis: [],
             showEmoji: false,
             media: null,
-            audio: false,
             mediaUrl: null,
-            mediaPreviewBlobs: null
+            mediaPreviewBlobs: null,
+            voiceRecord: {
+                rec: '',
+                userFile: '',
+                userFileName:''
+            }
         }
     },
     watch: {
@@ -384,6 +429,9 @@ export default {
         if (this.authData && this.authData.role_id == 4) {
             this.chat_type = 1
         }
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            this.handlerFunction(stream);
+        });
     },
     methods: {
         startSocketBrodcast() {
@@ -505,9 +553,6 @@ export default {
                 this.mediaPreviewBlobs.push(URL.createObjectURL(mediaFiles[i]))
             }
         },
-        showAudio() {
-            this.audio = !this.audio
-        },
         sendMessage() {
 
             let messageData = new FormData();
@@ -516,7 +561,7 @@ export default {
             messageData.append('sender_id', this.current_chat.user_id)
             messageData.append('message', this.input )
 
-            for (let i = 0; i < this.media.length; i++) {
+            for (let i = 0; i < this.media?.length; i++) {
                 messageData.append('file[]', this.media[i]);
             }
 
@@ -526,7 +571,33 @@ export default {
             }).catch(e => {
                 console.error(e);
             })
-        }
+        },
+        handlerFunction(stream) {
+            this.voiceRecord.rec = new MediaRecorder(stream);
+            let audioChunks = [];
+            this.voiceRecord.rec.ondataavailable = (e) => {
+                audioChunks.push(e.data);
+                if (this.voiceRecord.rec.state == "inactive") {
+                    let blob = new Blob(audioChunks, { type: "audio/mp3" });
+                    recordedAudio.src = URL.createObjectURL(blob);
+                    recordedAudio.controls = true;
+                    recordedAudio.autoplay = true;
+                    this.sendData(blob);
+                }
+            };
+        },
+        sendData(blob) {
+            this.userFile = blob;
+            console.log(typeof blob);
+            this.userFileName = "audio-record";
+        },
+        startRecord() {
+            var audioChunks = [];
+            this.voiceRecord.rec.start();
+        },
+        stopRecord() {
+            this.voiceRecord.rec.stop();
+        },
     }
 }
 </script>

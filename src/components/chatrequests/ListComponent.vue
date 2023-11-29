@@ -52,7 +52,7 @@
                                         <h2>{{ c_index + 1 }}</h2>
                                     </td>
                                     <td>
-                                        <h2>{{ chat.user_id }}</h2>
+                                        <h2>{{ chat.userid }}</h2>
                                     </td>
                                     <td>
                                         <h2>{{ chat.issue_name }}</h2>

@@ -81,6 +81,9 @@
                                     <img :src="media" alt="" v-for="media in mediaPreviewBlobs" :key="media.id">
                                 </div>
                             </div>
+                            <div class="messages-item outgoing-messages" v-if="audioPreview">
+                                <audio id="recordedAudio"></audio>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -94,8 +97,8 @@
                                 </div>
                                 <input type="text" placeholder="Type your message here!" v-model="input">
                                 <div class="voice-btn-sec">
-                                    <button class="voice-btn" data-bs-toggle="modal" data-bs-target="#voiceModal"><img
-                                            src="@/assets/images/voice-icon.svg" alt=""></button>
+                                    <button class="voice-btn" data-bs-toggle="modal" data-bs-target="#voiceModal" @click="startRecord()"><img
+                                            src="@/assets/images/voice-icon.svg" alt="" ></button>
                                 </div>
                             </div>
                             <div class="messages-type-btn-sec">
@@ -109,9 +112,9 @@
         </div>
     </div>
 
-    <!-- VOICE MESSEGE TODO -->
+    <!-- VOICE MESSEGE -->
 
-    <!-- <div class="modal fade" id="voiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="voiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog open-modal-sec   voice-modal-sec">
          <div class="modal-content">
             <div class="modal-header">
@@ -141,15 +144,17 @@
 
             </div>
             <div class="previous-restart-sec">
-               <button class="thm-btn m-auto bg-transparent" data-bs-toggle="modal"
-                  data-bs-target="#micModal">Next</button>
+               <button class="thm-btn m-auto bg-transparent" @click="stopRecord()" data-bs-dismiss="modal">Next</button>
+               <!-- Duplicate -->
+               <!-- <button class="thm-btn m-auto bg-transparent" data-bs-toggle="modal"
+                  data-bs-target="#micModal" @click="stopRecord()">Next</button> -->
             </div>
 
          </div>
       </div>
-   </div> -->
+   </div>
 
-    <!-- <div class="modal fade" id="micModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="micModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog open-modal-sec  thm-modal-sec voice-modal-sec">
          <div class="modal-content">
             <div class="modal-header">
@@ -172,7 +177,7 @@
 
                <button class="voice-bar-btn">
                   <div class="voice-bar-sec voice-mic-sec">
-                     <img src="assets/images/mic-icon.svg" alt="">
+                     <img src="@/assets/images/mic-icon.svg" alt="">
                   </div>
                </button>
                <div class="sub-messages-con text-center mt-3">
@@ -181,7 +186,7 @@
             </div>
          </div>
       </div>
-   </div> -->
+   </div>
 </template>
 <script>
 import axios from "axios";
@@ -190,9 +195,7 @@ export default {
     name: 'EndUserChatComponent',
     data() {
         return {
-            messages: [],
             agent_id: null,
-            end_user_id: 1,
             input: "",
             domainName: null,
             headerColor: null,
@@ -209,7 +212,16 @@ export default {
             startNewChat: false,
             chatFlow: 1,
             media: null,
-            mediaPreviewBlobs: null
+            mediaPreviewBlobs: null,
+            voiceRecord: {
+                rec: '',
+                userFile: null,
+                userFileName:''
+            },
+            mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
+            audioPreview: false,
+            chatStatus: null
+            
         }
     },
     mounted() {
@@ -219,10 +231,54 @@ export default {
     },
     methods: {
         startSocketBrodcast() {
-            window.Echo.connect()
+            window.Echo.connect();
+
             window.Echo.channel("message-channel." + this.roomId).listen(".receive-messages", (data) => {
-                let outgoingClass = data.sender_type == 1 ? 'outgoing-messages' : '';
-                let html = `<div class="messages-item ${outgoingClass}">
+                if (!data.message && data.file_paths) {
+                    this.renderImageMessage(data);
+                } else {
+                    this.renderTextMessage(data);
+                }
+
+                this.nextActionData = data.next.data;
+
+                if (this.chatFlow === 1 && data.sender_type === 2) {
+                    this.chatFlow = 2;
+                    this.agent_id = data.sender_id;
+                }
+
+                if (data.next.next_action !== '') {
+                    this.chatComponent = data.next.next_action;
+                }
+
+                if (this.chatComponent === 'live_agent' && data.sender_type === 2) {
+                    this.chatTextBox = true;
+                }
+
+                if (this.chatComponent === 'end') {
+                    this.chatTextBox = false;
+                    this.renderEndChatMessage(data);
+                }
+
+                this.scrollToBottom();
+            });
+        },
+        renderImageMessage(data) {
+            const html = `<div class="messages-item ${outgoingClass}">
+                                <div class="messages-item-con">
+                                    <div class="sub-messages-con">
+                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                                    </div>
+                                    <div class="messages-item-content">
+                                        <img src="${ this.mediaBaseUrl + data.file_paths}" />
+                                    </div>
+                                </div>
+                            </div>`;
+            this.messagesList.push(html);
+        },
+        renderTextMessage(data) {
+            const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
+            const html = `<div class="messages-item ${outgoingClass}">
                                 <div class="messages-item-con">
                                     <div class="sub-messages-con">
                                         <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
@@ -231,23 +287,11 @@ export default {
                                         <p>${data.message}</p>
                                     </div>
                                 </div>
-                            </div>`
-                    data.message ? this.messagesList.push(html) : '';
-
-                this.nextActionData = data.next.data;
-                if (this.chatFlow == 1 && data.sender_type == 2) {
-                    this.chatFlow = 2;
-                    this.agent_id = data.sender_id
-                }
-                if (data.next.next_action != '') {
-                    this.chatComponent = data.next.next_action;
-                }
-                if (this.chatComponent == 'live_agent' && data.sender_type == 2) {
-                    this.chatTextBox = true
-                }
-                if (this.chatComponent == 'end') {
-                    this.chatTextBox = false
-                    let html = `<div class="messages-item">
+                            </div>`;
+            this.messagesList.push(html);
+        },
+        renderEndChatMessage(data) {
+            const html = `<div class="messages-item">
                                 <div class="messages-item-con">
                                     <div class="sub-messages-con">
                                         <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
@@ -256,26 +300,25 @@ export default {
                                         <p>CHAT ENDED</p>
                                     </div>
                                 </div>
-                            </div>`
-                    this.messagesList.push(html)
-                }
-                this.scrollToBottom();
-                // console.log(data);
-            });
+                            </div>`;
+            this.messagesList.push(html);
         },
         sendMessage() {
-            if(this.input || this.media) {
+            if (this.input || this.media || this.voiceRecord.userFile) {
                 let messageData = new FormData();
                 messageData.append('room_id', this.roomId)
                 messageData.append('user_id', this.userId)
-                messageData.append('message', this.input )
+                messageData.append('message', this.input)
 
-                for (let i = 0; i < this.media.length; i++) {
+                for (let i = 0; i < this.media?.length; i++) {
                     messageData.append('file[]', this.media[i]);
                 }
+                this.voiceRecord.userFile ? messageData.append('file[]', this.voiceRecord.userFile) : '';
+
                 axios.post('/chat-support/send-message', messageData)
                     .then(res => {
                         this.input = '';
+                        this.audioPreview = false;
                         // console.log(res)
                     }).catch(e => {
                         console.error(e);
@@ -317,17 +360,52 @@ export default {
                     let data = res.data.data.messages;
                     for (let i = 0; i < data.length; i++) {
                         let outgoingClass = data[i].sender_type == 1 ? 'outgoing-messages' : '';
-                        let html = `<div class="messages-item ${outgoingClass}">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                        if(!data[i].message && data[i].file_paths) {
+                            const fileType = data[i].file_paths.split('.')[1];
+                            if(fileType == 'png' || fileType == 'jpg' || fileType == 'jpeg') {
+                                let html = `<div class="messages-item ${outgoingClass}">
+                                                <div class="messages-item-con">
+                                                    <div class="sub-messages-con">
+                                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                                                    </div>
+                                                    <div class="messages-item-content">
+                                                        <img src="${ this.mediaBaseUrl + data[i].file_paths}" />
+                                                    </div>
+                                                </div>
+                                            </div>`
+                                    this.messagesList.unshift(html)
+                            } 
+                            // else if(fileType == 'webm') {
+                            //     let html = `<div class="messages-item ${outgoingClass}">
+                            //                     <div class="messages-item-con">
+                            //                         <div class="sub-messages-con">
+                            //                             <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                            //                         </div>
+                            //                         <div class="messages-item-content">
+                            //                             <div class="audio-sec">
+                            //                                 <video controls="">
+                            //                                     <source src="${this.mediaBaseUrl + data[i].file_paths}" />
+                            //                                 </video>
+                            //                             </div>
+                            //                         </div>
+                            //                     </div>
+                            //                 </div>`
+                            //         this.messagesList.unshift(html)
+                            // }
+
+                        } else {
+                            let html = `<div class="messages-item ${outgoingClass}">
+                                    <div class="messages-item-con">
+                                        <div class="sub-messages-con">
+                                            <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                                        </div>
+                                        <div class="messages-item-content">
+                                            <p>${data[i].message}</p>
+                                        </div>
                                     </div>
-                                    <div class="messages-item-content">
-                                        <p>${data[i].message}</p>
-                                    </div>
-                                </div>
-                            </div>`
-                        this.messagesList.unshift(html)
+                                </div>`
+                            data[i].message ? this.messagesList.unshift(html) : '';
+                        }
                     }
                     this.chatComponent = 'live_agent'
 
@@ -480,6 +558,37 @@ export default {
                 this.mediaPreviewBlobs.push(URL.createObjectURL(mediaFiles[i]))
             }
         },
+        handlerFunction(stream) {
+            this.voiceRecord.rec = new MediaRecorder(stream);
+            let audioChunks = [];
+            this.audioPreview = true
+            this.voiceRecord.rec.ondataavailable = (e) => {
+                audioChunks.push(e.data);
+                if (this.voiceRecord.rec.state == "inactive") {
+                    let blob = new Blob(audioChunks, { type: "audio/mp3" });
+                    recordedAudio.src = URL.createObjectURL(blob);
+                    recordedAudio.controls = true;
+                    recordedAudio.autoplay = true;
+                    this.sendData(blob);
+                }
+            };
+        },
+        sendData(blob) {
+            this.voiceRecord.userFile = blob;
+            this.voiceRecord.userFileName = "audio-record";
+            this.scrollToBottom();
+        },
+        startRecord() {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                this.handlerFunction(stream);
+                this.voiceRecord.rec.start();
+            }).catch((error) => {
+                console.error('Error accessing microphone:', error);
+            });
+        },
+        stopRecord() {
+            this.voiceRecord.rec.stop();
+        },
     },
 }
 </script>
@@ -496,5 +605,4 @@ export default {
 
 .modal-header {
     padding: 1rem 1rem;
-}
-</style>
+}</style>

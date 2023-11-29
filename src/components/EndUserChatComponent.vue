@@ -76,18 +76,18 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="messages-item outgoing-messages">
+                            <!-- <div class="messages-item outgoing-messages">
                                 <div class="img-preview">
                                     <img :src="media" alt="" v-for="media in mediaPreviewBlobs" :key="media.id">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="messages-item outgoing-messages" v-if="audioPreview">
                                 <audio id="recordedAudio"></audio>
                             </div>
                             <div class="messages-item" v-if="chatStatus == 0">
                                 <div class="messages-item-con">
-                                    <div class="messages-item-content">
-                                        <p>Waiting For Agent</p>
+                                    <div class="sub-messages-con chat-ended-message">
+                                        <span class="message-time">Waiting for an agent to join the chat</span>
                                     </div>
                                 </div>
                             </div>
@@ -237,12 +237,16 @@ export default {
         this.getChatWindow();
     },
     methods: {
+        // SOCKET FUNCTION START
         startSocketBrodcast() {
             window.Echo.connect();
 
             window.Echo.channel("message-channel." + this.roomId).listen(".receive-messages", (data) => {
                 if (!data.message && data.file_paths) {
-                    this.renderImageMessage(data);
+                    this.renderMedia(data);
+                } else if(data.message && data.file_paths) {
+                    this.renderMedia(data);
+                    this.renderTextMessage(data);
                 } else {
                     this.renderTextMessage(data);
                 }
@@ -271,6 +275,46 @@ export default {
                 this.scrollToBottom();
             });
         },
+        // SOCKET FUNCTION END
+
+        // RENDER FUNCTIONS START
+        renderMedia(data, getChatMessages = false) {
+            const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
+            const filePathsArray = data.file_paths.split('\n');
+                filePathsArray.forEach(filePath => {
+                    const fileType = filePath.split('.').pop().toLowerCase();
+                    if (['png', 'jpg', 'jpeg'].includes(fileType)) {
+                        let html = `<div class="messages-item ${outgoingClass}">
+                                            <div class="messages-item-con">
+                                                <div class="sub-messages-con">
+                                                    <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
+                                                </div>
+                                                <div class="messages-item-content">
+                                                    <img src="${ this.mediaBaseUrl + filePath}" />
+                                                </div>
+                                            </div>
+                                        </div>`;
+                        getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
+                    }
+                    else {
+                        let html = `<div class="messages-item ${outgoingClass}">
+                                        <div class="messages-item-con">
+                                            <div class="sub-messages-con">
+                                                <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
+                                            </div>
+                                            <div class="messages-item-content">
+                                                <div class="audio-sec">
+                                                    <video controls="">
+                                                        <source src="${this.mediaBaseUrl + filePath}" />
+                                                    </video>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`
+                        getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
+                    }
+                })
+        },
         renderImageMessage(data) {
             const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
             const html = `<div class="messages-item ${outgoingClass}">
@@ -285,7 +329,7 @@ export default {
                             </div>`;
             this.messagesList.push(html);
         },
-        renderTextMessage(data) {
+        renderTextMessage(data, getChatMessages = false) {
             const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
             const html = `<div class="messages-item ${outgoingClass}">
                                 <div class="messages-item-con">
@@ -297,21 +341,48 @@ export default {
                                     </div>
                                 </div>
                             </div>`;
-            this.messagesList.push(html);
+            getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
         },
-        renderEndChatMessage(data) {
+        renderEndChatMessage() {
             const html = `<div class="messages-item">
                                 <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <p>CHAT ENDED</p>
+                                    <div class="sub-messages-con chat-ended-message">
+                                                    <span class="message-time">This chat has been ended.</span>
                                     </div>
                                 </div>
                             </div>`;
             this.messagesList.push(html);
         },
+        optionOrLanguage() {
+            if (this.chatComponent == 'lang') {
+                let lang = `<div class="messages-item">
+                                    <div class="messages-item-con">
+                                        <div class="sub-messages-con">
+                                            <span class="message-time">${this.getDateTIme()}</span>
+                                        </div>
+                                        <div class="messages-item-content">
+                                            <p>Choose your language from the list below</p>
+                                        </div>
+                                    </div>
+                                </div>`
+                this.messagesList.push(lang)
+            }
+            if (this.chatComponent == 'opt') {
+                let opt = `<div class="messages-item">
+                                    <div class="messages-item-con">
+                                        <div class="sub-messages-con">
+                                            <span class="message-time">${this.getDateTIme()}</span>
+                                        </div>
+                                        <div class="messages-item-content">
+                                            <p>Choose an issue from below</p>
+                                        </div>
+                                    </div>
+                                </div>`;
+                this.messagesList.push(opt)
+            }
+        },
+        // RENDER FUNCTIONS END
+
         sendMessage() {
             if (this.input || this.media || this.voiceRecord.userFile) {
                 let messageData = new FormData();
@@ -328,6 +399,9 @@ export default {
                     .then(res => {
                         this.input = '';
                         this.audioPreview = false;
+                        this.mediaPreviewBlobs = [];
+                        this.voiceRecord.userFile = null;
+                        this.media = null;
                         // console.log(res)
                     }).catch(e => {
                         console.error(e);
@@ -366,54 +440,19 @@ export default {
         getChatMessages(data) {
             axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: data.chat_id })
                 .then(res => {
-                    let data = res.data.data.messages;
-                    for (let i = 0; i < data.length; i++) {
-                        let outgoingClass = data[i].sender_type == 1 ? 'outgoing-messages' : '';
-                        if(!data[i].message && data[i].file_paths) {
-                            const fileType = data[i].file_paths.split('.')[1];
-                            if(fileType == 'png' || fileType == 'jpg' || fileType == 'jpeg') {
-                                let html = `<div class="messages-item ${outgoingClass}">
-                                                <div class="messages-item-con">
-                                                    <div class="sub-messages-con">
-                                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
-                                                    </div>
-                                                    <div class="messages-item-content">
-                                                        <img src="${ this.mediaBaseUrl + data[i].file_paths}" />
-                                                    </div>
-                                                </div>
-                                            </div>`
-                                    this.messagesList.unshift(html)
-                            } 
-                            else if(fileType == 'webm') {
-                                let html = `<div class="messages-item ${outgoingClass}">
-                                                <div class="messages-item-con">
-                                                    <div class="sub-messages-con">
-                                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
-                                                    </div>
-                                                    <div class="messages-item-content">
-                                                        <div class="audio-sec">
-                                                            <video controls="">
-                                                                <source src="${this.mediaBaseUrl + data[i].file_paths}" />
-                                                            </video>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>`
-                                    this.messagesList.unshift(html)
-                            }
+                    const messages = res.data.data.messages;
 
+                    for (let i = 0; i < messages.length; i++) {
+                        const message = messages[i];
+                        const outgoingClass = message.sender_type === 1 ? 'outgoing-messages' : '';
+
+                        if (!message.message && message.file_paths) {
+                            this.renderMedia(message, true);
+                        } else if (message.message && message.file_paths) {
+                            this.renderMedia(message, true);
+                            this.renderTextMessage(message, true);
                         } else {
-                            let html = `<div class="messages-item ${outgoingClass}">
-                                            <div class="messages-item-con">
-                                                <div class="sub-messages-con">
-                                                    <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
-                                                </div>
-                                                <div class="messages-item-content">
-                                                    <p>${data[i].message}</p>
-                                                </div>
-                                            </div>
-                                        </div>`
-                            data[i].message ? this.messagesList.unshift(html) : '';
+                            this.renderTextMessage(message, true);
                         }
                     }
                     this.chatComponent = 'live_agent'
@@ -431,17 +470,7 @@ export default {
                         this.chatFlow = 2;
                         this.chatTextBox = true;
                     } else if (res.data.data.status == 2) {
-                        let html = `<div class="messages-item">
-                                        <div class="messages-item-con">
-                                            <div class="sub-messages-con">
-                                                <span class="message-time">${this.$filters.messageDateTimeFormat(res.data.data.ended_at)}</span>
-                                            </div>
-                                            <div class="messages-item-content">
-                                                <p>CHAT ENDED</p>
-                                            </div>
-                                        </div>
-                                    </div>`
-                        this.messagesList.push(html)
+                        this.renderEndChatMessage();
                     }
                     this.scrollToBottom();
                     this.startSocketBrodcast();
@@ -516,34 +545,6 @@ export default {
                     console.error(e);
                 })
         },
-        optionOrLanguage() {
-            if (this.chatComponent == 'lang') {
-                let lang = `<div class="messages-item">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.getDateTIme()}</span>
-                                        </div>
-                                        <div class="messages-item-content">
-                                            <p>Choose your language from the list below</p>
-                                        </div>
-                                    </div>
-                                </div>`
-                this.messagesList.push(lang)
-            }
-            if (this.chatComponent == 'opt') {
-                let opt = `<div class="messages-item">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.getDateTIme()}</span>
-                                        </div>
-                                        <div class="messages-item-content">
-                                            <p>Choose an issue from below</p>
-                                        </div>
-                                    </div>
-                                </div>`;
-                this.messagesList.push(opt)
-            }
-        },
         getDateTIme() {
             return moment(new Date()).format('DD/MM/YYYY hh:mm A');
         },
@@ -616,4 +617,18 @@ export default {
 
 .modal-header {
     padding: 1rem 1rem;
-}</style>
+}
+
+.sub-messages-con.chat-ended-message {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.end-message-color {
+    color: #da2c29;
+}
+.display-event-message {
+    color: #677E9E;
+}
+
+</style>

@@ -169,7 +169,7 @@
                             </div>
                         </div>
                         <div class="messages-body-sec">
-                            <div class="messages-list-sec">
+                            <div class="messages-list-sec all-messege-container" ref="messagesListSec">
                                 <div class="messages-item" v-for="(mes, i) in messages" :key="i"
                                     :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
                                     <div class="messages-item-con">
@@ -180,15 +180,20 @@
                                         <div class="messages-item-content thm-heading">
                                             <p>{{ mes.message }}</p>
                                         </div>
-                                        <div v-if="mes.file_paths" class="video-sec todo border border-warning">
-                                            <img :src="mediaUrl + mes.file_paths" />
-                                        </div>
+                                        <template v-if="mes.file_paths">
+                                            <div class="video-sec todo border border-warning" v-for="(paths, index ) in mes.file_paths.split('\n')" :key="index">
+                                                <img :src="mediaUrl + paths" v-if="['png', 'jpg', 'jpeg'].includes(paths.split('.')[1])"/>
+                                                <video controls="false" v-else>
+                                                    <source :src="mediaUrl + mes.file_paths" />
+                                                </video>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
-                                <div class="img-preview">
+                                <!-- <div class="img-preview">
                                     <img :src="media" alt="" v-for="media in mediaPreviewBlobs" :key="media.id">
-                                </div>
-                                <div class="messages-item outgoing-messages">
+                                </div> -->
+                                <div class="messages-item outgoing-messages" v-if="audioPreview">
                                     <audio id="recordedAudio"></audio>
                                 </div>
                             </div>
@@ -417,7 +422,8 @@ export default {
                 rec: '',
                 userFile: '',
                 userFileName:''
-            }
+            },
+            audioPreview: false,
         }
     },
     watch: {
@@ -435,6 +441,7 @@ export default {
             window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
                 this.messages.push(data)
                 this.current_chat.last_message_timestamp = data.sent_at_timestamp
+                this.scrollToBottom();
             });
         },
         getChatsMessages(item) {
@@ -448,6 +455,7 @@ export default {
                     this.messages = Object.assign([], res.data.data.messages);
                     this.mediaUrl = res.data.data.media_base_url
                     this.startSocketBrodcast();
+                    this.scrollToBottom();
                     // this.unread_count[this.chat_type] = res.data.data.unread_count;
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -561,10 +569,15 @@ export default {
             for (let i = 0; i < this.media?.length; i++) {
                 messageData.append('file[]', this.media[i]);
             }
+            this.voiceRecord.userFile ? messageData.append('file[]', this.voiceRecord.userFile) : '';
 
             axios.post('chat/send-message', messageData)
             .then(res => {
-                this.input = ''
+                this.input = '';
+                this.audioPreview = false;
+                this.mediaPreviewBlobs = [];
+                this.media = null;
+                this.voiceRecord.userFile = null;
             }).catch(e => {
                 console.error(e);
             })
@@ -572,6 +585,7 @@ export default {
         handlerFunction(stream) {
             this.voiceRecord.rec = new MediaRecorder(stream);
             let audioChunks = [];
+            this.audioPreview = true
             this.voiceRecord.rec.ondataavailable = (e) => {
                 audioChunks.push(e.data);
                 if (this.voiceRecord.rec.state == "inactive") {
@@ -584,9 +598,9 @@ export default {
             };
         },
         sendData(blob) {
-            this.userFile = blob;
-            console.log(typeof blob);
-            this.userFileName = "audio-record";
+            this.voiceRecord.userFile = blob;
+            this.voiceRecord.userFileName = "audio-record";
+            this.scrollToBottom();
         },
         startRecord() {
             navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -598,6 +612,12 @@ export default {
         },
         stopRecord() {
             this.voiceRecord.rec.stop();
+        },
+        scrollToBottom() {
+            this.$nextTick(() => {
+                const messagesListSec = this.$refs.messagesListSec;
+                messagesListSec.scrollTop = messagesListSec.scrollHeight + 500;
+            });
         },
     }
 }
@@ -629,6 +649,10 @@ export default {
     top: 15rem;
     right: 20rem;
     position: absolute;
+}
+
+.all-messege-container {
+    padding-bottom: 1rem;
 }
 
 </style>

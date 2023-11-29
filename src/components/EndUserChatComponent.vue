@@ -272,10 +272,11 @@ export default {
             });
         },
         renderImageMessage(data) {
+            const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
             const html = `<div class="messages-item ${outgoingClass}">
                                 <div class="messages-item-con">
                                     <div class="sub-messages-con">
-                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
                                     </div>
                                     <div class="messages-item-content">
                                         <img src="${ this.mediaBaseUrl + data.file_paths}" />
@@ -383,23 +384,23 @@ export default {
                                             </div>`
                                     this.messagesList.unshift(html)
                             } 
-                            // else if(fileType == 'webm') {
-                            //     let html = `<div class="messages-item ${outgoingClass}">
-                            //                     <div class="messages-item-con">
-                            //                         <div class="sub-messages-con">
-                            //                             <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
-                            //                         </div>
-                            //                         <div class="messages-item-content">
-                            //                             <div class="audio-sec">
-                            //                                 <video controls="">
-                            //                                     <source src="${this.mediaBaseUrl + data[i].file_paths}" />
-                            //                                 </video>
-                            //                             </div>
-                            //                         </div>
-                            //                     </div>
-                            //                 </div>`
-                            //         this.messagesList.unshift(html)
-                            // }
+                            else if(fileType == 'webm') {
+                                let html = `<div class="messages-item ${outgoingClass}">
+                                                <div class="messages-item-con">
+                                                    <div class="sub-messages-con">
+                                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data[i].sent_at_timestamp)}</span>
+                                                    </div>
+                                                    <div class="messages-item-content">
+                                                        <div class="audio-sec">
+                                                            <video controls="">
+                                                                <source src="${this.mediaBaseUrl + data[i].file_paths}" />
+                                                            </video>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>`
+                                    this.messagesList.unshift(html)
+                            }
 
                         } else {
                             let html = `<div class="messages-item ${outgoingClass}">

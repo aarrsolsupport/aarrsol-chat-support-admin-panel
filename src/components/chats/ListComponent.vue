@@ -564,7 +564,7 @@ export default {
 
             axios.post('chat/send-message', messageData)
             .then(res => {
-                this.input = null
+                this.input = ''
             }).catch(e => {
                 console.error(e);
             })

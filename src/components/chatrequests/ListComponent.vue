@@ -47,23 +47,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(chat, c_index) in chatRequestsList" :key="c_index">
+                                <tr v-for="(item, index) in chatRequestsList" :key="index">
                                     <td>
-                                        <h2>{{ c_index + 1 }}</h2>
+                                        <h2>{{ ((pagination_data.current_page - parseInt(1)) * pagination_data.per_page) +
+                                            index + parseInt(1) }}</h2>
                                     </td>
                                     <td>
-                                        <h2>{{ chat.userid }}</h2>
+                                        <h2>{{ item.userid }}</h2>
                                     </td>
                                     <td>
-                                        <h2>{{ chat.issue_name }}</h2>
+                                        <h2>{{ item.issue_name }}</h2>
                                     </td>
                                     <td>
-                                        <h2>{{ $filters.messageDateTimeFormat(chat.requested_at_timestamp) }}</h2>
+                                        <h2>{{ $filters.messageDateTimeFormat(item.requested_at_timestamp) }}</h2>
                                     </td>
                                     <td>
                                         <div class="Categories-btn">
                                             <button class="thm-btn success-thm"
-                                                @click="acceptChatRequests(chat, c_index)">Accept</button>
+                                                @click="acceptChatRequests(item, index)">Accept</button>
                                             <button class="thm-btn danger-thm" data-bs-toggle="modal"
                                                 data-bs-target="#rejectdetails" v-if="false">Reject</button>
                                         </div>
@@ -74,38 +75,7 @@
                         </table>
                     </div>
                     <div class="operator-table-footer">
-                        <div class="entries-sec">
-                            <div class="thm-heading">
-                                <h2>Show</h2>
-                            </div>
-                            <div class="entries-select">
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected="">01</option>
-                                    <option value="1">02</option>
-                                    <option value="2">03</option>
-                                    <option value="3">04</option>
-                                </select>
-                            </div>
-                            <div class="thm-heading">
-                                <h2>entries</h2>
-                            </div>
-                        </div>
-                        <div class="entries-pages">
-                            <div class="thm-heading">
-                                <h2>Showing 1 to 10 of 12 entries</h2>
-                            </div>
-                            <div class="entries-pagination">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                        <li class="page-item"><a class="page-link active" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
+                        <PaginationComponent :data="pagination_data"></PaginationComponent>
                     </div>
                 </div>
             </div>
@@ -158,7 +128,22 @@ export default {
     name: 'ChatRequestListComponent',
     data() {
         return {
-            chatRequestsList: null
+            chatRequestsList: null,
+            pagination_data: {
+                "from": 1,
+                "to": 20,
+                "total": 20,
+                "links": {},
+                "current_page": 1,
+                "per_page": 20,
+            },
+        }
+    },
+    watch: {
+        '$store.state.chat_request': function () {
+            this.chatRequestsList.unshift(this.$store.state.chat_request);
+            if(this.chatRequestsList.length >= this.pagination_data.per_page)
+                this.chatRequestsList.pop();
         }
     },
     mounted() {
@@ -168,10 +153,14 @@ export default {
         getChatRequests() {
             this.$store.commit('is_loader', true);
 
-            axios.get('/get-chat-requests')
+            axios.get('/get-chat-requests?page=' + this.pagination_data.current_page + '&per_page=' + this.pagination_data.per_page)
                 .then(res => {
                     if (res.status == 200) {
-                        this.chatRequestsList = res.data.data;
+                        this.chatRequestsList = res.data.data.list_items.data;
+                        this.pagination_data.total = res.data.data.list_items.total;
+                        this.pagination_data.from = res.data.data.list_items.from;
+                        this.pagination_data.to = res.data.data.list_items.to;
+                        this.pagination_data.links = res.data.data.list_items.links;
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -186,7 +175,7 @@ export default {
                 .then(res => {
                     if (res.status == 200) {
                         this.chatRequestsList.splice(position, 1);
-                        console.log(res);
+                        // console.log(res);
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {

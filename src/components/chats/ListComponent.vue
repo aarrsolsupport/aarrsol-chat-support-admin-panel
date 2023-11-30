@@ -447,7 +447,7 @@ export default {
         getChatsMessages(item) {
             this.current_chat = Object.assign({}, item)
             this.current_chat.user_id = this.authData.id
-            console.log(['current_chat', this.current_chat])
+            // console.log(['current_chat', this.current_chat])
             this.$store.commit('is_loader', true);
             axios.post('chat/get-messages', { room_id: this.current_chat.chat_room_id })
                 .then(res => {

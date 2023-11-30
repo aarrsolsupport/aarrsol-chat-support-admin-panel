@@ -551,7 +551,7 @@ export default {
             // this.showForm = 0;
         },
         setupEditDeleteForm(data) {
-            console.log(data);
+            // console.log(data);
             if (data) {
                 data.files = data.files?.split('\n') || null
                 this.nodeData = data

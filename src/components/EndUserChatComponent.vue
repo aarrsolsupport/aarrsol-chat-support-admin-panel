@@ -563,7 +563,7 @@ export default {
             this.media = [];
             this.mediaPreviewBlobs = [];
             let mediaFiles = event.target.files;
-            console.log(mediaFiles);
+            // console.log(mediaFiles);
             for (let i = 0; i < mediaFiles.length; i++) {
                 this.media.push(mediaFiles[i]);
                 this.mediaPreviewBlobs.push(URL.createObjectURL(mediaFiles[i]))

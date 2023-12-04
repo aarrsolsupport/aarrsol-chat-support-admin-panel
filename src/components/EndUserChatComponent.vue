@@ -23,10 +23,8 @@
                             <div class="messages-item">
                                 <div class="messages-item-con">
                                     <div class="assistant-input">
-                                        <label for="nameinput" class="form-label">User Name</label>
-                                        <div class="assistant-input-sec">
-                                            <input type="text" class="form-control" id="nameinput" placeholder="Enter Name" v-model="userName">
-                                            <button type="submit" class="thm-btn" @click="callForAddUserid()">Submit</button>
+                                        <div class="assistant-input-sec justify-content-center">
+                                            <button type="submit" class="thm-btn w-auto" @click="callForAddUserid()">Chat as Guest User</button>
                                         </div>
                                     </div>
                                 </div>
@@ -84,17 +82,21 @@
                             <div class="messages-item outgoing-messages" v-if="audioPreview">
                                 <audio id="recordedAudio"></audio>
                             </div>
-                            <div class="messages-item" v-if="chatStatus == 0">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con chat-ended-message">
-                                        <span class="message-time">Waiting for an agent to join the chat</span>
-                                    </div>
+                        </div>
+                        <div class="messages-item end-message-sec" v-if="chatStatus != 1">
+                            <div class="messages-item-con">
+                                <div v-if="chatStatus == 0" class="sub-messages-con chat-ended-message display-event-message">
+                                    <span class="message-time">Waiting for an agent to join the chat</span><br/>
+                                </div>
+                                <div v-else-if="chatStatus == 2" class="sub-messages-con chat-ended-message end-message-color">
+                                    <span class="message-time">The chat has been ended. </span><br/>
+                                    <a href="#" v-if="startNewChat" @click="callForCreateChatRoom(true)">Click here to start a new chat</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                <section class="messages-type-wrapper" v-if="chatTextBox && chatComponent != 'add_user' && chatComponent != 'chat_list'">
+                <section class="messages-type-wrapper" v-if="chatStatus == 1 && agent_id && chatComponent != 'add_user' && chatComponent != 'chat_list'">
                     <div class="messages-type-sec">
                         <div class="messages-type-con">
                             <div class="messages-type-input">
@@ -202,22 +204,24 @@ export default {
     name: 'EndUserChatComponent',
     data() {
         return {
-            agent_id: null,
-            input: "",
+            refId: '',
             domainName: null,
             headerColor: null,
-            refId: '',
-            userId: null,
+
             userName: null,
-            chat_id: '',
-            chatComponent: null,
-            chatTextBox: false,
-            nextActionData: null,
-            roomId: null,
-            messagesList: [],
-            chatList: null,
+            userId: null,
+
             startNewChat: false,
-            chatFlow: 1,
+            chatComponent: null,
+
+            roomId: null,
+            chatStatus: null,
+            agent_id: null,
+
+            input: "",
+            chatList: null,
+            nextActionData: null,
+            messagesList: [],
             media: null,
             mediaPreviewBlobs: null,
             voiceRecord: {
@@ -227,7 +231,6 @@ export default {
             },
             mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
             audioPreview: false,
-            chatStatus: null
             
         }
     },
@@ -238,41 +241,41 @@ export default {
     },
     methods: {
         // SOCKET FUNCTION START
+        awaitAgentSocket() {
+            let channel = "chat-request-accepted-channel." + this.userId;
+            window.Echo.channel(channel).listen(".agent-joined-chat", (data) => {
+                this.$toast.info(data.agent_name+' has joined the Chat!');
+                if(this.roomId == data.chat_room_id) {
+                    this.chatStatus = 1;
+                    this.agent_id = data.agent_id;
+                } else {
+                    // *TO-DO* add unread count to chat if in list
+                }
+            });
+        },
         startSocketBrodcast() {
             window.Echo.connect();
 
             window.Echo.channel("message-channel." + this.roomId).listen(".receive-messages", (data) => {
-                if (!data.message && data.file_paths) {
-                    this.renderMedia(data);
-                } else if(data.message && data.file_paths) {
-                    this.renderMedia(data);
-                    this.renderTextMessage(data);
-                } else {
-                    this.renderTextMessage(data);
+                if(data.next.status !== undefined){
+                    this.chatStatus = data.next.status;
                 }
-
-                this.nextActionData = data.next.data;
-                this.chatStatus = data.next.status;
-
-                if (this.chatFlow === 1 && data.sender_type === 2) {
-                    this.chatFlow = 2;
+                if (data.sender_type == 2 && this.agent_id != data.sender_id) {
                     this.agent_id = data.sender_id;
                 }
-
+                this.nextActionData = data.next.data;
                 if (data.next.next_action !== '') {
                     this.chatComponent = data.next.next_action;
                 }
-
-                if (this.chatComponent === 'live_agent' && data.sender_type === 2) {
-                    this.chatTextBox = true;
+                if(data.file_paths) {
+                    this.renderMedia(data);
+                } 
+                if(data.message) {
+                    this.renderTextMessage(data);
+                } 
+                if(this.chatStatus == 1) {
+                    this.scrollToBottom();
                 }
-
-                if (this.chatComponent === 'end' && this.chatStatus == 2) {
-                    this.chatTextBox = false;
-                    this.renderEndChatMessage(data);
-                }
-
-                this.scrollToBottom();
             });
         },
         // SOCKET FUNCTION END
@@ -343,16 +346,6 @@ export default {
                             </div>`;
             getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
         },
-        renderEndChatMessage() {
-            const html = `<div class="messages-item">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con chat-ended-message">
-                                                    <span class="message-time">This chat has been ended.</span>
-                                    </div>
-                                </div>
-                            </div>`;
-            this.messagesList.push(html);
-        },
         optionOrLanguage() {
             if (this.chatComponent == 'lang') {
                 let lang = `<div class="messages-item">
@@ -361,7 +354,7 @@ export default {
                                             <span class="message-time">${this.getDateTIme()}</span>
                                         </div>
                                         <div class="messages-item-content">
-                                            <p>Choose your language from the list below</p>
+                                            <p>Welcome `+ this.userName +`! Choose your language from the list below</p>
                                         </div>
                                     </div>
                                 </div>`
@@ -425,11 +418,8 @@ export default {
                         this.chatComponent = res.data.data.component;
                         this.userId = res.data.data.end_user_id;
                         this.chatList = res.data.data.chats;
-                        if (res.data.data?.open_chats == 0) {
-                            this.startNewChat = true;
-                        } else {
-                            this.startNewChat = false;
-                        }
+                        this.startNewChat = (res.data.data?.open_chats == 0) ? true : false;
+                        this.awaitAgentSocket()
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -440,57 +430,52 @@ export default {
         getChatMessages(data) {
             axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: data.chat_id })
                 .then(res => {
+                    // this.userId = res.data.data.end_user_id;
+                    this.roomId = res.data.data.chat_room_id;
+                    this.chatStatus = res.data.data.status;
+                    this.agent_id = res.data.data.agent_id;
+                    
                     const messages = res.data.data.messages;
 
                     for (let i = 0; i < messages.length; i++) {
                         const message = messages[i];
-
-                        if (!message.message && message.file_paths) {
+                        if (message.file_paths) {
                             this.renderMedia(message, true);
-                        } else if (message.message && message.file_paths) {
-                            this.renderMedia(message, true);
-                            this.renderTextMessage(message, true);
-                        } else {
+                        }
+                        if (message.message) {
                             this.renderTextMessage(message, true);
                         }
                     }
-                    this.chatComponent = 'live_agent'
 
                     if (res.data.data.current_options?.data) {
                         this.nextActionData = res.data.data.current_options?.data;
                         this.chatComponent = res.data.data.current_options?.next_action;
+                    } else {
+                        this.nextActionData = null
+                        this.chatComponent = 'live_agent'
                     }
 
-                    this.userId = res.data.data.end_user_id;
-                    this.roomId = res.data.data.chat_room_id;
-                    this.chatStatus = res.data.data.status;
-
-                    if (res.data.data.status != 2 && res.data.data.agent_id) {
-                        this.chatFlow = 2;
-                        this.chatTextBox = true;
-                    } else if (res.data.data.status == 2) {
-                        this.renderEndChatMessage();
+                    if(res.data.data.status == 1) {
+                        this.scrollToBottom();
                     }
-                    this.scrollToBottom();
                     this.startSocketBrodcast();
                 }).catch(e => {
                     console.error(e);
                 })
         },
         callForAddUserid() {
-            const requestData = {
+            axios.post('/chat-support/add-userid', {
                 ref_id: this.refId,
-                user_id: this.userName,
-            };
-
-            axios.post('/chat-support/add-userid', requestData)
-                .then(res => {
+            }).then(res => {
                     if (res.status != 200) {
                         this.$toast.error(res.data.message);
                         return
                     } else {
                         const respData = res.data.data;
                         this.chatComponent = respData.next_action.next_action;
+                        this.roomId = respData.next_action.room_id;
+                        this.userId = respData.user_id;
+                        this.userName = respData.user_name;
 
                         if (this.chatComponent === 'chat_list') {
                             this.chatList = respData.next_action.data;
@@ -502,8 +487,6 @@ export default {
                             this.startNewChat = true;
                         }
 
-                        this.roomId = respData.next_action.room_id;
-                        this.userId = respData.user_id;
                         this.optionOrLanguage();
                         this.startSocketBrodcast();
                     }
@@ -532,17 +515,21 @@ export default {
                     console.error(e);
                 })
         },
-        callForCreateChatRoom() {
+        callForCreateChatRoom(reset = false) {
+            this.messagesList = [];
             axios.post('/chat-support/start-new-chat', { user_id: this.userId })
-                .then(res => {
-                    this.chatComponent = res.data.data.next_action;
-                    this.nextActionData = res.data.data.data;
-                    this.roomId = res.data.data.room_id;
-                    this.optionOrLanguage();
-                    this.startSocketBrodcast();
-                }).catch(e => {
-                    console.error(e);
-                })
+            .then(res => {
+                this.agent_id = 0;
+                this.chatStatus = 1;
+                this.startNewChat = false;
+                this.chatComponent = res.data.data.next_action;
+                this.nextActionData = res.data.data.data;
+                this.roomId = res.data.data.room_id;
+                this.optionOrLanguage();
+                this.startSocketBrodcast();
+            }).catch(e => {
+                console.error(e);
+            })
         },
         getDateTIme() {
             return moment(new Date()).format('DD/MM/YYYY hh:mm A');
@@ -603,31 +590,3 @@ export default {
     },
 }
 </script>
-
-<style>
-#app {
-    margin-top: 0px !important;
-}
-
-
-.chat-modal-body {
-    padding: 0px !important;
-}
-
-.modal-header {
-    padding: 1rem 1rem;
-}
-
-.sub-messages-con.chat-ended-message {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.end-message-color {
-    color: #da2c29;
-}
-.display-event-message {
-    color: #677E9E;
-}
-
-</style>

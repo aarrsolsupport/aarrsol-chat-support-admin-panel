@@ -683,11 +683,15 @@ background: #b6c1d9;
 }
 
 .video-sec {
-	width: 80%;
-	border-radius: 6px;
-	overflow: hidden;
-	height: 100%;
+    max-width: 80%;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 100%;
+    width: fit-content;
 }
+
+
+
 
 
 .video-sec iframe{
@@ -817,4 +821,35 @@ background: #b6c1d9;
 
 .chat-user-tab.chats-tabs-item-con ul li button.active  {
 	background-color: var(--primary-color);
+}
+.images-sec img{
+	max-height: 250px;
+	border-radius: 6px;
+  }
+
+.sub-messages-con.chat-ended-message {
+    text-align: center;
+    margin-top: 40px;
+    border-bottom: 1.5px solid #f0f0f0;
+    line-height: 0px;
+}
+.chat-ended-message .sub-messages-con span {
+    background-color: #fff;
+}
+.sub-messages-con span {
+    font-size: 13px;
+    font-weight: 400;
+    color: #677E9E;
+}
+.chat-ended-message span {
+    font-size: 14px;
+}
+
+.search-input-sec input {
+    width: 100%;
+    padding-left: 30px !important;
+}
+/* TODO for closed chats  */
+.chat-flow-tables .messages-body-sec {
+    height: calc(100vh - 0px);
 }

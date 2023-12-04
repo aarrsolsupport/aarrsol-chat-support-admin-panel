@@ -181,11 +181,15 @@
                                             <p>{{ mes.message }}</p>
                                         </div>
                                         <template v-if="mes.file_paths">
-                                            <div class="video-sec todo border border-warning" v-for="(paths, index ) in mes.file_paths.split('\n')" :key="index">
-                                                <img :src="mediaUrl + paths" v-if="['png', 'jpg', 'jpeg'].includes(paths.split('.')[1])"/>
-                                                <video controls="false" v-else>
-                                                    <source :src="mediaUrl + mes.file_paths" />
-                                                </video>
+                                            <div class="video-sec" v-for="(paths, index ) in mes.file_paths.split('\n')" :key="index">
+                                                <template  v-if="['png', 'jpg', 'jpeg'].includes(paths.split('.')[1])">
+                                                    <img :src="mediaUrl + paths"/>
+                                                </template>
+                                                <template v-else>
+                                                    <video controls="false">
+                                                        <source :src="mediaUrl + mes.file_paths" />
+                                                    </video>
+                                                </template>
                                             </div>
                                         </template>
                                     </div>

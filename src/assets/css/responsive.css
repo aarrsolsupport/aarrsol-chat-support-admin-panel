@@ -243,6 +243,10 @@
     .messages-body-sec {
         height: calc(100vh - 130px);
     }
+    
+    .all-messege-container {
+        padding-bottom: 7rem;
+    }
 }
 
 @media screen and (max-width: 767px){
@@ -405,6 +409,7 @@
 .admin-con label {
     font-size: 13px;
 }
+
 }
 
 @media screen and (max-width: 575px){
@@ -1079,6 +1084,8 @@
     .Categories-btn .thm-btn {
         margin: 0px 4px;
     }
+
+
 }
 
 @media screen and (max-width: 359px){

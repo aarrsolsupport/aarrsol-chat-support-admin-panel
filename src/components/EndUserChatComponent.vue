@@ -23,10 +23,8 @@
                             <div class="messages-item">
                                 <div class="messages-item-con">
                                     <div class="assistant-input">
-                                        <label for="nameinput" class="form-label">User Name</label>
-                                        <div class="assistant-input-sec">
-                                            <input type="text" class="form-control" id="nameinput" placeholder="Enter Name" v-model="userName">
-                                            <button type="submit" class="thm-btn" @click="callForAddUserid()">Submit</button>
+                                        <div class="assistant-input-sec justify-content-center">
+                                            <button type="submit" class="thm-btn w-auto" @click="callForAddUserid()">Chat as Guest User</button>
                                         </div>
                                     </div>
                                 </div>
@@ -356,7 +354,7 @@ export default {
                                             <span class="message-time">${this.getDateTIme()}</span>
                                         </div>
                                         <div class="messages-item-content">
-                                            <p>Choose your language from the list below</p>
+                                            <p>Welcome `+ this.userName +`! Choose your language from the list below</p>
                                         </div>
                                     </div>
                                 </div>`
@@ -466,19 +464,18 @@ export default {
                 })
         },
         callForAddUserid() {
-            const requestData = {
+            axios.post('/chat-support/add-userid', {
                 ref_id: this.refId,
-                user_id: this.userName,
-            };
-
-            axios.post('/chat-support/add-userid', requestData)
-                .then(res => {
+            }).then(res => {
                     if (res.status != 200) {
                         this.$toast.error(res.data.message);
                         return
                     } else {
                         const respData = res.data.data;
                         this.chatComponent = respData.next_action.next_action;
+                        this.roomId = respData.next_action.room_id;
+                        this.userId = respData.user_id;
+                        this.userName = respData.user_name;
 
                         if (this.chatComponent === 'chat_list') {
                             this.chatList = respData.next_action.data;
@@ -490,8 +487,6 @@ export default {
                             this.startNewChat = true;
                         }
 
-                        this.roomId = respData.next_action.room_id;
-                        this.userId = respData.user_id;
                         this.optionOrLanguage();
                         this.startSocketBrodcast();
                     }

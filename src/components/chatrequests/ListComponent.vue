@@ -174,7 +174,8 @@ export default {
             axios.post('/accept-chat-request', { room_id: chat.id })
                 .then(res => {
                     if (res.status == 200) {
-                        this.chatRequestsList.splice(position, 1);
+                        window.location.href='/chats'
+                        // this.chatRequestsList.splice(position, 1);
                         // console.log(res);
                     }
                     this.$store.commit('is_loader', false);

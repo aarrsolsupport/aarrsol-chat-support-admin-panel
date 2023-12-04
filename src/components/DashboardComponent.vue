@@ -9,7 +9,7 @@
                      <div class="dashboard-item">
                         <div class="thm-heading">
                            <h4>{{ val }}</h4>
-                           <span class="text-uppercase">{{ attr.replace('_', ' ') }}</span>
+                           <span class="text-uppercase">{{ attr.replaceAll('_', ' ') }}</span>
                         </div>
                      </div>
                      <div class="ashboard-item-img">
@@ -40,6 +40,9 @@ import axios from "axios";
             if(attr.includes('agents')) {
                return "/agents";
             } else if(attr.includes('chats')) {
+               if(attr == 'requested_chats') {
+                  return "/chat-requests";
+               }
                return "/chats";
             } else if(attr.includes('operators')) {
                return "/operators";

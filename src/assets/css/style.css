@@ -395,12 +395,11 @@ header{
 .thm-btn:hover{
 	color: var(--white-color);
 }
-.thm-border-btn{
-	border: 1.5px solid var(--primary-color) ;
-	background-color: transparent !important;
-	color: var(--primary-color) !important;
+.thm-border-btn {
+    border: 1.5px solid var(--primary-color) !important;
+    background-color: transparent !important;
+    color: var(--primary-color) !important;
 }
-
 /* index pages css */
 
 .header-logo{

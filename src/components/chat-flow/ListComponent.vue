@@ -793,4 +793,7 @@ export default {
  .operator-details-chat-flow-sec .org-tree-container{
     min-width: max-content;
 }
+.operator-table-sec.chat-flow-tables.operator-details-chat-flow2-sec {
+    margin-left: -12px;
+}
 </style>

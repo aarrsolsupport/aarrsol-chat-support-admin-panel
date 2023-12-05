@@ -74,11 +74,6 @@
                                     </ul>
                                 </div>
                             </div>
-                            <!-- <div class="messages-item outgoing-messages">
-                                <div class="img-preview">
-                                    <img :src="media" alt="" v-for="media in mediaPreviewBlobs" :key="media.id">
-                                </div>
-                            </div> -->
                             <div class="messages-item outgoing-messages" v-if="audioPreview">
                                 <audio id="recordedAudio"></audio>
                             </div>
@@ -97,6 +92,14 @@
                     </div>
                 </section>
                 <section class="messages-type-wrapper" v-if="chatStatus == 1 && agent_id && chatComponent != 'add_user' && chatComponent != 'chat_list'">
+                    <div id="fileList" v-if="mediaPreviewBlobs">
+                        <ul>
+                            <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
+                                <img :src="media.src" :alt="media.name" />
+                                <span class="list-cross" @click="removeMedia(key)"><img src="@/assets/images/cross-icon.svg" alt=""></span>
+                            </li>
+                        </ul>
+                    </div>
                     <div class="messages-type-sec">
                         <div class="messages-type-con">
                             <div class="messages-type-input">
@@ -550,11 +553,15 @@ export default {
             this.media = [];
             this.mediaPreviewBlobs = [];
             let mediaFiles = event.target.files;
-            // console.log(mediaFiles);
             for (let i = 0; i < mediaFiles.length; i++) {
+                console.log(mediaFiles[i]);
                 this.media.push(mediaFiles[i]);
-                this.mediaPreviewBlobs.push(URL.createObjectURL(mediaFiles[i]))
+                this.mediaPreviewBlobs[i] = {src: URL.createObjectURL(mediaFiles[i]), name: mediaFiles[i].name}
             }
+        },
+        removeMedia(id) {
+            this.media.splice(id, 1)
+            this.mediaPreviewBlobs.splice(id, 1)
         },
         handlerFunction(stream) {
             this.voiceRecord.rec = new MediaRecorder(stream);

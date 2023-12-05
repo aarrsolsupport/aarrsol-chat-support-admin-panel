@@ -45,3 +45,21 @@
 .end-message-sec .sub-messages-con span{
     background-color: #f0f0f0;
 }
+
+#fileList ul li{
+	list-style: none;
+	position: relative;
+	margin-right: 5px;
+  }
+  
+#fileList ul li img{
+	max-width: 60px;
+	border-radius: 10px;
+ }
+ 
+ #fileList ul {
+	display: flex;
+	align-items: start;
+	justify-content: flex-start;
+	overflow: auto;
+}

@@ -15,5 +15,10 @@
     .end-message-sec {
         transform: translate(0%, -47px) !important;
     }
+    .messages-item-content {
+        padding: 8px 12px;
+        margin-top: 6px;
+        padding-bottom: 15px;
+    }
 }
 

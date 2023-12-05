@@ -95,7 +95,7 @@
                     <div id="fileList" v-if="mediaPreviewBlobs">
                         <ul>
                             <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
-                                <img :src="media.src" :alt="media.name" @error="this.onerror=null;this.src='../assets/images/file-icon.svg'" />
+                                <img :src="media.src" :alt="media.name" @error="setAltImg" />
                                 <span class="list-cross" @click="removeMedia(key)"><img src="@/assets/images/cross-icon.svg" alt=""></span>
                             </li>
                         </ul>
@@ -207,6 +207,7 @@ export default {
     name: 'EndUserChatComponent',
     data() {
         return {
+            defaultFile: require('@/assets/images/file-icon.svg'),
             refId: '',
             domainName: null,
             headerColor: null,
@@ -243,6 +244,9 @@ export default {
         this.getChatWindow();
     },
     methods: {
+        setAltImg(event) { 
+            event.target.src = this.defaultFile 
+        } ,
         // SOCKET FUNCTION START
         awaitAgentSocket() {
             let channel = "chat-request-accepted-channel." + this.userId;
@@ -293,10 +297,11 @@ export default {
                         let html = `<div class="messages-item ${outgoingClass}">
                                             <div class="messages-item-con">
                                                 <div class="sub-messages-con">
-                                                    <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
+                                                    <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
                                                 </div>
                                                 <div class="messages-item-content">
                                                     <img src="${ this.mediaBaseUrl + filePath}" />
+                                                    <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
                                                 </div>
                                             </div>
                                         </div>`;
@@ -306,12 +311,13 @@ export default {
                         let html = `<div class="messages-item ${outgoingClass}">
                                         <div class="messages-item-con">
                                             <div class="sub-messages-con">
-                                                <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
+                                                <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
                                             </div>
                                             <div class="messages-item-content">
                                                 <div class="audio-sec">
                                                     <video controls="">
                                                         <source src="${this.mediaBaseUrl + filePath}" />
+                                                        <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
                                                     </video>
                                                 </div>
                                             </div>
@@ -326,10 +332,11 @@ export default {
             const html = `<div class="messages-item ${outgoingClass}">
                                 <div class="messages-item-con">
                                     <div class="sub-messages-con">
-                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
+                                        <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
                                     </div>
                                     <div class="messages-item-content">
                                         <img src="${ this.mediaBaseUrl + data.file_paths}" />
+                                        <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
                                     </div>
                                 </div>
                             </div>`;
@@ -340,10 +347,11 @@ export default {
             const html = `<div class="messages-item ${outgoingClass}">
                                 <div class="messages-item-con">
                                     <div class="sub-messages-con">
-                                        <span class="message-time">${this.$filters.messageDateTimeFormat(data.sent_at_timestamp)}</span>
+                                        <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
                                     </div>
                                     <div class="messages-item-content">
                                         <p>${data.message}</p>
+                                        <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
                                     </div>
                                 </div>
                             </div>`;

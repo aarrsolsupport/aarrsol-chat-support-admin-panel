@@ -63,3 +63,19 @@
 	justify-content: flex-start;
 	overflow: auto;
 }
+span.message-time.messages-time-item {
+    position: absolute;
+    right: 5px;
+    bottom: 0;
+    font-size: 11px;
+}
+.messages-item-content {
+    background-color: #F0F0F0;
+    border-radius: 0px 8px 8px 8px;
+    padding: 6px 8px;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin-top: 4px;
+    position: relative;
+    padding-bottom: 20px;
+}

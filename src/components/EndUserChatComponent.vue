@@ -451,6 +451,7 @@ export default {
                         if(this.showEmoji) {
                             this.toggleEmojiPicker();
                         }
+                        document.querySelector('.messages-item.unread-message-area').classList.add('d-none')
                         // console.log(res)
                     }).catch(e => {
                         console.error(e);
@@ -488,36 +489,48 @@ export default {
         getChatMessages(data) {
             axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: data.chat_id })
                 .then(res => {
-                    // this.userId = res.data.data.end_user_id;
-                    this.roomId = res.data.data.chat_room_id;
-                    this.chatStatus = res.data.data.status;
-                    this.agent_id = res.data.data.agent_id;
-                    this.agent_name = res.data.data.agent_name;
-                    
-                    const messages = res.data.data.messages;
-
-                    for (let i = 0; i < messages.length; i++) {
-                        const message = messages[i];
-                        if (message.file_paths) {
-                            this.renderMedia(message, true);
+                    if(res.status == 200) {
+                        // this.userId = res.data.data.end_user_id;
+                        this.roomId = res.data.data.chat_room_id;
+                        this.chatStatus = res.data.data.status;
+                        this.agent_id = res.data.data.agent_id;
+                        this.agent_name = res.data.data.agent_name;
+                        
+                        const messages = res.data.data.messages;
+    
+                        for (let i = 0; i < messages.length; i++) {
+                            const message = messages[i];
+                            if (message.file_paths) {
+                                this.renderMedia(message, true);
+                            }
+                            if (message.message) {
+                                this.renderTextMessage(message, true);
+                            }
+                            if(message.id == res.data.data.unread_from) {
+                            let html = `<div class="messages-item unread-message-area">
+                                            <div class="messages-item-con">
+                                                <div class="sub-messages-con chat-ended-message">
+                                                                <span class="message-time">${res.data.data.unread_count} Unread Messages</span>
+                                                </div
+                                            </div>
+                                        </div>`
+                            this.messagesList.unshift(html)
+                            }
                         }
-                        if (message.message) {
-                            this.renderTextMessage(message, true);
+    
+                        if (res.data.data.current_options?.data) {
+                            this.nextActionData = res.data.data.current_options?.data;
+                            this.chatComponent = res.data.data.current_options?.next_action;
+                        } else {
+                            this.nextActionData = null
+                            this.chatComponent = 'live_agent'
                         }
+    
+                        if(res.data.data.status == 1) {
+                            this.scrollToBottom();
+                        }
+                        this.startSocketBrodcast();
                     }
-
-                    if (res.data.data.current_options?.data) {
-                        this.nextActionData = res.data.data.current_options?.data;
-                        this.chatComponent = res.data.data.current_options?.next_action;
-                    } else {
-                        this.nextActionData = null
-                        this.chatComponent = 'live_agent'
-                    }
-
-                    if(res.data.data.status == 1) {
-                        this.scrollToBottom();
-                    }
-                    this.startSocketBrodcast();
                 }).catch(e => {
                     console.error(e);
                 })

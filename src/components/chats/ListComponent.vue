@@ -172,6 +172,11 @@
                             <div class="messages-list-sec" ref="messagesListSec">
                                 <div class="messages-item" v-for="(mes, i) in messages" :key="i"
                                     :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
+                                    <div class="messages-item-con" v-if="unreadMessage && mes.id == unreadMessage?.unread_from">
+                                        <div class="sub-messages-con chat-ended-message">
+                                                        <span class="message-time">{{ unreadMessage?.unread_count }} Unread Messages</span>
+                                        </div>
+                                    </div>
                                     <div class="messages-item-con">
                                         <div class="sub-messages-con thm-heading">
                                             <span class="message-time">{{
@@ -441,6 +446,7 @@ export default {
                 userFileName:''
             },
             audioPreview: false,
+            unreadMessage: null
         }
     },
     watch: {
@@ -462,6 +468,7 @@ export default {
             });
         },
         getChatsMessages(item) {
+            item.unread_message_count = 0;
             this.current_chat = Object.assign({}, item)
             this.current_chat.user_id = this.authData.id
             // console.log(['current_chat', this.current_chat])
@@ -473,6 +480,7 @@ export default {
                     this.mediaUrl = res.data.data.media_base_url
                     this.startSocketBrodcast();
                     this.scrollToBottom();
+                    this.unreadMessage = Object.assign({}, res.data.data.unread);
                     // this.unread_count[this.chat_type] = res.data.data.unread_count;
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -649,6 +657,7 @@ export default {
                 const messagesListSec = this.$refs.messagesListSec;
                 messagesListSec.scrollTop = messagesListSec.scrollHeight + 500;
             });
+            this.unreadMessage = null
         },
     }
 }
@@ -710,6 +719,18 @@ export default {
 .audio-msg-prev {
     top: 0;
     right: -20px;
+}
+
+.sub-messages-con.chat-ended-message {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.end-message-color {
+    color: #da2c29;
+}
+.display-event-message {
+    color: #677E9E;
 }
 
 </style>

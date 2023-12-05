@@ -10,7 +10,7 @@
                         </button>
                     </div>
                     <div class="chat-heading">
-                        <h2 class="text-capitalize">{{ domainName }} Assistant</h2>
+                        <h2 class="text-capitalize">{{ headerTitle }} </h2>
                     </div>
                 </div>
                 <button type="button" class="btn-close" @click="cloaseChatModal()"></button>
@@ -74,9 +74,6 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="messages-item outgoing-messages" v-if="audioPreview">
-                                <audio id="recordedAudio"></audio>
-                            </div>
                         </div>
                         <div class="messages-item end-message-sec" v-if="chatStatus != 1">
                             <div class="messages-item-con">
@@ -92,6 +89,9 @@
                     </div>
                 </section>
                 <section class="messages-type-wrapper" v-if="chatStatus == 1 && agent_id && chatComponent != 'add_user' && chatComponent != 'chat_list'">
+                    <div class="text-center" v-if="audioPreview">
+                        <audio id="recordedAudio"></audio>
+                    </div>
                     <div id="fileList" v-if="mediaPreviewBlobs">
                         <ul>
                             <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
@@ -207,7 +207,9 @@ export default {
     name: 'EndUserChatComponent',
     data() {
         return {
+            mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
             defaultFile: require('@/assets/images/file-icon.svg'),
+
             refId: '',
             domainName: null,
             headerColor: null,
@@ -221,21 +223,29 @@ export default {
             roomId: null,
             chatStatus: null,
             agent_id: null,
+            agent_name: null,
+
+            chatList: null,
+            messagesList: [],
 
             input: "",
-            chatList: null,
             nextActionData: null,
-            messagesList: [],
+            
             media: null,
             mediaPreviewBlobs: null,
+            audioPreview: false,
             voiceRecord: {
                 rec: '',
                 userFile: null,
                 userFileName:''
             },
-            mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
-            audioPreview: false,
             
+        }
+    },
+    computed: {
+        headerTitle() {
+            // Get Chat Bot / Agent Name
+            return this.domainName ? (this.agent_name ? this.agent_name : this.domainName+' Assistant') : 'Chat Assistant'
         }
     },
     mounted() {
@@ -252,6 +262,7 @@ export default {
                 if(this.roomId == data.chat_room_id) {
                     this.chatStatus = 1;
                     this.agent_id = data.agent_id;
+                    this.agent_name = data.agent_name;
                 } else {
                     // *TO-DO* add unread count to chat if in list
                 }
@@ -264,9 +275,9 @@ export default {
                 if(data.next.status !== undefined){
                     this.chatStatus = data.next.status;
                 }
-                if (data.sender_type == 2 && this.agent_id != data.sender_id) {
-                    this.agent_id = data.sender_id;
-                }
+                // if (data.sender_type == 2 && this.agent_id != data.sender_id) {
+                //     this.agent_id = data.sender_id;
+                // }
                 this.nextActionData = data.next.data;
                 if (data.next.next_action !== '') {
                     this.chatComponent = data.next.next_action;
@@ -290,7 +301,7 @@ export default {
             const filePathsArray = data.file_paths.split('\n');
                 filePathsArray.forEach(filePath => {
                     const fileType = filePath.split('.').pop().toLowerCase();
-                    if (['png', 'jpg', 'jpeg'].includes(fileType)) {
+                    if (['webp', 'gif','png', 'jpg', 'jpeg'].includes(fileType)) {
                         let html = `<div class="messages-item ${outgoingClass}">
                                             <div class="messages-item-con">
                                                 <div class="sub-messages-con">
@@ -303,8 +314,22 @@ export default {
                                             </div>
                                         </div>`;
                         getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
-                    }
-                    else {
+                    } else if (['mp3','mpeg', 'ogg', 'wav'].includes(fileType)) {
+                        let html = `<div class="messages-item ${outgoingClass}">
+                                        <div class="messages-item-con">
+                                            <div class="sub-messages-con">
+                                                <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
+                                            </div>
+                                            <div>
+                                                <audio controls="">
+                                                    <source src="${this.mediaBaseUrl + filePath}" />
+                                                    <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
+                                                </audio>
+                                            </div>
+                                        </div>
+                                    </div>`
+                        getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
+                    } else if (['webm', 'mp4', 'mkv'].includes(fileType)) {
                         let html = `<div class="messages-item ${outgoingClass}">
                                         <div class="messages-item-con">
                                             <div class="sub-messages-con">
@@ -321,6 +346,9 @@ export default {
                                         </div>
                                     </div>`
                         getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
+                    } else {
+                        console.error(this.mediaBaseUrl + filePath);
+                        console.error(fileType + ': File format missing');
                     }
                 })
         },
@@ -444,6 +472,7 @@ export default {
                     this.roomId = res.data.data.chat_room_id;
                     this.chatStatus = res.data.data.status;
                     this.agent_id = res.data.data.agent_id;
+                    this.agent_name = res.data.data.agent_name;
                     
                     const messages = res.data.data.messages;
 
@@ -531,6 +560,7 @@ export default {
             axios.post('/chat-support/start-new-chat', { user_id: this.userId })
             .then(res => {
                 this.agent_id = 0;
+                this.agent_name = 'ChatBot';
                 this.chatStatus = 1;
                 this.startNewChat = false;
                 this.chatComponent = res.data.data.next_action;
@@ -556,13 +586,17 @@ export default {
             this.messagesList = []; /*Emptying Message list so new chat is not appended to existing Message list*/
             this.getChatWindow(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
             window.Echo.leave("message-channel." + this.roomId) /*DISCONNECTING SOCKET*/
+            
+            this.roomId = null;
+            this.chatStatus = null;
+            this.agent_id = null;
+            this.agent_name = null;
         },
         uplaodImg(event) {
             this.media = [];
             this.mediaPreviewBlobs = [];
             let mediaFiles = event.target.files;
             for (let i = 0; i < mediaFiles.length; i++) {
-                console.log(mediaFiles[i]);
                 this.media.push(mediaFiles[i]);
                 this.mediaPreviewBlobs[i] = {src: URL.createObjectURL(mediaFiles[i]), name: mediaFiles[i].name}
             }
@@ -574,6 +608,17 @@ export default {
         setAltImg(event) { 
             event.target.src = this.defaultFile 
         } ,
+        stopRecord() {
+            this.voiceRecord.rec.stop();
+        },
+        startRecord() {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                this.handlerFunction(stream);
+                this.voiceRecord.rec.start();
+            }).catch((error) => {
+                console.error('Error accessing microphone:', error);
+            });
+        },
         handlerFunction(stream) {
             this.voiceRecord.rec = new MediaRecorder(stream);
             let audioChunks = [];
@@ -593,17 +638,6 @@ export default {
             this.voiceRecord.userFile = blob;
             this.voiceRecord.userFileName = "audio-record";
             this.scrollToBottom();
-        },
-        startRecord() {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                this.handlerFunction(stream);
-                this.voiceRecord.rec.start();
-            }).catch((error) => {
-                console.error('Error accessing microphone:', error);
-            });
-        },
-        stopRecord() {
-            this.voiceRecord.rec.stop();
         },
     },
 }

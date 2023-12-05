@@ -77,92 +77,114 @@
                                             </div>
                                         </template>
                                         <template v-else>
-                                            <blocks-tree :data="treeData" :horizontal="false" :collapsable="true"
-                                                :props="{ label: 'label', expand: 'expand', children: 'children', key: 'node_id' }"
-                                                labelClassName="chatFlowNode">
-                                                <template #node="{ data }">
-                                                    <!-- , context  -->
-                                                    <div
-                                                        :class="(showMessageOption == data.node_id && data.node_type == 'C') ? 'node selectedNode category' : (data.node_type == 'C' ? 'node category' : (showMessageOption == data.node_id ? 'node selectedNode' : 'node'))">
-                                                        <div class="assistant-sec personal-assistant">
-                                                            <div class="assistant-item draggable-element">
-                                                                <div class="assistant-con">
-                                                                    <div class="move-btn bg-transparent">
-                                                                        <img src="@/assets/images/move-icon.svg" alt="">
-                                                                    </div>
-                                                                    <!-- @click="context.toggleExpand" -->
-                                                                    <button class="assistant-heading-btn bg-transparent"
-                                                                        @click="(e) => showAddOption(data)">
-                                                                        <div class="thm-heading">
-                                                                            <p :title="data.label">
-                                                                                {{ data.node_id }}
-                                                                                {{ data.label.length > 30 ?
-                                                                                    data.label.substring(0, 30) +
-                                                                                    '...' : data.label }}
-                                                                            </p>
+                                            <template v-if="emptyTree">
+                                                <div class="chat-flow-borad-list-con ">
+                                                    <div class="chat-flow-item">
+                                                        <button class="chat-flow-btn" @click="setupForm(1, { node_type: 'T', id: this.template_id })"
+                                                            data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                            <div class="chat-icon">
+                                                                <img src="@/assets/images/add-message-icon.svg" alt="">
+                                                            </div>
+                                                            <div class="chat-flow-con thm-heading  ">
+                                                                <span class="thm-btn">Add Message</span>
+                                                                <p>Add a message to be sent to the user by the Bot <br> (Can
+                                                                    include
+                                                                    Text
+                                                                    message /
+                                                                    File or Both) </p>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <blocks-tree :data="treeData" :horizontal="false" :collapsable="true"
+                                                    :props="{ label: 'label', expand: 'expand', children: 'children', key: 'node_id' }"
+                                                    labelClassName="chatFlowNode">
+                                                    <template #node="{ data }">
+                                                        <!-- , context  -->
+                                                        <div
+                                                            :class="(showMessageOption == data.node_id && data.node_type == 'C') ? 'node selectedNode category' : (data.node_type == 'C' ? 'node category' : (showMessageOption == data.node_id ? 'node selectedNode' : 'node'))">
+                                                            <div class="assistant-sec personal-assistant">
+                                                                <div class="assistant-item draggable-element">
+                                                                    <div class="assistant-con">
+                                                                        <div class="move-btn bg-transparent">
+                                                                            <img src="@/assets/images/move-icon.svg" alt="">
                                                                         </div>
-                                                                    </button>
-                                                                    <div class="more-action-sec">
-                                                                        <button class="more-action-btn"
-                                                                            data-bs-toggle="dropdown"><img
-                                                                                src="@/assets/images/more-action.svg"
-                                                                                alt=""></button>
-                                                                        <ul
-                                                                            class="dropdown-menu dropdown-menu-end more-action-list">
-                                                                            <li>
-                                                                                <button class="dropdown-item more-list-btn"
-                                                                                    type="button"
-                                                                                    @click="setupEditDeleteForm(data)"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#editModal">
-                                                                                    <div class="edit-icon"><img
-                                                                                            src="@/assets/images/edit-icon.svg"
-                                                                                            alt="">
-                                                                                    </div>
-                                                                                    <div class="thm-heading">
-                                                                                        <h2>Edit</h2>
-                                                                                    </div>
-                                                                                </button>
-                                                                            </li>
-                                                                            <li>
-                                                                                <button class="dropdown-item more-list-btn"
-                                                                                    type="button"
-                                                                                    @click="setupEditDeleteForm(data)"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#statusdetails">
-                                                                                    <div class="edit-icon"><img
-                                                                                            src="@/assets/images/delete-icon.svg"
-                                                                                            alt="">
-                                                                                    </div>
-                                                                                    <div class="thm-heading">
-                                                                                        <h2>Delete</h2>
-                                                                                    </div>
-                                                                                </button>
-                                                                            </li>
-                                                                        </ul>
+                                                                        <!-- @click="context.toggleExpand" -->
+                                                                        <button class="assistant-heading-btn bg-transparent"
+                                                                            @click="(e) => showAddOption(data)">
+                                                                            <div class="thm-heading">
+                                                                                <p :title="data.label">
+                                                                                    {{ data.node_id }}
+                                                                                    {{ data.label.length > 30 ?
+                                                                                        data.label.substring(0, 30) +
+                                                                                        '...' : data.label }}
+                                                                                </p>
+                                                                            </div>
+                                                                        </button>
+                                                                        <div class="more-action-sec">
+                                                                            <button class="more-action-btn"
+                                                                                data-bs-toggle="dropdown"><img
+                                                                                    src="@/assets/images/more-action.svg"
+                                                                                    alt=""></button>
+                                                                            <ul
+                                                                                class="dropdown-menu dropdown-menu-end more-action-list">
+                                                                                <li>
+                                                                                    <button class="dropdown-item more-list-btn"
+                                                                                        type="button"
+                                                                                        @click="setupEditDeleteForm(data)"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#editModal">
+                                                                                        <div class="edit-icon"><img
+                                                                                                src="@/assets/images/edit-icon.svg"
+                                                                                                alt="">
+                                                                                        </div>
+                                                                                        <div class="thm-heading">
+                                                                                            <h2>Edit</h2>
+                                                                                        </div>
+                                                                                    </button>
+                                                                                </li>
+                                                                                <li v-if="data.parent.id">
+                                                                                    <button class="dropdown-item more-list-btn"
+                                                                                        type="button"
+                                                                                        @click="setupEditDeleteForm(data)"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#statusdetails">
+                                                                                        <div class="edit-icon"><img
+                                                                                                src="@/assets/images/delete-icon.svg"
+                                                                                                alt="">
+                                                                                        </div>
+                                                                                        <div class="thm-heading">
+                                                                                            <h2>Delete</h2>
+                                                                                        </div>
+                                                                                    </button>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="assistant-btn-sec show"
-                                                            v-if="showMessageOption == data.node_id && data.children.length == 0">
-                                                            <div class="assistant-btn-con">
-                                                                <button class="thm-btn" @click="setupForm(1, data)"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#exampleModal">Add Message</button>
-                                                                <button class="thm-btn" @click="setupForm(2, data)"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#exampleModal">Add Option</button>
+                                                            <div class="assistant-btn-sec show"
+                                                                v-if="showMessageOption == data.node_id && data.children.length == 0">
+                                                                <div class="assistant-btn-con">
+                                                                    <button class="thm-btn" @click="setupForm(1, data)"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#exampleModal">Add Message</button>
+                                                                    <button class="thm-btn" @click="setupForm(2, data)"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#exampleModal">Add Option</button>
+                                                                </div>
+                                                                <div>
+                                                                    <input type="checkbox" :checked="data.next == 2"
+                                                                        @change="initiateLiveChat(data)" />
+                                                                    Live Chat
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <input type="checkbox" :checked="data.next == 2"
-                                                                    @change="initiateLiveChat(data)" />
-                                                                Live Chat
-                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </template>
-                                            </blocks-tree>
+                                                    </template>
+                                                </blocks-tree>
+                                            </template>
                                         </template>
                                         <div :class="showForm > 0 ? 'show' : ''" class="modal add-option-sec" tabindex="-1"
                                             id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -445,6 +467,7 @@ export default {
     },
     data() {
         return {
+            emptyTree: true,
             resource: 'chat-flow',
             templates: [
                 { flow: {} }
@@ -495,6 +518,8 @@ export default {
                     if (res.data.data.template_id) {
                         this.templates.push(res.data.data)
                         this.template_id = res.data.data.template_id
+                        
+                        this.emptyTree = (res.data.data.flow) ? false : true
                         this.resetTreeData(res.data.data.flow)
                     } else {
                         // *TO-DO* if updating existing template details 
@@ -517,6 +542,7 @@ export default {
                         this.templates = res.data.data.templates
                         this.template_id = res.data.data.default.template_id
                         this.mediaBaseUrl = res.data.data.media_base_url
+                        this.emptyTree = (res.data.data.default.flow) ? false : true
                         this.resetTreeData(res.data.data.default.flow)
                     }
                 }).catch(e => {
@@ -533,6 +559,7 @@ export default {
                         this.$store.commit('is_loader', false);
                         if (res.data.data.template_id) {
                             this.template_id = res.data.data.template_id
+                            this.emptyTree = (res.data.data.flow) ? false : true
                             this.resetTreeData(res.data.data.flow)
                         }
                     }).catch(e => {
@@ -551,7 +578,7 @@ export default {
             // this.showForm = 0;
         },
         setupEditDeleteForm(data) {
-            // console.log(data);
+            console.log(data);
             if (data) {
                 data.files = data.files?.split('\n') || null
                 this.nodeData = data
@@ -653,6 +680,7 @@ export default {
                             if (!this.parent_node_data.id) {
                                 if (res.data.data.template_id) {
                                     this.template_id = res.data.data.template_id
+                                    this.emptyTree = (res.data.data.flow) ? false : true
                                     this.resetTreeData(res.data.data.flow)
                                 }
                             } else {
@@ -687,6 +715,7 @@ export default {
                         if (this.parent_node_data.id == 0) {
                             if (res.data.data.template_id) {
                                 this.template_id = res.data.data.template_id
+                                this.emptyTree = (res.data.data.flow) ? false : true
                                 this.resetTreeData(res.data.data.flow)
                             }
                         } else {
@@ -731,6 +760,7 @@ export default {
                     .then(res => {
                         this.$store.commit('is_loader', false);
                         if (!res.data.error) {
+                            this.emptyTree = (res.data.data.flow) ? false : true
                             this.resetTreeData(res.data.data.flow)
                             this.$toast.success(res.data.message);
                         }

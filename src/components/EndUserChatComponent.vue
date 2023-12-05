@@ -102,6 +102,16 @@
                     </div>
                     <div class="messages-type-sec">
                         <div class="messages-type-con">
+                            <div class="messages-input">
+                                <button type="button" class="header-admin-btn">
+                                    <div class="admin-img">
+                                        <EmojiPicker :native="true" @select="onSelectEmoji" v-if="showEmoji" />
+                                        <div @click="toggleEmojiPicker()">
+                                            <img class="emoji-icon" src="@/assets/images/emoji-icon.svg" alt="">
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
                             <div class="messages-type-input">
                                 <div class="voice-btn-sec gallery-btn-sec">
                                     <input type="file" name="file" multiple id="file" @change="uplaodImg">
@@ -203,8 +213,13 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import EmojiPicker from 'vue3-emoji-picker';
+
 export default {
     name: 'EndUserChatComponent',
+    components: {
+        EmojiPicker,
+    },
     data() {
         return {
             mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
@@ -239,6 +254,8 @@ export default {
                 userFile: null,
                 userFileName:''
             },
+
+            showEmoji: false
             
         }
     },
@@ -431,6 +448,9 @@ export default {
                         this.mediaPreviewBlobs = [];
                         this.voiceRecord.userFile = null;
                         this.media = null;
+                        if(this.showEmoji) {
+                            this.toggleEmojiPicker();
+                        }
                         // console.log(res)
                     }).catch(e => {
                         console.error(e);
@@ -575,6 +595,12 @@ export default {
         getDateTIme() {
             return moment(new Date()).format('DD/MM/YYYY hh:mm A');
         },
+        onSelectEmoji(emoji) {
+            this.input += emoji.i
+        },
+        toggleEmojiPicker() {
+            this.showEmoji = !this.showEmoji
+        },
         scrollToBottom() {
             this.$nextTick(() => {
                 const messagesListSec = this.$refs.messagesListSec;
@@ -642,3 +668,13 @@ export default {
     },
 }
 </script>
+
+<style>
+
+.v3-emoji-picker {
+    position: relative;
+    top: -11rem;
+    right: -7.5rem;
+}
+
+</style>

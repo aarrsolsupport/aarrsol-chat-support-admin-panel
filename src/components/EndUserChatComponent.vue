@@ -10,7 +10,7 @@
                         </button>
                     </div>
                     <div class="chat-heading">
-                        <h2 class="text-capitalize">{{ domainName }} Assistant</h2>
+                        <h2 class="text-capitalize">{{ headerTitle }} </h2>
                     </div>
                 </div>
                 <button type="button" class="btn-close" @click="cloaseChatModal()"></button>
@@ -221,6 +221,7 @@ export default {
             roomId: null,
             chatStatus: null,
             agent_id: null,
+            agent_name: null,
 
             input: "",
             chatList: null,
@@ -236,6 +237,12 @@ export default {
             mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
             audioPreview: false,
             
+        }
+    },
+    computed: {
+        headerTitle() {
+            // Get Chat Bot / Agent Name
+            return this.domainName ? (this.agent_name ? this.agent_name : this.domainName+' Assistant') : 'Chat Assistant'
         }
     },
     mounted() {
@@ -255,6 +262,7 @@ export default {
                 if(this.roomId == data.chat_room_id) {
                     this.chatStatus = 1;
                     this.agent_id = data.agent_id;
+                    this.agent_name = data.agent_name;
                 } else {
                     // *TO-DO* add unread count to chat if in list
                 }
@@ -267,9 +275,9 @@ export default {
                 if(data.next.status !== undefined){
                     this.chatStatus = data.next.status;
                 }
-                if (data.sender_type == 2 && this.agent_id != data.sender_id) {
-                    this.agent_id = data.sender_id;
-                }
+                // if (data.sender_type == 2 && this.agent_id != data.sender_id) {
+                //     this.agent_id = data.sender_id;
+                // }
                 this.nextActionData = data.next.data;
                 if (data.next.next_action !== '') {
                     this.chatComponent = data.next.next_action;
@@ -447,6 +455,7 @@ export default {
                     this.roomId = res.data.data.chat_room_id;
                     this.chatStatus = res.data.data.status;
                     this.agent_id = res.data.data.agent_id;
+                    this.agent_name = res.data.data.agent_name;
                     
                     const messages = res.data.data.messages;
 
@@ -534,6 +543,7 @@ export default {
             axios.post('/chat-support/start-new-chat', { user_id: this.userId })
             .then(res => {
                 this.agent_id = 0;
+                this.agent_name = 'ChatBot';
                 this.chatStatus = 1;
                 this.startNewChat = false;
                 this.chatComponent = res.data.data.next_action;
@@ -559,13 +569,17 @@ export default {
             this.messagesList = []; /*Emptying Message list so new chat is not appended to existing Message list*/
             this.getChatWindow(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
             window.Echo.leave("message-channel." + this.roomId) /*DISCONNECTING SOCKET*/
+            
+            this.roomId = null;
+            this.chatStatus = null;
+            this.agent_id = null;
+            this.agent_name = null;
         },
         uplaodImg(event) {
             this.media = [];
             this.mediaPreviewBlobs = [];
             let mediaFiles = event.target.files;
             for (let i = 0; i < mediaFiles.length; i++) {
-                console.log(mediaFiles[i]);
                 this.media.push(mediaFiles[i]);
                 this.mediaPreviewBlobs[i] = {src: URL.createObjectURL(mediaFiles[i]), name: mediaFiles[i].name}
             }

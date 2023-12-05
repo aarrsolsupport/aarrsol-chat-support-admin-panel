@@ -95,7 +95,7 @@
                     <div id="fileList" v-if="mediaPreviewBlobs">
                         <ul>
                             <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
-                                <img :src="media.src" :alt="media.name" onerror="this.onerror=null;this.src='../assets/images/file-icon.svg'" />
+                                <img :src="media.src" :alt="media.name" @error="this.onerror=null;this.src='../assets/images/file-icon.svg'" />
                                 <span class="list-cross" @click="removeMedia(key)"><img src="@/assets/images/cross-icon.svg" alt=""></span>
                             </li>
                         </ul>
@@ -107,14 +107,14 @@
                                     <input type="file" name="file" multiple id="file" @change="uplaodImg">
                                     <img src="@/assets/images/gallery-icon.svg" alt="">
                                 </div>
-                                <input type="text" placeholder="Type your message here!" v-model="input">
+                                <input type="text" placeholder="Type your message here!" v-model="input" @keyup.enter="sendMessage">
                                 <div class="voice-btn-sec">
                                     <button class="voice-btn" data-bs-toggle="modal" data-bs-target="#voiceModal" @click="startRecord()"><img
                                             src="@/assets/images/voice-icon.svg" alt="" ></button>
                                 </div>
                             </div>
                             <div class="messages-type-btn-sec">
-                                <button class="messages-type-btn" @click="sendMessage" @keyup.enter="sendMessage"><img
+                                <button class="messages-type-btn" @click="sendMessage"><img
                                         src="@/assets/images/send-icon.svg" alt=""></button>
                             </div>
                         </div>
@@ -422,7 +422,9 @@ export default {
                         this.userId = res.data.data.end_user_id;
                         this.chatList = res.data.data.chats;
                         this.startNewChat = (res.data.data?.open_chats == 0) ? true : false;
-                        this.awaitAgentSocket()
+                        if(this.userId) {
+                            this.awaitAgentSocket()
+                        }
                     }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -492,6 +494,7 @@ export default {
 
                         this.optionOrLanguage();
                         this.startSocketBrodcast();
+                        this.awaitAgentSocket();
                     }
                 })
                 .catch(e => {

@@ -169,7 +169,7 @@
                             </div>
                         </div>
                         <div class="messages-body-sec">
-                            <div class="messages-list-sec all-messege-container" ref="messagesListSec">
+                            <div class="messages-list-sec" ref="messagesListSec">
                                 <div class="messages-item" v-for="(mes, i) in messages" :key="i"
                                     :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
                                     <div class="messages-item-con">
@@ -234,7 +234,7 @@
                                         </div>
                                     </button>
                                     <div class="messages-type-input">
-                                        <input type="text" placeholder="Write something....." v-model="input">
+                                        <input type="text" placeholder="Write something....." v-model="input" @keyup.enter="sendMessage">
                                     </div>
                                     <div class="messages-type-right">
                                         <button type="button" class="header-admin-btn" data-bs-toggle="modal" data-bs-target="#voiceModal" @click="startRecord()">
@@ -252,7 +252,7 @@
                                             </div>
                                         </button>
                                         <div class="send-btn-sec">
-                                            <button class="thm-btn" @click="sendMessage" @keyup.enter="sendMessage">Send</button>
+                                            <button class="thm-btn" @click="sendMessage">Send</button>
                                         </div>
                                     </div>
                                 </div>
@@ -478,6 +478,9 @@ export default {
                     this.suggestions = Object.assign([], res.data.data.auto_suggestions)
                     this.listItems = Object.assign([], res.data.data.chats_list)
                     this.unread_count[this.chat_type] = res.data.data.unread_count;
+                    if(this.listItems.length > 0) {
+                        this.getChatsMessages(this.listItems[0]);
+                    }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
                     this.$toast.error(e.response.message ?? e.response.data.message);
@@ -653,10 +656,6 @@ export default {
     top: 15rem;
     right: 20rem;
     position: absolute;
-}
-
-.all-messege-container {
-    padding-bottom: 1rem;
 }
 
 </style>

@@ -74,9 +74,6 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="messages-item outgoing-messages" v-if="audioPreview">
-                                <audio id="recordedAudio"></audio>
-                            </div>
                         </div>
                         <div class="messages-item end-message-sec" v-if="chatStatus != 1">
                             <div class="messages-item-con">
@@ -92,6 +89,9 @@
                     </div>
                 </section>
                 <section class="messages-type-wrapper" v-if="chatStatus == 1 && agent_id && chatComponent != 'add_user' && chatComponent != 'chat_list'">
+                    <div class="text-center" v-if="audioPreview">
+                        <audio id="recordedAudio"></audio>
+                    </div>
                     <div id="fileList" v-if="mediaPreviewBlobs">
                         <ul>
                             <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
@@ -207,7 +207,9 @@ export default {
     name: 'EndUserChatComponent',
     data() {
         return {
+            mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
             defaultFile: require('@/assets/images/file-icon.svg'),
+
             refId: '',
             domainName: null,
             headerColor: null,
@@ -223,19 +225,20 @@ export default {
             agent_id: null,
             agent_name: null,
 
-            input: "",
             chatList: null,
-            nextActionData: null,
             messagesList: [],
+
+            input: "",
+            nextActionData: null,
+            
             media: null,
             mediaPreviewBlobs: null,
+            audioPreview: false,
             voiceRecord: {
                 rec: '',
                 userFile: null,
                 userFileName:''
             },
-            mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
-            audioPreview: false,
             
         }
     },
@@ -301,7 +304,7 @@ export default {
             const filePathsArray = data.file_paths.split('\n');
                 filePathsArray.forEach(filePath => {
                     const fileType = filePath.split('.').pop().toLowerCase();
-                    if (['png', 'jpg', 'jpeg'].includes(fileType)) {
+                    if (['webp', 'gif','png', 'jpg', 'jpeg'].includes(fileType)) {
                         let html = `<div class="messages-item ${outgoingClass}">
                                             <div class="messages-item-con">
                                                 <div class="sub-messages-con">
@@ -314,8 +317,22 @@ export default {
                                             </div>
                                         </div>`;
                         getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
-                    }
-                    else {
+                    } else if (['mp3','mpeg', 'ogg', 'wav'].includes(fileType)) {
+                        let html = `<div class="messages-item ${outgoingClass}">
+                                        <div class="messages-item-con">
+                                            <div class="sub-messages-con">
+                                                <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
+                                            </div>
+                                            <div>
+                                                <audio controls="">
+                                                    <source src="${this.mediaBaseUrl + filePath}" />
+                                                    <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
+                                                </audio>
+                                            </div>
+                                        </div>
+                                    </div>`
+                        getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
+                    } else if (['webm', 'mp4', 'mkv'].includes(fileType)) {
                         let html = `<div class="messages-item ${outgoingClass}">
                                         <div class="messages-item-con">
                                             <div class="sub-messages-con">
@@ -332,6 +349,9 @@ export default {
                                         </div>
                                     </div>`
                         getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
+                    } else {
+                        console.error(this.mediaBaseUrl + filePath);
+                        console.error(fileType + ': File format missing');
                     }
                 })
         },
@@ -588,6 +608,17 @@ export default {
             this.media.splice(id, 1)
             this.mediaPreviewBlobs.splice(id, 1)
         },
+        stopRecord() {
+            this.voiceRecord.rec.stop();
+        },
+        startRecord() {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                this.handlerFunction(stream);
+                this.voiceRecord.rec.start();
+            }).catch((error) => {
+                console.error('Error accessing microphone:', error);
+            });
+        },
         handlerFunction(stream) {
             this.voiceRecord.rec = new MediaRecorder(stream);
             let audioChunks = [];
@@ -607,17 +638,6 @@ export default {
             this.voiceRecord.userFile = blob;
             this.voiceRecord.userFileName = "audio-record";
             this.scrollToBottom();
-        },
-        startRecord() {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                this.handlerFunction(stream);
-                this.voiceRecord.rec.start();
-            }).catch((error) => {
-                console.error('Error accessing microphone:', error);
-            });
-        },
-        stopRecord() {
-            this.voiceRecord.rec.stop();
         },
     },
 }

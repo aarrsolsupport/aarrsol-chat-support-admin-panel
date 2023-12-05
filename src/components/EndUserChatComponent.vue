@@ -75,7 +75,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="messages-item end-message-sec" v-if="chatStatus != 1">
+                        <div class="messages-item end-message-sec" v-if="chatStatus == 0 || chatStatus == 2">
                             <div class="messages-item-con">
                                 <div v-if="chatStatus == 0" class="sub-messages-con chat-ended-message display-event-message">
                                     <span class="message-time">Waiting for an agent to join the chat</span><br/>

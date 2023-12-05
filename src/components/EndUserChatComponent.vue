@@ -95,7 +95,7 @@
                     <div id="fileList" v-if="mediaPreviewBlobs">
                         <ul>
                             <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
-                                <img :src="media.src" :alt="media.name" />
+                                <img :src="media.src" :alt="media.name" onerror="this.onerror=null;this.src='../assets/images/file-icon.svg'" />
                                 <span class="list-cross" @click="removeMedia(key)"><img src="@/assets/images/cross-icon.svg" alt=""></span>
                             </li>
                         </ul>

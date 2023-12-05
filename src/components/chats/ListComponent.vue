@@ -175,30 +175,28 @@
                                     <div class="messages-item-con">
                                         <div class="sub-messages-con thm-heading">
                                             <span class="message-time">{{
-                                                $filters.messageDateTimeFormat(mes.sent_at_timestamp) }}</span>
+                                                $filters.messageDisplayDateFormat(mes.sent_at_timestamp) }}</span>
                                         </div>
-                                        <div class="messages-item-content thm-heading">
+                                        <div class="messages-item-content thm-heading" v-if="mes.message">
                                             <p>{{ mes.message }}</p>
+                                            <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
+
                                         </div>
                                         <template v-if="mes.file_paths">
                                             <div class="video-sec" v-for="(paths, index ) in mes.file_paths.split('\n')" :key="index">
                                                 <template  v-if="['png', 'jpg', 'jpeg'].includes(paths.split('.')[1])">
                                                     <img :src="mediaUrl + paths"/>
+                                                    <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
                                                 </template>
                                                 <template v-else>
                                                     <video controls="false">
                                                         <source :src="mediaUrl + mes.file_paths" />
                                                     </video>
+                                                    <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
                                                 </template>
                                             </div>
                                         </template>
                                     </div>
-                                </div>
-                                <!-- <div class="img-preview">
-                                    <img :src="media" alt="" v-for="media in mediaPreviewBlobs" :key="media.id">
-                                </div> -->
-                                <div class="messages-item outgoing-messages" v-if="audioPreview">
-                                    <audio id="recordedAudio"></audio>
                                 </div>
                             </div>
                         </div>
@@ -256,6 +254,20 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div id="fileList" v-if="mediaPreviewBlobs || audioPreview">
+                                <ul>
+                                    <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
+                                        <img :src="media.src" :alt="media.name" @error="setAltImg" class="prev-img-media" />
+                                        <span class="list-cross prev-list-cross" @click="removeMedia(key)"><img src="@/assets/images/cross-icon.svg" alt=""></span>
+                                    </li>
+                                    <li v-if="audioPreview">
+                                        <div class="messages-item outgoing-messages">
+                                            <audio id="recordedAudio"></audio>
+                                        </div>
+                                        <span class="list-cross prev-list-cross audio-msg-prev" @click="removeAudio()"><img src="@/assets/images/cross-icon.svg" alt=""></span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -383,6 +395,7 @@ export default {
     },
     data() {
         return {
+            defaultFile: require('@/assets/images/file-icon.svg'),
             messages: [],
             my_chats: true,
             chat_type: 0,
@@ -562,9 +575,16 @@ export default {
             let mediaFiles = event.target.files;
             for (let i = 0; i < mediaFiles.length; i++) {
                 this.media.push(mediaFiles[i]);
-                this.mediaPreviewBlobs.push(URL.createObjectURL(mediaFiles[i]))
+                this.mediaPreviewBlobs[i] = {src: URL.createObjectURL(mediaFiles[i]), name: mediaFiles[i].name}
             }
         },
+        removeMedia(id) {
+            this.media.splice(id, 1)
+            this.mediaPreviewBlobs.splice(id, 1)
+        },
+        setAltImg(event) { 
+            event.target.src = this.defaultFile 
+        } ,
         sendMessage() {
 
             let messageData = new FormData();
@@ -620,6 +640,10 @@ export default {
         stopRecord() {
             this.voiceRecord.rec.stop();
         },
+        removeAudio() {
+            this.voiceRecord.userFile = null;
+            this.audioPreview = false
+        },
         scrollToBottom() {
             this.$nextTick(() => {
                 const messagesListSec = this.$refs.messagesListSec;
@@ -656,6 +680,36 @@ export default {
     top: 15rem;
     right: 20rem;
     position: absolute;
+}
+
+.prev-img-media {
+    max-width: 150px !important;
+    border-radius: 10px;
+}
+
+.prev-list-cross {
+    background-color: #fff;
+    border: 1.5px solid var(--primary-color);
+    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    margin-left: 6px;
+    position: absolute;
+    right: 5px;
+}
+
+.list-cross img {
+    width: auto !important;
+    height: auto !important;
+} 
+
+.audio-msg-prev {
+    top: 0;
+    right: -20px;
 }
 
 </style>

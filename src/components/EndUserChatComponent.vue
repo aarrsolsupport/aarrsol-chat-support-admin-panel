@@ -244,9 +244,6 @@ export default {
         this.getChatWindow();
     },
     methods: {
-        setAltImg(event) { 
-            event.target.src = this.defaultFile 
-        } ,
         // SOCKET FUNCTION START
         awaitAgentSocket() {
             let channel = "chat-request-accepted-channel." + this.userId;
@@ -574,6 +571,9 @@ export default {
             this.media.splice(id, 1)
             this.mediaPreviewBlobs.splice(id, 1)
         },
+        setAltImg(event) { 
+            event.target.src = this.defaultFile 
+        } ,
         handlerFunction(stream) {
             this.voiceRecord.rec = new MediaRecorder(stream);
             let audioChunks = [];

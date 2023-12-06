@@ -45,11 +45,11 @@ import axios from "axios";
          this.getStatistics()
          
          let tktchannel = "ticket-status-updated-channel."+this.authData.role_id+"." + this.authData.id;
-         console.log(tktchannel);
          window.Echo.channel(tktchannel).listen(".updated-ticket-status", (data) => {
-            console.log(['updated-ticket-status',data])
             Object.keys(data).forEach(attr => {
-               if(attr.includes('tickets')) {
+               if(attr == 'tickets_to_review') {
+                  this.statistics[attr] += data[attr][this.authData.role_id];
+               } else if(attr.includes('tickets')) {
                   this.statistics[attr] += data[attr];
                }
             });

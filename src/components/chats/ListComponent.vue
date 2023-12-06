@@ -46,7 +46,7 @@
                                     <div class="chat-user-tab-sec">
                                         <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
                                             :class="(current_chat.chat_room_id == item.chat_room_id) ? 'user-item-active' : ''"
-                                            @click="getChatsMessages(item)">
+                                            @click="getChatsMessages(item, true)">
                                             <button class="chat-user-btn user-active">
                                                 <div class="thm-heading">
                                                     <h2>{{ item.end_user_name }}</h2>
@@ -97,7 +97,7 @@
                         <div class="chat-user-sec">
                             <div class="chat-user-tab-sec">
                                 <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
-                                    @click="getChatsMessages(item)">
+                                    @click="getChatsMessages(item, true)">
                                     <button class="chat-user-btn user-active">
                                         <div class="thm-heading">
                                             <h2> {{ item.end_user_name }}</h2>
@@ -169,7 +169,7 @@
                             </div>
                         </div>
                         <div class="messages-body-sec">
-                            <div class="messages-list-sec" ref="messagesListSec">
+                            <div class="messages-list-sec" ref="messagesListSec" @scroll="handleScroll">
                                 <div class="messages-item" v-for="(mes, i) in messages" :key="i"
                                     :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
                                     <div class="messages-item-con" v-if="unreadMessage && mes.id == unreadMessage?.unread_from">
@@ -446,7 +446,11 @@ export default {
                 userFileName:''
             },
             audioPreview: false,
-            unreadMessage: null
+            unreadMessage: null,
+            pagination: {
+                currentPage: 1,
+                lastPage: 1
+            }
         }
     },
     watch: {
@@ -467,20 +471,28 @@ export default {
                 this.scrollToBottom();
             });
         },
-        getChatsMessages(item) {
+        async getChatsMessages(item, newChat = false) {
             item.unread_message_count = 0;
+            if(newChat) {
+                this.pagination.currentPage = 1;
+            }
             this.current_chat = Object.assign({}, item)
             this.current_chat.user_id = this.authData.id
             // console.log(['current_chat', this.current_chat])
             this.$store.commit('is_loader', true);
-            axios.post('chat/get-messages', { room_id: this.current_chat.chat_room_id })
+            await axios.post(`chat/get-messages?page=${this.pagination.currentPage}`, { room_id: this.current_chat.chat_room_id })
                 .then(res => {
+                    if(newChat) {
+                        this.messages = [];
+                    }
                     this.showChat = 1
-                    this.messages = Object.assign([], res.data.data.messages);
+                    this.messages.unshift(...res.data.data.messages.data.reverse());
                     this.mediaUrl = res.data.data.media_base_url
                     this.startSocketBrodcast();
-                    this.scrollToBottom();
+                    this.pagination.currentPage == 1 && this.scrollToBottom();
                     this.unreadMessage = Object.assign({}, res.data.data.unread);
+                    this.pagination.lastPage = res.data.data.messages.last_page;
+                    this.pagination.currentPage += 1;
                     // this.unread_count[this.chat_type] = res.data.data.unread_count;
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
@@ -658,6 +670,16 @@ export default {
                 messagesListSec.scrollTop = messagesListSec.scrollHeight + 500;
             });
             this.unreadMessage = null
+        },
+        async handleScroll() {
+            const messagesListSec = this.$refs.messagesListSec;
+            const atTop = messagesListSec.scrollTop === 0;
+            const currentPos = messagesListSec.scrollHeight
+
+            if (atTop && this.pagination.currentPage != this.pagination.lastPage+1) {
+                await this.getChatsMessages(this.current_chat);
+                messagesListSec.scrollTop = messagesListSec.scrollHeight - currentPos
+            }
         },
     }
 }

@@ -169,7 +169,7 @@
                             </div>
                         </div>
                         <div class="messages-body-sec">
-                            <div class="messages-list-sec" ref="messagesListSec" @scroll="handleScroll">
+                            <div class="messages-list-sec" ref="messagesListSec" @scroll="infiniteScroll">
                                 <div class="messages-item" v-for="(mes, i) in messages" :key="i"
                                     :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
                                     <div class="messages-item-con" v-if="unreadMessage && mes.id == unreadMessage?.unread_from">
@@ -671,7 +671,7 @@ export default {
             });
             this.unreadMessage = null
         },
-        async handleScroll() {
+        async infiniteScroll() {
             const messagesListSec = this.$refs.messagesListSec;
             const atTop = messagesListSec.scrollTop === 0;
             const currentPos = messagesListSec.scrollHeight

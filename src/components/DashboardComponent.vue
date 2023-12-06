@@ -44,6 +44,17 @@ import axios from "axios";
       mounted() {
          this.getStatistics()
          
+         let tktchannel = "ticket-status-updated-channel."+this.authData.role_id+"." + this.authData.id;
+         console.log(tktchannel);
+         window.Echo.channel(tktchannel).listen(".updated-ticket-status", (data) => {
+            console.log(['updated-ticket-status',data])
+            Object.keys(data).forEach(attr => {
+               if(attr.includes('tickets')) {
+                  this.statistics[attr] += data[attr];
+               }
+            });
+         });
+         
          if(this.authData && [3, 4].includes(this.authData.role_id)) {
             let channel = "requested-chat-accepted-channel." + ((this.authData.role_id == 3) ? this.authData.id : this.authData.parent_id);
             window.Echo.channel(channel).listen(".agent-joined-chat", (data) => {

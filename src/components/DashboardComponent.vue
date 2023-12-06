@@ -24,6 +24,7 @@
    </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import axios from "axios";
    export default {
       name: 'DashboardComponent',
@@ -32,8 +33,37 @@ import axios from "axios";
             statistics: []
          }
       },
+      watch: {
+         '$store.state.chat_request': function () {
+            this.statistics.requested_chats++;
+         }
+      },
+      computed: {
+         ...mapState(['authData']),
+      },
       mounted() {
          this.getStatistics()
+         
+         let tktchannel = "ticket-status-updated-channel."+this.authData.role_id+"." + this.authData.id;
+         console.log(tktchannel);
+         window.Echo.channel(tktchannel).listen(".updated-ticket-status", (data) => {
+            console.log(['updated-ticket-status',data])
+            Object.keys(data).forEach(attr => {
+               if(attr.includes('tickets')) {
+                  this.statistics[attr] += data[attr];
+               }
+            });
+         });
+         
+         if(this.authData && [3, 4].includes(this.authData.role_id)) {
+            let channel = "requested-chat-accepted-channel." + ((this.authData.role_id == 3) ? this.authData.id : this.authData.parent_id);
+            window.Echo.channel(channel).listen(".agent-joined-chat", (data) => {
+               this.statistics.requested_chats--;
+               if(this.authData.role_id == 4 && data.agent_id == this.authData.id) {
+                  this.statistics.open_chats++;
+               }
+            });
+         }
       },
       methods: {
          getRedirectLink(attr) {

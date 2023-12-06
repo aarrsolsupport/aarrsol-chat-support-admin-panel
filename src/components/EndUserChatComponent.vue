@@ -620,6 +620,13 @@ export default {
                 messagesListSec.scrollTop = messagesListSec.scrollHeight + 500;
             });
         },
+        // beforeDestroy() {
+        //     for (var channel in this.socketChannels) {
+        //         window.Echo.leave(channel);
+        //     }
+        //     this.is_destroy = true;
+        //     clearTimeout(this.fetchVerionInterval);
+        // },
         backToChatList() {
             this.chatComponent = 'chat_list'; /*GOING BACK TO CHATLIST*/
             this.messagesList = []; /*Emptying Message list so new chat is not appended to existing Message list*/

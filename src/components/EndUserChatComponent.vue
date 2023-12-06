@@ -61,7 +61,7 @@
                     </div>
                     <!-- MAIN CHAT SECTION -->
                     <div class="messages-container" v-else>
-                        <div class="messages-list-sec" ref="messagesListSec">
+                        <div class="messages-list-sec" ref="messagesListSec" @scroll="infiniteScroll">
                             <div v-html="html" v-for="(html, index) in messagesList" :key="index"></div>
                             <div class="messages-item outgoing-messages">
                                 <div class="season-message-tab">
@@ -234,6 +234,7 @@ export default {
 
             startNewChat: false,
             chatComponent: null,
+            currentChatData: null,
 
             roomId: null,
             chatStatus: null,
@@ -255,7 +256,12 @@ export default {
                 userFileName:''
             },
 
-            showEmoji: false
+            showEmoji: false,
+
+            pagination: {
+                currentPage: 1,
+                lastPage: 1
+            }
             
         }
     },
@@ -486,8 +492,9 @@ export default {
                     this.$store.commit('is_loader', false);
                 })
         },
-        getChatMessages(data) {
-            axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: data.chat_id })
+        async getChatMessages(data) {
+            this.currentChatData = data
+            await axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: this.currentChatData.chat_id, page: this.pagination.currentPage })
                 .then(res => {
                     if(res.status == 200) {
                         // this.userId = res.data.data.end_user_id;
@@ -496,7 +503,7 @@ export default {
                         this.agent_id = res.data.data.agent_id;
                         this.agent_name = res.data.data.agent_name;
                         
-                        const messages = res.data.data.messages;
+                        const messages = res.data.data.messages.data;
     
                         for (let i = 0; i < messages.length; i++) {
                             const message = messages[i];
@@ -527,8 +534,10 @@ export default {
                         }
     
                         if(res.data.data.status == 1) {
-                            this.scrollToBottom();
+                            this.pagination.currentPage == 1 && this.scrollToBottom();
                         }
+                        this.pagination.lastPage = res.data.data.messages.last_page;
+                        this.pagination.currentPage += 1;
                         this.startSocketBrodcast();
                     }
                 }).catch(e => {
@@ -637,6 +646,7 @@ export default {
             this.chatStatus = null;
             this.agent_id = null;
             this.agent_name = null;
+            this.pagination.currentPage = 1;
         },
         uplaodImg(event) {
             this.media = [];
@@ -684,6 +694,16 @@ export default {
             this.voiceRecord.userFile = blob;
             this.voiceRecord.userFileName = "audio-record";
             this.scrollToBottom();
+        },
+        async infiniteScroll() {
+            const messagesListSec = this.$refs.messagesListSec;
+            const atTop = messagesListSec.scrollTop === 0;
+            const currentPos = messagesListSec.scrollHeight
+
+            if (atTop && this.pagination.currentPage != this.pagination.lastPage+1) {
+                await this.getChatMessages(this.currentChatData);
+                messagesListSec.scrollTop = messagesListSec.scrollHeight - currentPos
+            }
         },
     },
 }

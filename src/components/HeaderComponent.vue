@@ -66,8 +66,12 @@
          if(this.authData && [3, 4].includes(this.authData.role_id)) {
             let channel = "chat-request-channel." + ((this.authData.role_id == 3) ? this.authData.id : this.authData.parent_id);
             window.Echo.channel(channel).listen(".receive-chat-requests", (data) => {
-               this.$toast.info('New Chat Request Received!');
-               this.$store.commit('push_received_chat_request', data.chat_room);
+               if(!data.ended) {
+                  this.$toast.info('New Chat Request Received!');
+               // } else {
+                  // this.$toast.warning('Chat Request Revoked!');
+               }
+               this.$store.commit('push_received_chat_request', data);
             });
          }
       },

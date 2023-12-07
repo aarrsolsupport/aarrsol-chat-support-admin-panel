@@ -141,9 +141,20 @@ export default {
     },
     watch: {
         '$store.state.chat_request': function () {
-            this.chatRequestsList.unshift(this.$store.state.chat_request);
-            if(this.chatRequestsList.length >= this.pagination_data.per_page)
-                this.chatRequestsList.pop();
+            let request = this.$store.state.chat_request;
+            if(request.ended) {
+                console.log(request.chat_room)
+                // If present chat_room in list remove from list
+                for (const [key, value] of Object.entries(this.chatRequestsList)) {
+                    if(value.id == request.chat_room.id) {
+                        this.chatRequestsList.splice(key, 1)
+                    }
+                }
+            } else {
+                this.chatRequestsList.unshift(request.chat_room);
+                if(this.chatRequestsList.length >= this.pagination_data.per_page)
+                    this.chatRequestsList.pop();
+            }
         }
     },
     mounted() {

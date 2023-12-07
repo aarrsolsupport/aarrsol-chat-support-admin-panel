@@ -34,10 +34,14 @@ import axios from "axios";
          }
       },
       watch: {
-         '$store.state.chat_request': function () {
-            this.statistics.requested_chats++;
-         }
-      },
+        '$store.state.chat_request': function () {
+           if(this.$store.state.chat_request.ended) {
+              this.statistics.requested_chats--; 
+           } else {
+              this.statistics.requested_chats++;
+           }
+        }
+     },
       computed: {
          ...mapState(['authData']),
       },

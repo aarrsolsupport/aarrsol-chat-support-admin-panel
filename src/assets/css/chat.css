@@ -872,3 +872,16 @@ span.message-time.messages-time-item {
 button.start-chat .messages-item-content {
     padding-bottom: 6px;
 }
+
+.messages-item-content {
+    min-width: 64px;
+}
+
+.admin-img .v3-emoji-picker {
+    bottom: -68px;
+    right: auto !important;
+    position: absolute;
+    margin-top: -118px;
+    z-index: 99;
+    left: 60px !important;
+}

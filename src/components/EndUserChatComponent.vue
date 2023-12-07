@@ -105,10 +105,10 @@
                             <div class="messages-input">
                                 <button type="button" class="header-admin-btn">
                                     <div class="admin-img">
-                                        <EmojiPicker :native="true" @select="onSelectEmoji" v-if="showEmoji" />
                                         <div @click="toggleEmojiPicker()">
                                             <img class="emoji-icon" src="@/assets/images/emoji-icon.svg" alt="">
                                         </div>
+                                        <EmojiPicker :native="true" @select="onSelectEmoji" v-if="showEmoji" offset="60" />
                                     </div>
                                 </button>
                             </div>

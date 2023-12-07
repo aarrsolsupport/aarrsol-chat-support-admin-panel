@@ -869,3 +869,16 @@ span.message-time.messages-time-item {
     position: relative;
     padding-bottom: 20px;
 }
+
+.messages-item-content {
+    min-width: 64px;
+}
+
+.admin-img .v3-emoji-picker {
+    bottom: -68px;
+    right: auto !important;
+    position: absolute;
+    margin-top: -118px;
+    z-index: 99;
+    left: 60px !important;
+}

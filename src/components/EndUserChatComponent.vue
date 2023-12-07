@@ -261,7 +261,8 @@ export default {
             pagination: {
                 currentPage: 1,
                 lastPage: 1
-            }
+            },
+            infiniteScrollActive: false
             
         }
     },
@@ -538,6 +539,13 @@ export default {
                         }
                         this.pagination.lastPage = res.data.data.messages.last_page;
                         this.pagination.currentPage += 1;
+
+                        /*
+                            Activates infinite chat scroll only when there is existing previous chat...also giving us chat_id
+                            which we dont have when we add userid or create chat room.
+                        */
+                        this.infiniteScrollActive = true;
+
                         this.startSocketBrodcast();
                     }
                 }).catch(e => {
@@ -557,6 +565,7 @@ export default {
                         this.roomId = respData.next_action.room_id;
                         this.userId = respData.user_id;
                         this.userName = respData.user_name;
+                        window.parent.postMessage({userName : this.userName}, '*');
 
                         if (this.chatComponent === 'chat_list') {
                             this.chatList = respData.next_action.data;
@@ -647,6 +656,7 @@ export default {
             this.agent_id = null;
             this.agent_name = null;
             this.pagination.currentPage = 1;
+            this.infiniteScrollActive = false;
         },
         uplaodImg(event) {
             this.media = [];
@@ -700,7 +710,7 @@ export default {
             const atTop = messagesListSec.scrollTop === 0;
             const currentPos = messagesListSec.scrollHeight
 
-            if (atTop && this.pagination.currentPage != this.pagination.lastPage+1) {
+            if (atTop && this.pagination.currentPage != this.pagination.lastPage+1 && this.infiniteScrollActive) {
                 await this.getChatMessages(this.currentChatData);
                 messagesListSec.scrollTop = messagesListSec.scrollHeight - currentPos
             }

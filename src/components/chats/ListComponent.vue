@@ -606,28 +606,31 @@ export default {
             event.target.src = this.defaultFile 
         } ,
         sendMessage() {
-
-            let messageData = new FormData();
-            messageData.append('chat_room_id', this.current_chat.chat_room_id)
-            messageData.append('sender_type', 2)
-            messageData.append('sender_id', this.current_chat.user_id)
-            messageData.append('message', this.input )
-
-            for (let i = 0; i < this.media?.length; i++) {
-                messageData.append('file[]', this.media[i]);
+            if (this.input || this.media || this.voiceRecord.userFile) {
+                let messageData = new FormData();
+                messageData.append('chat_room_id', this.current_chat.chat_room_id)
+                messageData.append('sender_type', 2)
+                messageData.append('sender_id', this.current_chat.user_id)
+                messageData.append('message', this.input )
+    
+                for (let i = 0; i < this.media?.length; i++) {
+                    messageData.append('file[]', this.media[i]);
+                }
+                this.voiceRecord.userFile ? messageData.append('file[]', this.voiceRecord.userFile) : '';
+    
+                axios.post('chat/send-message', messageData)
+                .then(res => {
+                    this.input = '';
+                    this.audioPreview = false;
+                    this.mediaPreviewBlobs = [];
+                    this.media = null;
+                    this.voiceRecord.userFile = null;
+                }).catch(e => {
+                    console.error(e);
+                })
+            } else {
+                this.$toast.error('Please type something....');
             }
-            this.voiceRecord.userFile ? messageData.append('file[]', this.voiceRecord.userFile) : '';
-
-            axios.post('chat/send-message', messageData)
-            .then(res => {
-                this.input = '';
-                this.audioPreview = false;
-                this.mediaPreviewBlobs = [];
-                this.media = null;
-                this.voiceRecord.userFile = null;
-            }).catch(e => {
-                console.error(e);
-            })
         },
         handlerFunction(stream) {
             this.voiceRecord.rec = new MediaRecorder(stream);

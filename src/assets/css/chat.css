@@ -869,3 +869,6 @@ span.message-time.messages-time-item {
     position: relative;
     padding-bottom: 20px;
 }
+button.start-chat .messages-item-content {
+    padding-bottom: 6px;
+}

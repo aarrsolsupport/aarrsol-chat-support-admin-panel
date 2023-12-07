@@ -13,7 +13,36 @@
                         <h2 class="text-capitalize">{{ headerTitle }} </h2>
                     </div>
                 </div>
-                <button type="button" class="btn-close" @click="cloaseChatModal()"></button>
+                <div class="d-flex">
+                    <div class="more-action-sec" v-if="chatComponent !== 'add_user' && chatComponent !== 'chat_list'">
+                        <button class="more-action-btn" data-bs-toggle="dropdown"><img
+                                src="@/assets/images/more-action.svg" alt=""></button>
+                        <ul class="dropdown-menu dropdown-menu-end more-action-list">
+                            <li>
+                                <button class="dropdown-item more-list-btn" type="button">
+                                    <div class="thm-heading">
+                                        <h2> Restart Chat </h2>
+                                    </div>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item more-list-btn" type="button">
+                                    <div class="thm-heading">
+                                        <h2> Live Agent </h2>
+                                    </div>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item more-list-btn" type="button">
+                                    <div class="thm-heading">
+                                        <h2>End chat  </h2>
+                                    </div>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <button type="button" class="btn-close" @click="cloaseChatModal()"></button>
+                </div>
             </div>
             <div class="modal-body chat-modal-body">
                 <section class="chatbot-wrapper" style="height: 100vh;">

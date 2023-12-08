@@ -65,11 +65,11 @@
                                     <th>
                                         <h2> Generate At</h2>
                                     </th>
-                                    <th>
+                                    <!-- <th>
                                         <h2> Chat ID</h2>
-                                    </th>
+                                    </th> -->
                                     <th>
-                                        <h2> Issue ID</h2>
+                                        <h2> Issue Category</h2>
                                     </th>
                                     <th v-if="userData?.role_id == 1">
                                         <h2> Operator ID</h2>
@@ -103,11 +103,11 @@
                                     <td>
                                         <h2>{{ $filters.localDateTimeFormat(item.created_at) }}</h2>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <h2>{{ item.chat_id }}</h2>
-                                    </td>
+                                    </td> -->
                                     <td>
-                                        <h2>{{ item.issue_description }}</h2>
+                                        <h2>{{ item.issue_category?.description || '-' }}</h2>
                                     </td>
                                     <td v-if="userData?.role_id == 1">
                                         <h2>{{ item.operator_user?.userid || '' }}</h2>

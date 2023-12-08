@@ -24,8 +24,8 @@
 
                             <div class="tickets-modal-item">
                                 <div class="thm-heading">
-                                    <span>Issue ID</span>
-                                    <h3>{{ item.issue_id }}</h3>
+                                    <span>Issue Category</span>
+                                    <h3>{{ item.issue_category?.description || '-' }}</h3>
                                 </div>
                             </div>
 

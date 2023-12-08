@@ -558,7 +558,10 @@ export default {
                             this.messagesList.unshift(html)
                             }
                         }
-    
+                        
+                        if(messages.length) {
+                            this.senderType = messages[0].sender_type; 
+                        }
                         if (res.data.data.current_options?.data) {
                             this.nextActionData = res.data.data.current_options?.data;
                             this.chatComponent = res.data.data.current_options?.next_action;

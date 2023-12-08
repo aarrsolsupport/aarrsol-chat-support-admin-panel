@@ -18,7 +18,7 @@
                         </ul>
                     </div>
 
-                    <div class="operator-item" v-if="item_data.userid != undefined ">
+                    <div class="operator-item" v-if="item_data.userid != undefined && itemForm != 2 ">
                         <label for="userid" class="form-label">Login ID</label>
                         <input id="userid" type="text" class="form-control" placeholder="Enter Login ID" v-model="item_data.userid" :class="v$.item_data.userid.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.userid">
@@ -39,7 +39,7 @@
                         <input id="password_confirmation" type="text" class="form-control" placeholder="Enter Confirm Password" v-model="item_data.password_confirmation" :class="v$.item_data.password_confirmation.$error ? 'border border-danger' : ''">
                     </div>
 
-                    <div class="operator-item" v-if="item_data.website_url != undefined ">
+                    <div class="operator-item" v-if="item_data.website_url != undefined">
                         <label for="website_url" class="form-label">Website URL</label>
                         <input id="website_url" type="text" class="form-control" placeholder="Enter Website URL" v-model="item_data.website_url" :class="v$.item_data.website_url.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.website_url">
@@ -47,7 +47,7 @@
                         </ul>
                     </div>
 
-                    <div class="operator-item" v-if="item_data.website_id != undefined ">
+                    <div class="operator-item" v-if="item_data.website_id != undefined && itemForm != 2">
                         <label for="website_id" class="form-label">Website ID</label>
                         <input id="website_id" type="text" class="form-control" placeholder="Enter Website ID" v-model="item_data.website_id" :class="v$.item_data.website_id.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.website_id">
@@ -205,6 +205,7 @@
                                 this.$toast.error(res.data.message);
                                 this.errorsList = res.data.data;
                             }else{
+                                res.data.data.is_active = this.item_data.is_active
                                 this.$store.commit('white_lable_data_Updated', {'change': 1, 'item': res.data});
                                 this.$toast.success(res.data.message);
                                 this.$refs.wlCloseBtn.click();

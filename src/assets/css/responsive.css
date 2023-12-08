@@ -243,6 +243,10 @@
     .messages-body-sec {
         height: calc(100vh - 130px);
     }
+    
+    .all-messege-container {
+        padding-bottom: 7rem;
+    }
 }
 
 @media screen and (max-width: 767px){
@@ -405,6 +409,7 @@
 .admin-con label {
     font-size: 13px;
 }
+
 }
 
 @media screen and (max-width: 575px){
@@ -515,16 +520,6 @@
     
     .thm-heading P br{
         display: none;
-    }
-
-    .chat-icon img{
-        width: 28px;
-        height: 28px;
-    }
-
-
-    .chat-icon {
-        margin-bottom: 5px;
     }
 
     .chat-flow-con .thm-btn {
@@ -926,10 +921,6 @@
         padding: 7px 8px;
     } */
 
-    .chat-heading {
-        padding: 10px 8px;
-    }
-
     .chat-user-btn {
         padding: 10px 6px;
     }
@@ -960,13 +951,6 @@
     .messages-body-sec {
         padding-bottom: 118px;
         padding: 3px 6px;
-    }
-
-    .message-time {
-        font-size: 10px !important;
-    }
-    .sub-messages-con{
-        line-height: normal;
     }
 
     .messages-item-content {
@@ -1100,6 +1084,8 @@
     .Categories-btn .thm-btn {
         margin: 0px 4px;
     }
+
+
 }
 
 @media screen and (max-width: 359px){

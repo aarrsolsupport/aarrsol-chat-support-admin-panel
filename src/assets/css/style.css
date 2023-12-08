@@ -395,12 +395,11 @@ header{
 .thm-btn:hover{
 	color: var(--white-color);
 }
-.thm-border-btn{
-	border: 1.5px solid var(--primary-color) ;
-	background-color: transparent !important;
-	color: var(--primary-color) !important;
+.thm-border-btn {
+    border: 1.5px solid var(--primary-color) !important;
+    background-color: transparent !important;
+    color: var(--primary-color) !important;
 }
-
 /* index pages css */
 
 .header-logo{
@@ -1206,11 +1205,6 @@ background-color: var(--border-color);
 	margin: 10px;
 }
 
-.chat-icon{
-	display: block;
-	margin-bottom: 10px;
-}
-
 .chat-flow-con {
 	display: block;
 }
@@ -1949,12 +1943,6 @@ padding-left: 0px;
 
 /* user chat sec */
 
-.chat-heading {
-	background-color: var(--body-color);
-	padding: 12px 10px;
-	border-radius: 12px 12px 0px 0px;
-}
-
 
 .chat-heading .thm-heading h2{
 	display: flex;
@@ -2072,33 +2060,12 @@ padding-left: 0px;
 	margin-right: 4px;
 }
 
-
-.messages-item-content{
-	border-radius: 0px 8px 8px 8px;
-	border: 1px solid var(--body-color);
-	padding: 10px 12px;
-	width: fit-content;
-	background-color: var(--blue-color);
-	margin-top: 6px;
-}
-
 .messages-body-sec{
 	padding: 10px 12px;
 	overflow-y: auto;
      height: calc(100vh - 0px);
 
 }
-.message-time{
-	font-weight: 500 !important;
-	font-size: 12px !important;
-}
-
-.outgoing-messages {
-    display: flex;
-    justify-content: end;
-    text-align: end;
-}
-
 
 .video-sec{
 	margin-top: 10px;
@@ -2379,6 +2346,7 @@ width: 100%;
 	padding: 2px 6px !important;
 	border-radius: 4px ;
 	font-weight: 500;
+	width: fit-content;
 }
 
 .more-btn {
@@ -2846,4 +2814,91 @@ border: 1.5px solid var(--border-color) !important;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+
+.media-display {
+    display: block;
+    max-width: 100px;
+}
+
+.tab-pane .borad-inner-body{
+	margin-top: 0px;
+	}
+.tab-pane .borad-inner-body .operator-table-sec{
+margin-top: 0px;
+}
+.tab-pane .borad-inner-body-sec {
+    margin-left: 0px;
+}
+.tab-pane .operator-table-sec {
+    margin: 0px 0px;
+}
+
+.add-messag-header::before {
+    display: none;
+}
+.carousel__pagination li button{
+	width: 32px;
+	height: 6px ;
+	background-color: var(--black-theme-300);
+	margin: 5px;
+	padding: 0;
+  }
+  
+  .carousel__pagination li button.carousel__pagination-button--active{
+	background-color:  var(--primary-color-dark);
+  }
+  
+  .carousel__pagination li button::after{
+  display: none;
+  }
+  
+  .carousel__next{
+	width: 48px !important;
+	height: 56px !important;
+	border-radius: 0px 16px 16px 0px !important;
+	background: var(--black-theme-bg)!important;
+	box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.05);
+  }
+  
+  .carousel__prev{
+	width: 48px !important;
+	height: 56px !important;
+	border-radius: 16px 0px  0px 16px !important;
+	background: var(--black-theme-bg)!important;
+	box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.05);
+  }
+  
+  .carousel__next {
+	right: -20px !important;;
+  }
+  .carousel__prev {
+	left:-20px !important;
+  }
+  .carousel__next svg path{
+	opacity: 0;
+  }
+  .carousel__prev svg path{
+	opacity: 0;
+  }
+  
+  .carousel__next svg {
+	background-image: url(../images/arrow-slider-right.svg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: #fff;
+  }
+  .carousel__prev svg {
+	background-image: url(../images/arrow-slider-left.svg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: #fff;
+  }
+  
+  .carousel__slide {
+    margin: 10px 0px !important;
+}
+
+.carousel__track {
+    margin-left: 20px !important;
 }

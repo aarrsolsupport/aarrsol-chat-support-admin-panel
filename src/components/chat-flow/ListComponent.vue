@@ -20,8 +20,10 @@
                                             data-bs-target="#languagemodal">Add More</button>
                                         <div class="info-sec">
                                             <button class="info-btn bg-transparent" data-bs-toggle="dropdown"
-                                                aria-expanded="true"><img src="@/assets/images/info-icon.svg" alt=""></button>
-                                            <div class="info-details-con dropdown-menu  " data-popper-placement="bottom-end">
+                                                aria-expanded="true"><img src="@/assets/images/info-icon.svg"
+                                                    alt=""></button>
+                                            <div class="info-details-con dropdown-menu  "
+                                                data-popper-placement="bottom-end">
                                                 <div class="thm-heading">
                                                     <p>You can add template <br> based on languages.</p>
                                                 </div>
@@ -33,27 +35,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="operator-table-sec chat-flow-tables ">
+                <div class="operator-table-sec chat-flow-tables" :class="user_id ? 'operator-details-chat-flow2-sec' : 'operator-details-chat-flow-sec'">
                     <div class="chat-flow-borad-sec">
                         <div class="operator-detail-tab-con">
                             <div class="tab-pane fade show" id="pills-chat-flow" role="tabpanel"
                                 aria-labelledby="pills-chat-flow-tab">
                                 <div class="operator-tab-item-one">
                                     <div class="thm-heading p-2">
-                                        <h2>Chatbot Flow {{ template_id }}</h2>
+                                        <h2>Chatbot Flow</h2>
                                     </div>
-                                    <div class="chat-flow-borad-list">
+                                    <div class="chat-flow-borad-list operator-details-chat-flow " >
                                         <template v-if="!template_id">
-                                            <div class="chat-flow-borad-list-con">
+                                            <div class="chat-flow-borad-list-con ">
                                                 <div class="chat-flow-item">
-                                                    <button class="chat-flow-btn" @click="setupForm(1)" data-bs-toggle="modal"
-                                                        data-bs-target="#exampleModal">
+                                                    <button class="chat-flow-btn" @click="setupForm(1)"
+                                                        data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                         <div class="chat-icon">
                                                             <img src="@/assets/images/add-message-icon.svg" alt="">
                                                         </div>
                                                         <div class="chat-flow-con thm-heading  ">
                                                             <span class="thm-btn">Add Message</span>
-                                                            <p>Add a message to be sent to the user by the Bot <br> (Can include
+                                                            <p>Add a message to be sent to the user by the Bot <br> (Can
+                                                                include
                                                                 Text
                                                                 message /
                                                                 File or Both) </p>
@@ -74,70 +77,114 @@
                                             </div>
                                         </template>
                                         <template v-else>
-                                            <blocks-tree :data="treeData" :horizontal="false" :collapsable="true"
-                                                :props="{ label: 'label', expand: 'expand', children: 'children', key: 'node_id' }"
-                                                labelClassName="chatFlowNode">
-                                                <template #node="{ data }">
-                                                    <!-- , context  -->
-                                                    <div
-                                                        :class="(showMessageOption == data.node_id && data.node_type == 'C') ? 'node selectedNode category' : (data.node_type == 'C' ? 'node category' : (showMessageOption == data.node_id ? 'node selectedNode' : 'node'))">
-                                                        <div class="assistant-sec personal-assistant">
-                                                            <div class="assistant-item draggable-element">
-                                                                <div class="assistant-con">
-                                                                    <div class="move-btn bg-transparent">
-                                                                        <img src="@/assets/images/move-icon.svg" alt="">
-                                                                    </div>
-                                                                    <!-- @click="context.toggleExpand" -->
-                                                                    <button class="assistant-heading-btn bg-transparent"
-                                                                        @click="(e) => showAddOption(data)">
-                                                                        <div class="thm-heading">
-                                                                            <p :title="data.label">
-                                                                                {{ data.node_id }}
-                                                                                {{ data.label.length > 30 ?
-                                                                                    data.label.substring(0, 30) +
-                                                                                    '...' : data.label }}
-                                                                            </p>
+                                            <template v-if="emptyTree">
+                                                <div class="chat-flow-borad-list-con ">
+                                                    <div class="chat-flow-item">
+                                                        <button class="chat-flow-btn" @click="setupForm(1, { node_type: 'T', id: this.template_id })"
+                                                            data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                            <div class="chat-icon">
+                                                                <img src="@/assets/images/add-message-icon.svg" alt="">
+                                                            </div>
+                                                            <div class="chat-flow-con thm-heading  ">
+                                                                <span class="thm-btn">Add Message</span>
+                                                                <p>Add a message to be sent to the user by the Bot <br> (Can
+                                                                    include
+                                                                    Text
+                                                                    message /
+                                                                    File or Both) </p>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <blocks-tree :data="treeData" :horizontal="false" :collapsable="true"
+                                                    :props="{ label: 'label', expand: 'expand', children: 'children', key: 'node_id' }"
+                                                    labelClassName="chatFlowNode">
+                                                    <template #node="{ data }">
+                                                        <!-- , context  -->
+                                                        <div
+                                                            :class="(showMessageOption == data.node_id && data.node_type == 'C') ? 'node selectedNode category' : (data.node_type == 'C' ? 'node category' : (showMessageOption == data.node_id ? 'node selectedNode' : 'node'))">
+                                                            <div class="assistant-sec personal-assistant">
+                                                                <div class="assistant-item draggable-element">
+                                                                    <div class="assistant-con">
+                                                                        <div class="move-btn bg-transparent">
+                                                                            <img src="@/assets/images/move-icon.svg" alt="">
                                                                         </div>
-                                                                    </button>
-                                                                    <div class="more-action-sec">
-                                                                        <button class="more-action-btn"
-                                                                            data-bs-toggle="dropdown"><img
-                                                                                src="@/assets/images/more-action.svg"
-                                                                                alt=""></button>
-                                                                        <ul
-                                                                            class="dropdown-menu dropdown-menu-end more-action-list">
-                                                                            <li>
-                                                                                <button class="dropdown-item more-list-btn"
-                                                                                    type="button" @click="setupEditForm(data)">
-                                                                                    <div class="edit-icon"><img
-                                                                                            src="@/assets/images/edit-icon.svg"
-                                                                                            alt="">
-                                                                                    </div>
-                                                                                    <div class="thm-heading">
-                                                                                        <h2>Edit</h2>
-                                                                                    </div>
-                                                                                </button>
-                                                                            </li>
-                                                                        </ul>
+                                                                        <!-- @click="context.toggleExpand" -->
+                                                                        <button class="assistant-heading-btn bg-transparent"
+                                                                            @click="(e) => showAddOption(data)">
+                                                                            <div class="thm-heading">
+                                                                                <p :title="data.label">
+                                                                                    {{ data.node_id }}
+                                                                                    {{ data.label.length > 30 ?
+                                                                                        data.label.substring(0, 30) +
+                                                                                        '...' : data.label }}
+                                                                                </p>
+                                                                            </div>
+                                                                        </button>
+                                                                        <div class="more-action-sec">
+                                                                            <button class="more-action-btn"
+                                                                                data-bs-toggle="dropdown"><img
+                                                                                    src="@/assets/images/more-action.svg"
+                                                                                    alt=""></button>
+                                                                            <ul
+                                                                                class="dropdown-menu dropdown-menu-end more-action-list">
+                                                                                <li>
+                                                                                    <button class="dropdown-item more-list-btn"
+                                                                                        type="button"
+                                                                                        @click="setupEditDeleteForm(data)"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#editModal">
+                                                                                        <div class="edit-icon"><img
+                                                                                                src="@/assets/images/edit-icon.svg"
+                                                                                                alt="">
+                                                                                        </div>
+                                                                                        <div class="thm-heading">
+                                                                                            <h2>Edit</h2>
+                                                                                        </div>
+                                                                                    </button>
+                                                                                </li>
+                                                                                <li v-if="data.parent.id">
+                                                                                    <button class="dropdown-item more-list-btn"
+                                                                                        type="button"
+                                                                                        @click="setupEditDeleteForm(data)"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#statusdetails">
+                                                                                        <div class="edit-icon"><img
+                                                                                                src="@/assets/images/delete-icon.svg"
+                                                                                                alt="">
+                                                                                        </div>
+                                                                                        <div class="thm-heading">
+                                                                                            <h2>Delete</h2>
+                                                                                        </div>
+                                                                                    </button>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="assistant-btn-sec show"
-                                                            v-if="showMessageOption == data.node_id && data.children.length == 0">
-                                                            <div class="assistant-btn-con">
-                                                                <button class="thm-btn" @click="setupForm(1, data)" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Message</button>
-                                                                <button class="thm-btn" @click="setupForm(2, data)" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Option</button>
+                                                            <div class="assistant-btn-sec show"
+                                                                v-if="showMessageOption == data.node_id && data.children.length == 0">
+                                                                <div class="assistant-btn-con">
+                                                                    <button class="thm-btn" @click="setupForm(1, data)"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#exampleModal">Add Message</button>
+                                                                    <button class="thm-btn" @click="setupForm(2, data)"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#exampleModal">Add Option</button>
+                                                                </div>
+                                                                <div>
+                                                                    <input type="checkbox" :checked="data.next == 2"
+                                                                        @change="initiateLiveChat(data)" />
+                                                                    Live Chat
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <input type="checkbox" :checked="data.next == 2"
-                                                                    @change="initiateLiveChat(data)" />
-                                                                Live Chat
-                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </template>
-                                            </blocks-tree>
+                                                    </template>
+                                                </blocks-tree>
+                                            </template>
                                         </template>
                                         <div :class="showForm > 0 ? 'show' : ''" class="modal add-option-sec" tabindex="-1"
                                             id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -147,10 +194,11 @@
                                                         <div class="add-messag-header add-operator-header operator-offcanvas-sec"
                                                             style="content: none;">
                                                             <div class="thm-heading">
-                                                                <h4 v-text="showForm == 1 ? 'Add Message' : 'Add Option'"></h4>
+                                                                <h4 v-text="showForm == 1 ? 'Add Message' : 'Add Option'">
+                                                                </h4>
                                                             </div>
                                                             <button type="button" class="btn-close text-reset"
-                                                                data-bs-dismiss="modal" aria-label="Close"
+                                                                data-bs-dismiss="modal" aria-label="Close" ref="addCloseFrm"
                                                                 @click="closeForm"></button>
                                                         </div>
                                                         <div class="add-messag-body" v-if="showForm == 1">
@@ -169,13 +217,14 @@
                                                                                 alt=""></span>
                                                                         Choose
                                                                         File</label>
-                                                                    <input class="form-control profit-input d-none" type="file"
-                                                                        name="file" multiple id="file" @change="uploadFiles">
+                                                                    <input class="form-control profit-input d-none"
+                                                                        type="file" name="file" multiple id="file"
+                                                                        @change="uploadFiles">
                                                                 </div>
                                                                 <div id="fileList" class="fileList-con">
                                                                     <ul v-if="uploaded_files.length">
-                                                                        <li v-for="(file, index) in uploaded_files" :key="index"
-                                                                            :id="'n_file' + index">
+                                                                        <li v-for="(file, index) in uploaded_files"
+                                                                            :key="index" :id="'n_file' + index">
                                                                             {{ file.name }}
                                                                             <span class="list-cross"
                                                                                 @click="removeFile(index)"><img
@@ -190,7 +239,8 @@
                                                                     <button class="thm-btn thm-border-btn"
                                                                         data-bs-dismiss="modal" aria-label="Close"
                                                                         @click="closeForm" ref="msgOptnBtn">Close</button>
-                                                                    <button class="thm-btn" @click="saveForm(1)">Save</button>
+                                                                    <button class="thm-btn"
+                                                                        @click="saveForm(1)">Save</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -223,7 +273,8 @@
                                                                     <button class="thm-btn thm-border-btn"
                                                                         data-bs-dismiss="modal" aria-label="Close"
                                                                         @click="closeForm" ref="msgOptnBtn">Close</button>
-                                                                    <button class="thm-btn" @click="saveForm(2)">Save</button>
+                                                                    <button class="thm-btn"
+                                                                        @click="saveForm(2)">Save</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -262,8 +313,8 @@
                                 </div>
                                 <div class="operator-item">
                                     <label for="operator" class="form-label">Title</label>
-                                    <input type="text" class="form-control " placeholder="Enter Here" aria-autocomplete="list"
-                                        v-model="new_template.template_name">
+                                    <input type="text" class="form-control " placeholder="Enter Here"
+                                        aria-autocomplete="list" v-model="new_template.template_name">
                                 </div>
                                 <div class="operator-offcanvas-footer pb-0">
                                     <button class="thm-btn thm-border-btn grey-bg border-0" data-bs-dismiss="modal"
@@ -276,9 +327,70 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal add-option-sec" tabindex="-1" id="editModal" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="add-messag-con">
+                        <div class="add-messag-header add-operator-header operator-offcanvas-sec" style="content: none;">
+                            <div class="thm-heading">
+                                <h4>Edit Message</h4>
+                            </div>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="add-messag-body">
+                            <div class="operator-item">
+                                <label for="operator" class="form-label">Message</label>
+                                <textarea type="text" class="form-control" placeholder="Enter Message" rows="3"
+                                    v-model="nodeData.label"></textarea>
+                            </div>
+                            <div class="operator-item" v-if="nodeData.node_type == 'M'">
+                                <label for="operator" class="form-label">Upload File</label>
+                                <div class="file-upload-sec">
+                                    <label for="file" class="file-upload"> <span><img src="@/assets/images/gallery-add.svg"
+                                                alt=""></span>
+                                        Choose
+                                        File</label>
+                                    <input class="form-control profit-input d-none" type="file" name="file" multiple
+                                        id="file" @change="uploadFiles">
+                                </div>
+                                <div id="fileList" class="fileList-con">
+                                    <ul>
+                                        <li v-for="(file, index) in nodeData.files" :key="index" :id="'n_file' + index">
+                                            {{ file }}
+                                            <span class="list-cross" @click="removeFile(index)"><img
+                                                    src="@/assets/images/cross-icon.svg" alt=""></span>
+                                            <span class="media-display">
+                                                <img :src="mediaBaseUrl + file">
+                                            </span>
+                                        </li>
+                                        <li v-for="(file, index) in uploaded_files" :key="index" :id="'n_file' + index">
+                                            {{ file.name }}
+                                            <span class="list-cross" @click="removeMediaFile(index)"><img
+                                                    src="@/assets/images/cross-icon.svg" alt=""></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="add-messag-footer">
+                                <div class="operator-offcanvas-footer ">
+                                    <button class="thm-btn thm-border-btn" data-bs-dismiss="modal" aria-label="Close"
+                                        @click="closeForm" ref="msgOptnBtn">Close</button>
+                                    <button class="thm-btn" @click="updateMessage()">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <UpdateComponent :nodeData="nodeData" :template_id="template_id" @refreshTree="refreshTree"></UpdateComponent>
     </div>
 </template>
 <script>
+import UpdateComponent from './UpdateComponent.vue'
 import axios from "axios";
 import { mapState } from "vuex";
 import { reactive } from 'vue';
@@ -310,6 +422,24 @@ export default {
             }
         }
 
+        const updateNode = (nodeArray, tree, type) => {
+            if (type == 2) {
+                nodeArray.forEach(nodeItem => {
+                    if (tree.node_id === nodeItem.node_id) {
+                        Object.assign(tree, nodeItem);
+                    } else if (tree.children) {
+                        tree.children.forEach(child => updateNode([nodeItem], child, type));
+                    }
+                });
+            } else {
+                if (tree.node_id === nodeArray.node_id) {
+                    Object.assign(tree, nodeArray);
+                } else if (tree.children) {
+                    tree.children.forEach(child => updateNode(nodeArray, child, type));
+                }
+            }
+        };
+
         const deleteNode = (node, tree) => {
 
             let parent = tree.children ? tree.children.find(p => p.node_id == node.node_id) : null;
@@ -328,11 +458,17 @@ export default {
             treeData,
             tryAddLeaf,
             deleteNode,
-            resetTreeData
+            resetTreeData,
+            updateNode
         }
+    },
+    components: {
+        UpdateComponent
     },
     data() {
         return {
+            emptyTree: true,
+            resource: 'chat-flow',
             templates: [
                 { flow: {} }
             ],
@@ -353,7 +489,11 @@ export default {
             },
             new_template: {
                 language_id: 0
-            }
+            },
+            nodeData: {},
+            removedMedia: [],
+            allowedFileTypes: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg'],
+            mediaBaseUrl: ''
         }
     },
     computed: {
@@ -368,12 +508,18 @@ export default {
         },
         saveTemplateDetails() {
             this.$store.commit('is_loader', true);
-            axios.post('/chat-flow/update-template-details', this.new_template)
+            if (this.user_id) {
+                this.new_template.user_id = this.user_id
+            }
+            //console.log(this.new_template)
+            axios.post('/' + this.resource + '/update-template-details', this.new_template)
                 .then(res => {
                     // Add New Template
                     if (res.data.data.template_id) {
                         this.templates.push(res.data.data)
                         this.template_id = res.data.data.template_id
+                        
+                        this.emptyTree = (res.data.data.flow) ? false : true
                         this.resetTreeData(res.data.data.flow)
                     } else {
                         // *TO-DO* if updating existing template details 
@@ -389,12 +535,14 @@ export default {
         },
         getChatTemplates() {
             this.$store.commit('is_loader', true);
-            axios.post('/chat-flow/get-chat-templates', { userid: this.user_id })
+            axios.post('/' + this.resource + '/get-chat-templates', { userid: this.user_id })
                 .then(res => {
                     this.$store.commit('is_loader', false);
                     if (res.data.data.templates) {
                         this.templates = res.data.data.templates
                         this.template_id = res.data.data.default.template_id
+                        this.mediaBaseUrl = res.data.data.media_base_url
+                        this.emptyTree = (res.data.data.default.flow) ? false : true
                         this.resetTreeData(res.data.data.default.flow)
                     }
                 }).catch(e => {
@@ -406,11 +554,12 @@ export default {
         getChatFlow(template_id = 0) {
             if (this.template_id != template_id) {
                 this.$store.commit('is_loader', true);
-                axios.post('/chat-flow/get-flow', { template_id: template_id })
+                axios.post('/' + this.resource + '/get-flow', { template_id: template_id })
                     .then(res => {
                         this.$store.commit('is_loader', false);
                         if (res.data.data.template_id) {
                             this.template_id = res.data.data.template_id
+                            this.emptyTree = (res.data.data.flow) ? false : true
                             this.resetTreeData(res.data.data.flow)
                         }
                     }).catch(e => {
@@ -428,24 +577,11 @@ export default {
             this.$refs.msgOptnBtn.click()
             // this.showForm = 0;
         },
-        setupEditForm(data) {
-            // *TO-DO*
+        setupEditDeleteForm(data) {
+            console.log(data);
             if (data) {
-                this.showError = '';
-                switch (data.node_type) {
-                    case 'C':
-                        this.showForm = 2;
-                        // this.new_option = ''
-                        // this.categories_data = [];
-                        console.log([data, this.showForm]);
-                        break;
-                    case 'M':
-                        this.showForm = 1;
-                        this.new_message = data.label;
-                        this.edit_node_id = data.id;
-                        // this.uploaded_files = {}; // *TO-DO*
-                        break;
-                }
+                data.files = data.files?.split('\n') || null
+                this.nodeData = data
             }
         },
         setupForm(type, data = {}) {
@@ -469,17 +605,27 @@ export default {
             }
         },
         uploadFiles(event) {
-            // if(files[i].size >= 2000000){
-            //     this.$toast.error('file size should be less than 2 MB');
-            // }
-            // if(!this.allowedFileTypes.includes(files[i].type)){
-            //     this.$toast.error('file type should be jpeg, png, jpg, gif, svg');
-            // }
-            // *TO-DO*
-            this.uploaded_files = Array.from(event.target.files);
-            // console.log(this.uploadFiles)
+            this.uploaded_files = [];
+            let mediaFiles = event.target.files;
+            for (let i = 0; i < mediaFiles.length; i++) {
+                if (mediaFiles[i].size >= 2000000) {
+                    this.$toast.error('file size should be less than 2 MB');
+                    this.uploaded_files = [];
+                    return
+                }
+                if (!this.allowedFileTypes.includes(mediaFiles[i].type)) {
+                    this.$toast.error('file type should be jpeg, png, jpg, gif, svg');
+                    this.uploaded_files = [];
+                    return
+                }
+                this.uploaded_files.push(mediaFiles[i]);
+            }
         },
         removeFile(index) {
+            this.removedMedia.push(this.nodeData.files[index])
+            this.nodeData.files.splice(index, 1)
+        },
+        removeMediaFile(index) {
             this.uploaded_files.splice(index, 1)
         },
         addOption() {
@@ -495,14 +641,14 @@ export default {
         },
         initiateLiveChat(node) {
             this.$store.commit('is_loader', true);
-            axios.post('/chat-flow/set-next', {
+            axios.post('/' + this.resource + '/set-next', {
                 id: node.id,
                 type: node.node_type,
-                next: (3 - node.next), //  3-2 = 1 , 3-1 = 2
+                next: ( node.next == 2 ) ? 1 : 2
             })
                 .then(() => {
                     this.$store.commit('is_loader', false);
-                    node.next = 3 - node.next
+                    node.next = ( node.next == 2 ) ? 1 : 2;
                 }).catch(e => {
                     this.$toast.error(e.response.message ?? e.response.data.message);
                     this.$store.commit('is_loader', false);
@@ -520,34 +666,32 @@ export default {
                     form_data.append("template_id", this.template_id ? this.template_id : 0)
                     form_data.append("form_type", type)
                     form_data.append("parent_node", JSON.stringify(this.parent_node_data))
+                    for (let i = 0; i < this.uploaded_files.length; i++) {
+                        form_data.append('file[]', this.uploaded_files[i]);
+                    }
                     form_data.append("child_node", JSON.stringify({
-                        files: this.uploaded_files, // *TO-DO*
                         message: this.new_message,
                         id: this.edit_node_id
                     }))
-                    axios.post('/chat-flow/update-default', form_data)
+
+                    axios.post('/' + this.resource + '/update-default', form_data)
                         .then(res => {
-                            this.$store.commit('is_loader', false);
-                            console.log([
-                                !this.parent_node_data.id,
-                                this.edit_node_id,
-                                res
-                            ])
+                            // this.edit_node_id = res.data.data.node.id
                             if (!this.parent_node_data.id) {
                                 if (res.data.data.template_id) {
                                     this.template_id = res.data.data.template_id
+                                    this.emptyTree = (res.data.data.flow) ? false : true
                                     this.resetTreeData(res.data.data.flow)
                                 }
                             } else {
-                                if (this.edit_node_id) {
-                                    // TODO find Node & Update text
-                                } else {
-                                    this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
-                                }
+                                this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, res.data.data.node)
+                                this.updateNode(res.data.data.node, this.treeData, type)
                             }
+                            this.$refs.addCloseFrm.click();
+                            this.$store.commit('is_loader', false);
                             this.closeForm()
                         }).catch(e => {
-                        console.error(e)
+                            console.error(e)
                             // this.$toast.error(e.response.message ?? e.response.data.message);
                             this.$store.commit('is_loader', false);
                         })
@@ -566,11 +710,12 @@ export default {
                     form_data.append("child_node", JSON.stringify({
                         options: this.categories_data,
                     }))
-                    axios.post('/chat-flow/update-default', form_data).then(res => {
+                    axios.post('/' + this.resource + '/update-default', form_data).then(res => {
                         this.$store.commit('is_loader', false);
                         if (this.parent_node_data.id == 0) {
                             if (res.data.data.template_id) {
                                 this.template_id = res.data.data.template_id
+                                this.emptyTree = (res.data.data.flow) ? false : true
                                 this.resetTreeData(res.data.data.flow)
                             }
                         } else {
@@ -578,6 +723,8 @@ export default {
                                 this.tryAddLeaf((this.parent_node_data.type + '-' + this.parent_node_data.id), this.treeData, element)
                             });
                         }
+                        this.updateNode(res.data.data.node, this.treeData, type)
+                        this.$refs.addCloseFrm.click();
                         this.closeForm()
                     }).catch(e => {
                         console.error(e)
@@ -586,6 +733,46 @@ export default {
                     })
                 }
             }
+        },
+        updateMessage() {
+            // Edit MESSAGE
+            if (!(this.nodeData.label || this.uploaded_files.length)) {
+                this.showError = 'Please add message or upload a file!'
+            } else {
+                this.showError = ''
+                this.$store.commit('is_loader', true);
+
+                const form_data = new FormData();
+
+                form_data.append("child_node", JSON.stringify({
+                    message: this.nodeData.label,
+                    id: this.nodeData.id,
+                    node_type: this.nodeData.node_type == 'M' ? 1 : 2
+                }))
+
+                this.removedMedia.length > 0 ? form_data.append("deleted_files", this.removedMedia) : null;
+
+                for (let i = 0; i < this.uploaded_files.length; i++) {
+                    form_data.append('file[]', this.uploaded_files[i]);
+                }
+
+                axios.post('/' + this.resource + '/update-node-details', form_data)
+                    .then(res => {
+                        this.$store.commit('is_loader', false);
+                        if (!res.data.error) {
+                            this.emptyTree = (res.data.data.flow) ? false : true
+                            this.resetTreeData(res.data.data.flow)
+                            this.$toast.success(res.data.message);
+                        }
+                        this.closeForm()
+                    }).catch(e => {
+                        this.$toast.error(e.response.message || e.response.data.message);
+                        this.$store.commit('is_loader', false);
+                    })
+            }
+        },
+        refreshTree() {
+            this.deleteNode(this.nodeData, this.treeData)
         }
     }
 }
@@ -596,24 +783,47 @@ export default {
     display: flex;
     justify-content: center;
 }
-
-.operator-tab-item-one {
-    padding: 0px;
+.operator-details-chat-flow{
+    min-width: max-content;
 }
 
-.operator-tab-item-one .borad-inner-body {
-    margin-top: 0px;
+
+/* .operator-details-chat-flow-sec.operator-table-sec {
+    margin-top: 15px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border-color);
+    background-color: var(--white-color);
+    height: calc(100vh - 196px);
+    overflow: auto;
+} */
+/* position: relative; */
+/* .org-tree-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    min-width: max-content;
+} */
+
+.operator-details-chat-flow-sec .chat-flow-borad-list {
+    height: calc(92vh - 150px);
+    min-width: auto;
 }
 
-.operator-tab-item-one .borad-inner-body .operator-table-sec {
-    margin-top: 0px;
+
+.operator-details-chat-flow2-sec .chat-flow-borad-list {
+    height: calc(81vh - 150px);
+    min-width: auto;
 }
 
-.operator-tab-item-one .operator-table-sec {
-    margin: 0px -18px;
+.operator-details-chat-flow2-sec .org-tree-container{
+    min-width: max-content;
+
 }
 
-.add-messag-header::before {
-    display: none;
+ .operator-details-chat-flow-sec .org-tree-container{
+    min-width: max-content;
+}
+.operator-table-sec.chat-flow-tables.operator-details-chat-flow2-sec {
+    margin-left: -12px;
 }
 </style>

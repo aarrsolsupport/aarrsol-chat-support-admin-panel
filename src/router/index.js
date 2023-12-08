@@ -63,6 +63,12 @@ const routes = createRouter({
             path: '/theme-settings',
             component: () => import('@/components/themesetting/ListComponent.vue')
         },
+
+        {
+            path: '/support-chat/:ref_id/:user_id?',
+            name: 'support-chat',
+            component: () => import('@/components/EndUserChatComponent.vue')
+        },
     ],
 })
 

@@ -8,6 +8,13 @@
                 </a>
              </div>
              <div class="admin-notification">
+                <!-- <div class="notification-sec">
+                   <button type="button" class="header-admin-btn">
+                      <div class="notification-img">
+                         <img src="@/assets/images/chat-icon.svg" alt="">
+                      </div>
+                   </button>
+                </div> -->
                 <div class="notification-sec">
                    <button type="button" class="header-admin-btn">
                       <div class="notification-img">
@@ -51,6 +58,25 @@
       },
       beforeCreate() {
          this.$store.commit('setAuthUser', JSON.parse(localStorage.getItem('authData')))
+      },
+      created() {
+         window.Echo.connect();
+      },
+      mounted() {
+         if(this.authData && [3, 4].includes(this.authData.role_id)) {
+            let channel = "chat-request-channel." + ((this.authData.role_id == 3) ? this.authData.id : this.authData.parent_id);
+            window.Echo.channel(channel).listen(".receive-chat-requests", (data) => {
+               if(!data.ended) {
+                  this.$toast.info('New Chat Request Received!');
+               // } else {
+                  // this.$toast.warning('Chat Request Revoked!');
+               }
+               this.$store.commit('push_received_chat_request', data);
+            });
+         }
+      },
+      destroyed() {
+         window.Echo.disconnect();
       },
       methods: {
          logout() {

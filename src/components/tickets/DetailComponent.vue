@@ -24,8 +24,8 @@
 
                             <div class="tickets-modal-item">
                                 <div class="thm-heading">
-                                    <span>Issue ID</span>
-                                    <h3>{{ item.issue_id }}</h3>
+                                    <span>Issue Category</span>
+                                    <h3>{{ item.issue_category?.description || '-' }}</h3>
                                 </div>
                             </div>
 
@@ -36,17 +36,17 @@
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item">
+                            <div class="tickets-modal-item" v-if="item.role_id != 4">
                                 <div class="thm-heading">
                                     <span>Operator ID</span>
-                                    <h3 v-if = "item.operator_user">{{ item.operator_user.userid }}</h3>
+                                    <h3>{{ item.operator_user?.userid || '-' }}</h3>
                                 </div>
                             </div>
 
-                            <div class="tickets-modal-item">
+                            <div class="tickets-modal-item" v-if="item.role_id == 2">
                                 <div class="thm-heading">
                                     <span>Whitelabel ID</span>
-                                    <h3 v-if = "item.whitelabel_user">{{ item.whitelabel_user.userid }}</h3>
+                                    <h3>{{ item.whitelabel_user?.userid || '-' }}</h3>
                                 </div>
                             </div>
 
@@ -55,17 +55,17 @@
                                     <span>Status</span>
                                     <div class="status-sec">
                                         <div class="entries-select ">
-                                            <div class="dropdown entries-select-dropdown" v-if="item.status">
+                                            <div class="dropdown entries-select-dropdown">
                                                 <!-- <div class="thm-heading">
                                                     <span :class="ticket_status[item.status].theme">{{ ticket_status[item.status].text }}</span>
                                                 </div> -->
                                                 <!-- *TO-DO* -->
                                                 <button class="thm-btn dropdown-toggle entries-select-list"
-                                                    :class="ticket_status[item.status].theme"
-                                                    type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                                    :class="ticket_status[item.status]?.theme" type="button"
+                                                    id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                                     aria-expanded="false">
                                                     <div class="thm-heading">
-                                                        <h2>{{ ticket_status[item.status].text }}</h2>
+                                                        <h2>{{ ticket_status[item.status]?.text }}</h2>
                                                     </div>
                                                 </button>
                                                 <ul class="dropdown-menu entries-select-list dropdown-menu-end  "
@@ -90,6 +90,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="tickets-modal-item admin-checkbox admin-con"
+                                v-if="item.role_id != 4 && item.role_id != 1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                                        :checked="checkScope" @click="updateScope">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Show to {{ item.role_id == 3 ? 'Operator' : 'Admin' }}
+                                    </label>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="tickets-details-con">
@@ -110,20 +121,42 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import { mapState } from 'vuex';
 export default {
     name: 'DetailComponent',
     props: ['item'],
     computed: {
         ...mapState(['ticket_status']),
-        
-        
+        checkScope() {
+            return this.item.scope == this.item.parent_id
+        }
     },
     methods: {
         setDetails(item, status) {
-            if(item.status != status) {
-                this.$store.commit("singledata",{ id: item.id, status: status });
+            if (item.status != status) {
+                this.$store.commit("singledata", { id: item.id, status: status });
             }
+        },
+        updateScope() {
+            this.$store.commit('is_loader', true);
+            const data = {
+                "ticket_id": this.item.id,
+                "scope": this.checkScope ? 0 : 1
+            }
+            axios.post("/tickets/update-scope", data ).then(res => {
+                if (res.data.error === true) {
+                    this.$toast.error(res.data.message);
+                } else {
+                    this.item.remarks.push(res.data.data.remark);
+                    this.item.scope = this.checkScope ? this.item.user_id : this.item.parent_id;
+                    this.$toast.success(res.data.message);
+                }
+                this.$store.commit('is_loader', false);
+            }).catch(e => {
+                this.$toast.error(e.response.data.message);
+                this.$store.commit('is_loader', false);
+            })
         }
     }
 

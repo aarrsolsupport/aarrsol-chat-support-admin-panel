@@ -1,7 +1,7 @@
 <template>
     <div class="borad-inner-body-sec chat-user-wrapper  agent-chat-user">
         <div class="borad-inner-body">
-            <div class="chat-user-tab ">
+            <div class="chat-user-tab chats-tabs-item-con">
                 <template v-if="authData.role_id == 4">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation" @click="chat_type = 1">
@@ -10,7 +10,8 @@
                                 aria-selected="true">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Open Chats<div v-if="unread_count[1]"> ({{ unread_count[1] }})</div></h2>
+                                        <h2>Open Chats<div v-if="unread_count[1]"> ({{ unread_count[1] }})</div>
+                                        </h2>
                                     </div>
                                 </div>
                             </button>
@@ -21,7 +22,8 @@
                                 aria-selected="false" tabindex="-1">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Closed Chats<div v-if="unread_count[2]"> ({{ unread_count[2] }})</div></h2>
+                                        <h2>Closed Chats<div v-if="unread_count[2]"> ({{ unread_count[2] }})</div>
+                                        </h2>
                                     </div>
                                 </div>
                             </button>
@@ -42,10 +44,12 @@
                                 </div>
                                 <div class="chat-user-sec">
                                     <div class="chat-user-tab-sec">
-                                        <div v-for="(item,index) in filteredItems" :key="index" class="chat-user-item" @click="getChatsMessages(item)">
+                                        <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
+                                            :class="(current_chat.chat_room_id == item.chat_room_id) ? 'user-item-active' : ''"
+                                            @click="getChatsMessages(item, true)">
                                             <button class="chat-user-btn user-active">
                                                 <div class="thm-heading">
-                                                    <h2> {{item.end_user_name}}</h2>
+                                                    <h2>{{ item.end_user_name }}</h2>
                                                     <div class="dots">
                                                         <span class="dots-btn"></span>
                                                         <div class="user-active-con">
@@ -55,9 +59,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="dots" v-if="item.unread_message_count>0">
+                                                <div class="dots" v-if="item.unread_message_count > 0">
                                                     <div class="user-status-active dots-btn">
-                                                        <span> {{item.unread_message_count}}</span>
+                                                        <span> {{ item.unread_message_count }}</span>
                                                     </div>
                                                     <div class="user-active-con">
                                                         <div class="thm-heading">
@@ -74,10 +78,10 @@
                         <!-- SCROLL PAGINATION *TO-DO* -->
                     </div>
                 </template>
-                <template>
+                <template v-else>
                     <div class="chat-heading">
                         <div class="thm-heading">
-                            <h2>Chats<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div>
+                            <h2>My Chats<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div>
                             </h2>
                         </div>
                     </div>
@@ -92,72 +96,23 @@
                         </div>
                         <div class="chat-user-sec">
                             <div class="chat-user-tab-sec">
-                                <div class="chat-user-item" @click="openHide()">
+                                <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
+                                    @click="getChatsMessages(item, true)">
                                     <button class="chat-user-btn user-active">
                                         <div class="thm-heading">
-                                            <h2> Ayushmaster177</h2>
+                                            <h2> {{ item.end_user_name }}</h2>
                                             <div class="dots">
                                                 <span class="dots-btn"></span>
                                                 <div class="user-active-con">
                                                     <div class="thm-heading">
-                                                        <p>Active</p>
+                                                        <p>Active *TO-DO*</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="dots">
+                                        <div class="dots" v-if="item.unread_message_count > 0">
                                             <div class="user-status-active dots-btn">
-                                                <span>2</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="chat-user-item user-item-active" @click="openHide()">
-                                    <button class="chat-user-btn user-active">
-                                        <div class="thm-heading">
-                                            <h2> Designerhari</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Active</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots">
-                                            <div class="user-status-active dots-btn">
-                                                <span>2</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="chat-user-item" @click="openHide()">
-                                    <button class="chat-user-btn ">
-                                        <div class="thm-heading">
-                                            <h2> Uidesigner</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Inactive</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots">
-                                            <div class="user-status-active dots-btn">
-                                                <span>2</span>
+                                                <span> {{ item.unread_message_count }}</span>
                                             </div>
                                             <div class="user-active-con">
                                                 <div class="thm-heading">
@@ -172,7 +127,8 @@
                     </div>
                 </template>
             </div>
-            <div class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec" :class="showChat ? 'show' : ''">
+            <div v-if="current_chat.chat_room_id" class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec"
+                :class="showChat && current_chat.chat_room_id ? 'show' : ''">
                 <div class="operator-table-sec chat-flow-tables ">
                     <div class="messages-item-sec">
                         <div class="user-active-heading">
@@ -181,23 +137,26 @@
                                     <img src="@/assets/images/back-arrow.svg" alt="">
                                 </button>
                                 <div class="thm-heading">
-                                    <h4>Designerhari</h4>
-                                    <span>Online</span>
+                                    <h4>{{ current_chat.end_user_name }}</h4>
+                                    <span>Online *TO-DO*</span>
                                 </div>
                             </div>
                             <div class="Categories-btn">
-                                <button class="thm-btn danger-thm">End Chat </button>
-                                <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
-                                    data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas">Add
-                                    Ticket</button>
-
-
+                                <template v-if="authData.role_id == 4">
+                                    <button class="thm-btn danger-thm" v-if="current_chat.status == 1"
+                                        @click="callForEndChat(current_chat.chat_room_id)">End Chat </button>
+                                    <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
+                                        data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas"
+                                        @click="callForCatagory()">Add
+                                        Ticket</button>
+                                </template>
                                 <div class="more-action-sec">
                                     <button class="more-action-btn" data-bs-toggle="dropdown"><img
                                             src="@/assets/images/more-action.svg" alt=""></button>
                                     <ul class="dropdown-menu dropdown-menu-end more-action-list">
                                         <li>
-                                            <button class="dropdown-item more-list-btn" type="button">
+                                            <button class="dropdown-item more-list-btn" type="button"
+                                                @click="callForDeleteChat(current_chat.chat_room_id)">
                                                 <div class="edit-icon"><img src="@/assets/images/delete-icon.svg" alt="">
                                                 </div>
                                                 <div class="thm-heading">
@@ -207,136 +166,113 @@
                                         </li>
                                     </ul>
                                 </div>
-
                             </div>
-
                         </div>
                         <div class="messages-body-sec">
-                            <div class="messages-list-sec">
-
-                                <div class="messages-item">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>Hi,Welcome to Clicket support</p>
+                            <div class="messages-list-sec" ref="messagesListSec" @scroll="infiniteScroll">
+                                <div class="messages-item" v-for="(mes, i) in messages" :key="i"
+                                    :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
+                                    <div class="messages-item-con" v-if="unreadMessage && mes.id == unreadMessage?.unread_from">
+                                        <div class="sub-messages-con chat-ended-message">
+                                                        <span class="message-time">{{ unreadMessage?.unread_count }} Unread Messages</span>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="messages-item outgoing-messages">
                                     <div class="messages-item-con">
                                         <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
+                                            <span class="message-time">{{
+                                                $filters.messageDisplayDateFormat(mes.sent_at_timestamp) }}</span>
                                         </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>There is Issue With Deposit.</p>
+                                        <div class="messages-item-content thm-heading" v-if="mes.message">
+                                            <p>{{ mes.message }}</p>
+                                            <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
+
                                         </div>
+                                        <template v-if="mes.file_paths">
+                                            <div class="video-sec" v-for="(paths, index ) in mes.file_paths.split('\n')" :key="index">
+                                                <template  v-if="['png', 'jpg', 'jpeg'].includes(paths.split('.')[1])">
+                                                    <img :src="mediaUrl + paths"/>
+                                                    <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
+                                                </template>
+                                                <template v-else>
+                                                    <video controls="false">
+                                                        <source :src="mediaUrl + mes.file_paths" />
+                                                    </video>
+                                                    <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
+                                                </template>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
-
-                                <div class="messages-item ">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>Watch this video</p>
-                                        </div>
-                                        <div class="video-sec">
-                                            <iframe width="420" height="240"
-                                                src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="messages-item outgoing-messages">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>How to Deposit</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="messages-item ">
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">12/06/2023 06:28 PM</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading">
-                                            <p>Reference site about Lorem Ipsum, giving information on its origins, as well
-                                                as <br>
-                                                a random Lipsum generator.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
                             </div>
                         </div>
-                        <div class="messages-footer-sec">
+                        <div class="messages-footer-sec" v-if="current_chat.status == 1">
                             <div class="auto-message-slider">
                                 <div class="auto-message-slider-con reason-sec">
-                                    <div class="owl-carousel owl-theme" id="auto-message-slider">
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#"
-                                                    class="thm-btn thm-border-btn">Welcome</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"> <a href="#" class="thm-btn thm-border-btn">Hello!
-                                                    How May i help you</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#" class="thm-btn thm-border-btn">Thank
-                                                    You!</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#"
-                                                    class="thm-btn thm-border-btn">Welcome</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"> <a href="#" class="thm-btn thm-border-btn">Hello!
-                                                    How May i help you</a></div>
-                                        </div>
-                                        <div class="item">
-                                            <div class="auto-message-con"><a href="#" class="thm-btn thm-border-btn">Thank
-                                                    You!</a></div>
-                                        </div>
-
-                                    </div>
+                                    <!-- <div class="owl-carousel owl-theme" id="auto-message-slider"> -->
+                                    <Carousel v-bind="settings" :breakpoints="breakpoints" class="w-100 owl-theme">
+                                        <Slide v-for="(slide, i) in filteredSuggestions" :key="i">
+                                            <div class="item">
+                                                <div class="auto-message-con">
+                                                    <a @click="input = slide.description" href="#"
+                                                        class="thm-btn thm-border-btn">
+                                                        {{ (slide.description.length < 20) ? slide.description :
+                                                            slide.description.slice(0, 20) + "..." }} </a>
+                                                </div>
+                                            </div>
+                                        </Slide>
+                                        <template #addons>
+                                            <Navigation />
+                                        </template>
+                                    </Carousel>
+                                    <!-- </div> -->
                                 </div>
                             </div>
                             <div class="messages-footer-con pt-0">
                                 <div class="messages-input">
                                     <button type="button" class="header-admin-btn">
                                         <div class="admin-img">
-                                            <img src="@/assets/images/emoji-icon.svg" alt="">
+                                            <EmojiPicker :native="true" @select="onSelectEmoji" v-if="showEmoji" />
+                                            <img class="emoji-icon" src="@/assets/images/emoji-icon.svg" alt=""
+                                                @click="toggleEmojiPicker()">
                                         </div>
                                     </button>
                                     <div class="messages-type-input">
-                                        <input type="text" placeholder="Write something.....">
+                                        <input type="text" placeholder="Write something....." v-model="input" @keyup.enter="sendMessage">
                                     </div>
                                     <div class="messages-type-right">
-                                        <button type="button" class="header-admin-btn">
+                                        <button type="button" class="header-admin-btn" data-bs-toggle="modal" data-bs-target="#voiceModal" @click="startRecord()">
                                             <div class="admin-img">
                                                 <img src="@/assets/images/circle-microphone.svg" alt="">
                                             </div>
                                         </button>
                                         <button type="button" class="header-admin-btn">
                                             <div class="admin-img">
-                                                <img src="@/assets/images/images-pin-icon.svg" alt="">
+                                                <label for="file" class="attachment-icon"><input
+                                                        class="form-control profit-input d-none" type="file" name="file"
+                                                        multiple id="file" @change="uplaodImg">
+                                                    <span><img src="@/assets/images/images-pin-icon.svg" alt=""></span>
+                                                </label>
                                             </div>
                                         </button>
                                         <div class="send-btn-sec">
-                                            <button class="thm-btn">Send</button>
+                                            <button class="thm-btn" @click="sendMessage">Send</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div id="fileList" v-if="mediaPreviewBlobs || audioPreview">
+                                <ul>
+                                    <li :id="'n_file' + key " v-for="(media, key) in mediaPreviewBlobs" :key="key" :title="media.name">
+                                        <img :src="media.src" :alt="media.name" @error="setAltImg" class="prev-img-media" />
+                                        <span class="list-cross prev-list-cross" @click="removeMedia(key)"><img src="@/assets/images/cross-icon.svg" alt=""></span>
+                                    </li>
+                                    <li v-if="audioPreview">
+                                        <div class="messages-item outgoing-messages">
+                                            <audio id="recordedAudio"></audio>
+                                        </div>
+                                        <span class="list-cross prev-list-cross audio-msg-prev" @click="removeAudio()"><img src="@/assets/images/cross-icon.svg" alt=""></span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -344,61 +280,488 @@
             </div>
         </div>
     </div>
+
+    <!--Operator offcanvas-->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="addticketoffcanvas" aria-labelledby="operatoroffcanvasLabel">
+        <div class="offcanvas-header operator-offcanvas-sec ">
+            <div class="thm-heading">
+                <h4>Add Ticket</h4>
+            </div>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"
+                ref="closeAddTicketBtn"></button>
+        </div>
+        <div class="offcanvas-body operator-offcanvas-body add-messag-body add-now-sec ticket-body">
+            <form>
+                <div class="operator-offcanvas-con">
+                    <div class="operator-item">
+                        <label for="operator" class="form-label">Categories</label>
+                        <select class="form-select" aria-label="Default select example" v-model="ticketDetails.issue_id">
+                            <option selected="" value="select">Select</option>
+                            <option v-for="(items, index) in catagories" :key="index" :value="items.id">{{ items.description
+                            }}</option>
+                        </select>
+                    </div>
+                    <div class="operator-item">
+                        <label for="operator" class="form-label">Message</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter Message"
+                            v-model="ticketDetails.description"></textarea>
+                    </div>
+
+                </div>
+                <div class="operator-offcanvas-footer">
+                    <button class="thm-btn thm-border-btn" data-bs-dismiss="offcanvas" aria-label="Close">Close</button>
+                    <button class="thm-btn" @click.prevent="callForAddTicket()">Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VOICE MESSEGE -->
+
+    <div class="modal fade" id="voiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog open-modal-sec   voice-modal-sec">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="voice-heading">
+                        <h3>Chat with voice</h3>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="voice-heading text-center sub-messages-con">
+                        <span>Hi I am Listening. Try saying</span>
+                        <h2>Live Casino</h2>
+                    </div>
+                    <button class="voice-bar-btn">
+                        <div class="voice-bar-sec">
+                            <div class="bars-con">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                </div>
+                <div class="previous-restart-sec">
+                    <button class="thm-btn m-auto bg-transparent" @click="stopRecord()"
+                        data-bs-dismiss="modal">Next</button>
+                    <!-- Duplicate -->
+                    <!-- <button class="thm-btn m-auto bg-transparent" data-bs-toggle="modal"
+                  data-bs-target="#micModal" @click="stopRecord()">Next</button> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </template>
+<script setup>
+import 'vue3-carousel/dist/carousel.css';
+import EmojiPicker from 'vue3-emoji-picker';
+import { Carousel, Slide, Navigation } from 'vue3-carousel';
+</script>
 <script>
-    import axios from "axios";
-   import { mapState } from 'vuex';
-    export default {
-        name: 'ListComponent',
-        computed: {
-            ...mapState(['authData']),
-            filteredItems() { 
-                const filtered_data = this.listItems;
-                if (this.search) {
-                    return filtered_data.filter(item => item.end_user_name.toLowerCase().includes(this.search.toLowerCase())  );
+import axios from "axios";
+import { mapState } from 'vuex';
+export default {
+    name: 'ListComponent',
+    components: {
+        EmojiPicker,
+        Carousel,
+        Slide,
+        Navigation,
+    },
+    computed: {
+        ...mapState(['authData']),
+        filteredItems() {
+            const filtered_data = this.listItems;
+            if (this.search) {
+                return filtered_data.filter(item => item.end_user_name.toLowerCase().includes(this.search.toLowerCase()));
+            }
+            return filtered_data;
+        },
+        filteredSuggestions() {
+            const filtered_data = this.suggestions;
+            if (this.input) {
+                let dataToReturn = filtered_data.filter(item => item.description.toLowerCase().includes(this.input.toLowerCase()));
+                if (dataToReturn.length) {
+                    return dataToReturn
                 }
                 return filtered_data;
+
             }
+            return filtered_data;
         },
-        data() {
-            return {
-                my_chats: true,
-                chat_type: 0,
-                unread_count: {0:0, 1:0, 2:0},
-                search: '',
-                listItems: {},
-                showChat: 0,
-                current_chat: {}
-            }
-        },
-        watch: {
-            chat_type(){
-                this.getChatsList()
-            }
-        },
-        mounted() {
-            if(this.authData && this.authData.role_id == 4 ) {
-                this.chat_type = 1
-            }
-        },
-        methods: {
-            getChatsMessages(item) {
-                this.current_chat = Object.assign({}, item)
-                console.log(this.current_chat)
-                this.showChat = 1
+    },
+    data() {
+        return {
+            defaultFile: require('@/assets/images/file-icon.svg'),
+            messages: [],
+            my_chats: true,
+            chat_type: 0,
+            unread_count: { 0: 0, 1: 0, 2: 0 },
+            search: '',
+            suggestions: {},
+            listItems: {},
+            showChat: 0,
+            current_chat: {},
+            // carousel settings
+            settings: {
+                itemsToShow: 1,
+                snapAlign: 'center',
             },
-            getChatsList() {
-                this.$store.commit('is_loader', true);
-                axios.post('/get-chats-list', { type: this.chat_type })
-                    .then(res => {
-                        this.listItems = Object.assign([],res.data.data.chats_list)
-                        this.unread_count[this.chat_type] = res.data.data.unread_count;
-                        this.$store.commit('is_loader', false);
-                    }).catch(e => {
-                        this.$toast.error(e.response.message ?? e.response.data.message);
-                        this.$store.commit('is_loader', false);
-                    })
+            // breakpoints are mobile first
+            // any settings not specified will fallback to the carousel settings
+            breakpoints: {
+                // 700px and up
+                700: {
+                    itemsToShow: 3.5,
+                    snapAlign: 'center',
+                },
+                // 1024 and up
+                1024: {
+                    itemsToShow: 5.5,
+                    snapAlign: 'start',
+                },
+            },
+            input: "",
+            catagories: null,
+            ticketDetails: {
+                issue_id: 'select',
+                description: ''
+            },
+            emojis: [],
+            showEmoji: false,
+            media: null,
+            mediaUrl: null,
+            mediaPreviewBlobs: null,
+            voiceRecord: {
+                rec: '',
+                userFile: '',
+                userFileName:''
+            },
+            audioPreview: false,
+            unreadMessage: null,
+            pagination: {
+                currentPage: 1,
+                lastPage: 1
             }
-        }   
+        }
+    },
+    watch: {
+        chat_type() {
+            this.getChatsList()
+        }
+    },
+    mounted() {
+        if (this.authData && this.authData.role_id == 4) {
+            this.chat_type = 1
+        }
+    },
+    methods: {
+        startSocketBrodcast() {
+            window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
+                if(data.next.next_action == 'end' && data.next.status == 2) {
+                    let position = this.listItems.findIndex(item => item.chat_room_id == this.current_chat.chat_room_id);
+                    this.listItems.splice(position, 1)
+                    this.current_chat.status = 2;
+                    this.$toast.success('Chat Ended by User')
+                }
+                this.messages.push(data)
+                this.current_chat.last_message_timestamp = data.sent_at_timestamp
+                this.scrollToBottom();
+            });
+        },
+        async getChatsMessages(item, newChat = false) {
+            item.unread_message_count = 0;
+            if(newChat) {
+                this.pagination.currentPage = 1;
+            }
+            this.current_chat = Object.assign({}, item)
+            this.current_chat.user_id = this.authData.id
+            // console.log(['current_chat', this.current_chat])
+            this.$store.commit('is_loader', true);
+            await axios.post(`chat/get-messages?page=${this.pagination.currentPage}`, { room_id: this.current_chat.chat_room_id })
+                .then(res => {
+                    if(newChat) {
+                        this.messages = [];
+                    }
+                    this.showChat = 1
+                    this.messages.unshift(...res.data.data.messages.data.reverse());
+                    this.mediaUrl = res.data.data.media_base_url
+                    this.startSocketBrodcast();
+                    this.pagination.currentPage == 1 && this.scrollToBottom();
+                    this.unreadMessage = Object.assign({}, res.data.data.unread);
+                    this.pagination.lastPage = res.data.data.messages.last_page;
+                    this.pagination.currentPage += 1;
+                    // this.unread_count[this.chat_type] = res.data.data.unread_count;
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        },
+        getChatsList() {
+            this.$store.commit('is_loader', true);
+            let body = { type: this.chat_type }
+            if (this.authData && this.authData.role_id == 4) {
+                body.auto_suggestions = true
+            }
+            axios.post('/get-chats-list', body)
+                .then(res => {
+                    this.suggestions = Object.assign([], res.data.data.auto_suggestions)
+                    this.listItems = Object.assign([], res.data.data.chats_list)
+                    this.unread_count[this.chat_type] = res.data.data.unread_count;
+                    if(this.listItems.length > 0) {
+                        this.getChatsMessages(this.listItems[0]);
+                    }
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        },
+        callForEndChat(roomId) {
+            this.$store.commit('is_loader', true);
+            axios.post('/chat/end-chat', { room_id: roomId })
+                .then(res => {
+                    let position = this.listItems.findIndex(item => item.chat_room_id == roomId);
+                    this.listItems.splice(position, 1)
+                    this.current_chat.status = 2;
+                    this.$toast.success(res.data.message)
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        },
+        callForCatagory() {
+            this.$store.commit('is_loader', true);
+
+            axios.get('/get-categories').then(res => {
+                if (res.data.error === true) {
+                    this.$toast.error(res.data.message);
+                } else {
+                    this.catagories = res.data.data.details;
+                }
+                this.$store.commit('is_loader', false);
+            }).catch(e => {
+                this.$toast.error(e.response.data.message);
+                this.$store.commit('is_loader', false);
+            })
+        },
+        callForAddTicket() {
+            this.$store.commit('is_loader', true);
+            let data = this.ticketDetails
+            data.end_user_id = this.current_chat.end_user_id
+            data.chat_id = this.current_chat.chat_room_id
+
+            axios.post('/tickets/create', data).then(res => {
+                if (res.data.error === true) {
+                    this.$toast.error(res.data.message);
+                } else {
+                    this.$refs.closeAddTicketBtn.click();
+                    this.$toast.success(res.data.message)
+                }
+                this.$store.commit('is_loader', false);
+            }).catch(e => {
+                this.$toast.error(e.response.data.message);
+                this.$store.commit('is_loader', false);
+            })
+        },
+        callForDeleteChat(roomId) {
+            this.$store.commit('is_loader', true);
+            axios.post('/chat/delete-chat', { room_id: roomId })
+                .then(res => {
+                    let position = this.listItems.findIndex(item => item.chat_room_id == roomId);
+                    this.listItems.splice(position, 1);
+                    this.current_chat = {};
+                    this.$toast.success(res.data.message)
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    this.$toast.error(e.response.message ?? e.response.data.message);
+                    this.$store.commit('is_loader', false);
+                })
+        },
+        onSelectEmoji(emoji) {
+            this.input += emoji.i
+            this.emojis.push(emoji.i)
+        },
+        toggleEmojiPicker() {
+            this.showEmoji = !this.showEmoji
+        },
+        uplaodImg(event) {
+            this.media = [];
+            this.mediaPreviewBlobs = [];
+            let mediaFiles = event.target.files;
+            for (let i = 0; i < mediaFiles.length; i++) {
+                this.media.push(mediaFiles[i]);
+                this.mediaPreviewBlobs[i] = {src: URL.createObjectURL(mediaFiles[i]), name: mediaFiles[i].name}
+            }
+        },
+        removeMedia(id) {
+            this.media.splice(id, 1)
+            this.mediaPreviewBlobs.splice(id, 1)
+        },
+        setAltImg(event) { 
+            event.target.src = this.defaultFile 
+        } ,
+        sendMessage() {
+            if (this.input || this.media || this.voiceRecord.userFile) {
+                let messageData = new FormData();
+                messageData.append('chat_room_id', this.current_chat.chat_room_id)
+                messageData.append('sender_type', 2)
+                messageData.append('sender_id', this.current_chat.user_id)
+                messageData.append('message', this.input )
+    
+                for (let i = 0; i < this.media?.length; i++) {
+                    messageData.append('file[]', this.media[i]);
+                }
+                this.voiceRecord.userFile ? messageData.append('file[]', this.voiceRecord.userFile) : '';
+    
+                axios.post('chat/send-message', messageData)
+                .then(res => {
+                    this.input = '';
+                    this.audioPreview = false;
+                    this.mediaPreviewBlobs = [];
+                    this.media = null;
+                    this.voiceRecord.userFile = null;
+                }).catch(e => {
+                    console.error(e);
+                })
+            } else {
+                this.$toast.error('Please type something....');
+            }
+        },
+        handlerFunction(stream) {
+            this.voiceRecord.rec = new MediaRecorder(stream);
+            let audioChunks = [];
+            this.audioPreview = true
+            this.voiceRecord.rec.ondataavailable = (e) => {
+                audioChunks.push(e.data);
+                if (this.voiceRecord.rec.state == "inactive") {
+                    let blob = new Blob(audioChunks, { type: "audio/mp3" });
+                    recordedAudio.src = URL.createObjectURL(blob);
+                    recordedAudio.controls = true;
+                    recordedAudio.autoplay = true;
+                    this.sendData(blob);
+                }
+            };
+        },
+        sendData(blob) {
+            this.voiceRecord.userFile = blob;
+            this.voiceRecord.userFileName = "audio-record";
+            this.scrollToBottom();
+        },
+        startRecord() {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                this.handlerFunction(stream);
+                this.voiceRecord.rec.start();
+            }).catch((error) => {
+                this.$toast.error('please allow microphone access!!');
+            });
+        },
+        stopRecord() {
+            this.voiceRecord.rec.stop();
+        },
+        removeAudio() {
+            this.voiceRecord.userFile = null;
+            this.audioPreview = false
+        },
+        scrollToBottom() {
+            this.$nextTick(() => {
+                const messagesListSec = this.$refs.messagesListSec;
+                messagesListSec.scrollTop = messagesListSec.scrollHeight + 500;
+            });
+            this.unreadMessage = null
+        },
+        async infiniteScroll() {
+            const messagesListSec = this.$refs.messagesListSec;
+            const atTop = messagesListSec.scrollTop === 0;
+            const currentPos = messagesListSec.scrollHeight
+
+            if (atTop && this.pagination.currentPage != this.pagination.lastPage+1) {
+                await this.getChatsMessages(this.current_chat);
+                messagesListSec.scrollTop = messagesListSec.scrollHeight - currentPos
+            }
+        },
     }
+}
 </script>
+
+<style>
+.v3-emoji-picker {
+    position: relative;
+    top: -11rem;
+    right: -7.5rem;
+}
+
+.emoji-icon {
+    position: absolute;
+    top: 15px;
+    left: 24px;
+}
+
+.attachment-icon {
+    height: 50px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.audio-messege {
+    top: 15rem;
+    right: 20rem;
+    position: absolute;
+}
+
+.prev-img-media {
+    max-width: 150px !important;
+    border-radius: 10px;
+}
+
+.prev-list-cross {
+    background-color: #fff;
+    border: 1.5px solid var(--primary-color);
+    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    margin-left: 6px;
+    position: absolute;
+    right: 5px;
+}
+
+.list-cross img {
+    width: auto !important;
+    height: auto !important;
+} 
+
+.audio-msg-prev {
+    top: 0;
+    right: -20px;
+}
+
+.sub-messages-con.chat-ended-message {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.end-message-color {
+    color: #da2c29;
+}
+.display-event-message {
+    color: #677E9E;
+}
+
+</style>

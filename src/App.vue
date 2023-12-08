@@ -1,7 +1,7 @@
 <template>
     <div>
         <loader-component v-if="isLoader" />
-        <template v-if=" $route.path == '/login' ">
+        <template v-if="$route.path == '/login' || $route.name == 'support-chat'">
             <router-view />
         </template>
         <template v-else-if="authData">
@@ -20,7 +20,7 @@
 
 <script>
 import LoaderComponent from './components/LoaderComponent.vue'
-import {defineAsyncComponent} from "vue";
+import { defineAsyncComponent } from "vue";
 import { mapState } from 'vuex';
 
 export default {
@@ -32,15 +32,16 @@ export default {
         ...mapState([
             'isLoader', 'loggedIn', 'authData'
         ]),
-        headerComponent () {
+        headerComponent() {
             return defineAsyncComponent(() => import(`@/components/HeaderComponent.vue`))
         },
-        sidebarComponent () {
+        sidebarComponent() {
             return defineAsyncComponent(() => import(`@/components/SidebarComponent.vue`))
         }
     },
     mounted() {
-        if (!localStorage.getItem('_token') && localStorage.getItem('_token') == null) {
+        let path = window.location.pathname.split('/')[1];
+        if (!localStorage.getItem('_token') && localStorage.getItem('_token') == null && path != 'support-chat') {
             this.$router.push('/login')
         }
         window.store = this.$store

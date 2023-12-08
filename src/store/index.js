@@ -40,7 +40,8 @@ export default createStore({
                 text: 'Pending',
                 theme: 'pending-thm'
             },
-        }
+        },
+        chat_request: null
     },
     getters: {
     },
@@ -82,6 +83,9 @@ export default createStore({
         },
         agent_data_Updated(state, payload) {
             state.agent_change = payload
+        },
+        push_received_chat_request(state, payload) {
+            state.chat_request = payload
         },
     },
     actions: {

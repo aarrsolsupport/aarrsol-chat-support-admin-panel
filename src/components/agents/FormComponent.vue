@@ -17,7 +17,7 @@
                             <li v-for="(err, e) in errorsList.name" :key="e" class="text-danger">{{ err }}</li>
                         </ul>
                     </div>
-                    <div class="operator-item" v-if="item_data.userid != undefined ">
+                    <div class="operator-item" v-if="item_data.userid != undefined && itemForm != 2">
                         <label for="userid" class="form-label">Agent ID</label>
                         <input id="userid" type="text" class="form-control" placeholder="Enter Login ID" v-model="item_data.userid" :class="v$.item_data.userid.$error ? 'border border-danger' : ''">
                         <ul class="list-unstyled" v-if="errorsList && errorsList.userid">
@@ -137,7 +137,7 @@
             },
         },
         created(){
-                this.category();
+            this.category();
         },
         methods: {
             updateAgentCats(option) {
@@ -166,8 +166,7 @@
                         }
                         break;
                     case 2: // Setup Edit form Data & requisites
-                    console.log(item.categories.length)
-                        if(item.categories.length > 0) {
+                        if(item.categories) {
                             for (const element of Object.values(item.categories)) {
                                 this.agentCats[element.category_id] = { 'id': element.id, 'category_id': element.category_id, 'description': element.description} 
                             }
@@ -233,6 +232,7 @@
                                 this.$toast.error(res.data.message);
                                 this.errorsList = res.data.data;
                             }else{
+                                res.data.data.is_active = this.item_data.is_active
                                 this.$store.commit('agent_data_Updated', {
                                     'change': 1, 
                                     'item':Object.assign({"categories": this.agentCats}, res.data)
@@ -252,7 +252,7 @@
                 if( url != null ) {
                     this.$store.commit('is_loader', true);
                     
-                    url = '/'+this.resource+'/get-category';
+                    url = '/get-categories';
                     axios.get(url).then(res => {
                         if(res.data.error === true){  
                             this.$toast.error(res.data.message);

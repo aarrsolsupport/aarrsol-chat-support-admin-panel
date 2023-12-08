@@ -466,6 +466,12 @@ export default {
     methods: {
         startSocketBrodcast() {
             window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
+                if(data.next.next_action == 'end' && data.next.status == 2) {
+                    let position = this.listItems.findIndex(item => item.chat_room_id == this.current_chat.chat_room_id);
+                    this.listItems.splice(position, 1)
+                    this.current_chat.status = 2;
+                    this.$toast.success('Chat Ended by User')
+                }
                 this.messages.push(data)
                 this.current_chat.last_message_timestamp = data.sent_at_timestamp
                 this.scrollToBottom();

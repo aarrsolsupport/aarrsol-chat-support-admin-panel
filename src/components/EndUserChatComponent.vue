@@ -14,26 +14,28 @@
                     </div>
                 </div>
                 <div class="d-flex">
-                    <div class="more-action-sec" v-if="chatComponent !== 'add_user' && chatComponent !== 'chat_list'">
+                    <div class="more-action-sec" v-if="chatComponent !== 'add_user' && chatComponent !== 'chat_list' && chatStatus != 2" >
                         <button class="more-action-btn" data-bs-toggle="dropdown"><img
                                 src="@/assets/images/more-action.svg" alt=""></button>
                         <ul class="dropdown-menu dropdown-menu-end more-action-list">
+                            <template v-if="senderType == 0">
+                                <li>
+                                    <button class="dropdown-item more-list-btn" type="button" @click="callForRestartChat()">
+                                        <div class="thm-heading">
+                                            <h2> Restart Chat </h2>
+                                        </div>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item more-list-btn" type="button" @click="callForLiveChat()">
+                                        <div class="thm-heading">
+                                            <h2> Live Agent </h2>
+                                        </div>
+                                    </button>
+                                </li>
+                            </template>
                             <li>
-                                <button class="dropdown-item more-list-btn" type="button">
-                                    <div class="thm-heading">
-                                        <h2> Restart Chat </h2>
-                                    </div>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item more-list-btn" type="button">
-                                    <div class="thm-heading">
-                                        <h2> Live Agent </h2>
-                                    </div>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item more-list-btn" type="button">
+                                <button class="dropdown-item more-list-btn" type="button" @click="callForEndChat()">
                                     <div class="thm-heading">
                                         <h2>End chat  </h2>
                                     </div>
@@ -291,7 +293,8 @@ export default {
                 currentPage: 1,
                 lastPage: 1
             },
-            infiniteScrollActive: false
+            infiniteScrollActive: false,
+            senderType: 0
             
         }
     },
@@ -344,6 +347,7 @@ export default {
                 if(this.chatStatus == 1) {
                     this.scrollToBottom();
                 }
+                this.senderType = data.sender_type
             });
         },
         // SOCKET FUNCTION END
@@ -646,6 +650,7 @@ export default {
                 this.chatComponent = res.data.data.next_action;
                 this.nextActionData = res.data.data.data;
                 this.roomId = res.data.data.room_id;
+                this.senderType = 0;
                 this.optionOrLanguage();
                 this.startSocketBrodcast();
             }).catch(e => {
@@ -744,6 +749,61 @@ export default {
                 messagesListSec.scrollTop = messagesListSec.scrollHeight - currentPos
             }
         },
+        callForEndChat() {
+            let data = {
+                room_id: this.roomId,
+                user_id: this.userId
+            }
+
+            axios.post('/chat-support/end-chat', data)
+                .then(res => {
+                    // console.log(res);
+
+                }).catch(e => {
+                    console.error(e);
+                })
+        },
+        callForRestartChat() {
+            let data = {
+                room_id: this.roomId,
+                user_id: this.userId
+            }
+
+            axios.post('/chat-support/restart-chat', data)
+                .then(res => {
+                    window.Echo.leave("message-channel." + this.roomId) /*DISCONNECTING SOCKET OF CURRENT ROOM*/
+                    this.messagesList = []
+                    this.agent_id = 0;
+                    this.agent_name = 'ChatBot';
+                    this.chatStatus = 1;
+                    this.startNewChat = false;
+                    this.chatComponent = res.data.data.next_action;
+                    this.nextActionData = res.data.data.data;
+                    this.roomId = res.data.data.room_id;
+                    this.senderType = 0;
+                    this.optionOrLanguage();
+                    this.startSocketBrodcast();
+                }).catch(e => {
+                    console.error(e);
+                })
+        },
+        callForLiveChat() {
+            let data = {
+                room_id: this.roomId,
+                user_id: this.userId
+            }
+
+            axios.post('/chat-support/request-live-chat', data)
+                .then(res => {
+                    this.chatStatus = res.data.data.status;
+                    this.nextActionData = [];
+                    this.senderType = 1;
+                    this.$toast.success(res.data.message);
+                    this.awaitAgentSocket();
+                }).catch(e => {
+                    console.error(e);
+                })
+        }
     },
 }
 </script>

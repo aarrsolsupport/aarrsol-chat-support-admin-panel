@@ -510,6 +510,7 @@ export default {
                         this.headerColor = res.data.data.settings.header_color;
                         this.chatComponent = res.data.data.component;
                         this.userId = res.data.data.end_user_id;
+                        this.userName = res.data.data.user_name;
                         this.chatList = res.data.data.chats;
                         this.startNewChat = (res.data.data?.open_chats == 0) ? true : false;
                         if(res.data.data.end_user_id) {

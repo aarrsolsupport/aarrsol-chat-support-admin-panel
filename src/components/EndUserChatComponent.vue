@@ -309,7 +309,9 @@ export default {
     mounted() {
         this.headerData.Authorization = `Bearer ${this.$route.params.token}`
 
+        window.Echo.connect();
         this.getChatWindow();
+
     },
     methods: {
         // SOCKET FUNCTION START
@@ -327,7 +329,6 @@ export default {
             });
         },
         startSocketBrodcast() {
-            window.Echo.connect();
 
             window.Echo.channel("message-channel." + this.roomId).listen(".receive-messages", (data) => {
                 if(data.next.status !== undefined){
@@ -619,8 +620,10 @@ export default {
                         }
 
                         this.optionOrLanguage();
-                        this.startSocketBrodcast();
-                        this.awaitAgentSocket();
+                        this.startSocketBrodcast();                        
+                        if(respData.user_id) {
+                            this.awaitAgentSocket()
+                        }
                     }
                 })
                 .catch(e => {
@@ -690,8 +693,10 @@ export default {
         backToChatList() {
             this.chatComponent = 'chat_list'; /*GOING BACK TO CHATLIST*/
             this.messagesList = []; /*Emptying Message list so new chat is not appended to existing Message list*/
-            this.getChatList(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
+            this.getChatWindow(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
             window.Echo.leave("message-channel." + this.roomId) /*DISCONNECTING SOCKET*/
+            window.Echo.leave("chat-request-accepted-channel." + this.userId) /*DISCONNECTING SOCKET*/
+            this.getChatWindow(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
             
             this.roomId = null;
             this.chatStatus = null;
@@ -807,7 +812,6 @@ export default {
                     this.nextActionData = [];
                     this.senderType = 1;
                     this.$toast.success(res.data.message);
-                    this.awaitAgentSocket();
                 }).catch(e => {
                     console.error(e);
                 })

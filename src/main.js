@@ -45,17 +45,19 @@ axios.interceptors.response.use(function (response){
     // console.log(['response' , response])
     return response;
 },function (error){
-    // console.error(['error' , error])
     if(error.response.status == 401)
     {
-        localStorage.removeItem('authData'); 
-        localStorage.removeItem('_token'); 
-        router.push('/login') 
-        window.store.commit('is_loader', false);
-        return error.response;
-    } else {
-        return error.response;
+        if(window.location.href.indexOf("/support-chat/") > -1) {
+            window.parent.postMessage(error.response.data, '*');
+        } else {
+            localStorage.removeItem('authData'); 
+            localStorage.removeItem('_token'); 
+            window.location.href = '/login'
+            // router.push('/login') 
+        }
     }
+    window.store.commit('is_loader', false);
+    return error.response;
 })
 
 import Echo from 'laravel-echo';

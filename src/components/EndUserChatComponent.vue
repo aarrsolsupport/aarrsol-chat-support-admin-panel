@@ -253,10 +253,12 @@ export default {
     },
     data() {
         return {
+            headerData: {},
             mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
             defaultFile: require('@/assets/images/file-icon.svg'),
 
-            refId: '',
+            token: null,
+
             domainName: null,
             headerColor: null,
 
@@ -305,9 +307,11 @@ export default {
         }
     },
     mounted() {
-        this.refId = this.$route.params.ref_id;
-        this.userName = this.$route.params.user_id;
+        this.headerData.Authorization = `Bearer ${this.$route.params.token}`
+
+        window.Echo.connect();
         this.getChatWindow();
+
     },
     methods: {
         // SOCKET FUNCTION START
@@ -325,15 +329,11 @@ export default {
             });
         },
         startSocketBrodcast() {
-            window.Echo.connect();
 
             window.Echo.channel("message-channel." + this.roomId).listen(".receive-messages", (data) => {
                 if(data.next.status !== undefined){
                     this.chatStatus = data.next.status;
                 }
-                // if (data.sender_type == 2 && this.agent_id != data.sender_id) {
-                //     this.agent_id = data.sender_id;
-                // }
                 this.nextActionData = data.next.data;
                 if (data.next.next_action !== '') {
                     this.chatComponent = data.next.next_action;
@@ -481,7 +481,7 @@ export default {
                 }
                 this.voiceRecord.userFile ? messageData.append('file[]', this.voiceRecord.userFile) : '';
 
-                axios.post('/chat-support/send-message', messageData)
+                axios.post('/chat-support/send-message', messageData, {  headers: this.headerData  })
                     .then(res => {
                         this.input = '';
                         this.audioPreview = false;
@@ -502,21 +502,17 @@ export default {
         },
         getChatWindow() {
             this.$store.commit('is_loader', true);
-            const requestData = {
-                ref_id: this.refId,
-            };
-            this.userName ? requestData.user_id = this.userName : ''
-
-            axios.post('/chat-support/get-data', requestData)
+            
+            axios.post('/chat-support/get-data', {}, {  headers: this.headerData  })
                 .then(res => {
                     if (res.status == 200) {
-                        this.domainName = res.data.data.white_lable_details.website_id;
+                        this.domainName = res.data.data.white_lable_details.name;
                         this.headerColor = res.data.data.settings.header_color;
                         this.chatComponent = res.data.data.component;
                         this.userId = res.data.data.end_user_id;
                         this.chatList = res.data.data.chats;
                         this.startNewChat = (res.data.data?.open_chats == 0) ? true : false;
-                        if(this.userId) {
+                        if(res.data.data.end_user_id) {
                             this.awaitAgentSocket()
                         }
                     }
@@ -526,17 +522,29 @@ export default {
                     this.$store.commit('is_loader', false);
                 })
         },
+        getChatList() {
+            this.$store.commit('is_loader', true);
+            axios.post('/chat-support/get-chat-list', {}, {  headers: this.headerData  })
+                .then(res => {
+                    if (res.status == 200) {
+                        this.chatList = res.data.data.chats;
+                        this.startNewChat = (res.data.data?.open_chats == 0) ? true : false;
+                    }
+                    this.$store.commit('is_loader', false);
+                }).catch(e => {
+                    console.error(e);
+                    this.$store.commit('is_loader', false);
+                })
+        },
         async getChatMessages(data) {
             this.currentChatData = data
-            await axios.post('/chat-support/get-chat-messages', { ref_id: this.refId, user_id: this.userName, chat_id: this.currentChatData.chat_id, page: this.pagination.currentPage })
+            await axios.post('/chat-support/get-chat-messages', { chat_id: this.currentChatData.chat_id, page: this.pagination.currentPage }, {  headers: this.headerData  })
                 .then(res => {
                     if(res.status == 200) {
-                        // this.userId = res.data.data.end_user_id;
                         this.roomId = res.data.data.chat_room_id;
                         this.chatStatus = res.data.data.status;
                         this.agent_id = res.data.data.agent_id;
                         this.agent_name = res.data.data.agent_name;
-                        
                         const messages = res.data.data.messages.data;
     
                         for (let i = 0; i < messages.length; i++) {
@@ -589,9 +597,7 @@ export default {
                 })
         },
         callForAddUserid() {
-            axios.post('/chat-support/add-userid', {
-                ref_id: this.refId,
-            }).then(res => {
+            axios.post('/chat-support/add-userid', {}, {  headers: this.headerData  }).then(res => {
                     if (res.status != 200) {
                         this.$toast.error(res.data.message);
                         return
@@ -614,8 +620,10 @@ export default {
                         }
 
                         this.optionOrLanguage();
-                        this.startSocketBrodcast();
-                        this.awaitAgentSocket();
+                        this.startSocketBrodcast();                        
+                        if(respData.user_id) {
+                            this.awaitAgentSocket()
+                        }
                     }
                 })
                 .catch(e => {
@@ -635,7 +643,7 @@ export default {
                 user_id: this.userId
             }
 
-            axios.post('/chat-support/send-selected-option', data)
+            axios.post('/chat-support/send-selected-option', data, {  headers: this.headerData  })
                 .then(res => {
 
                 }).catch(e => {
@@ -644,7 +652,7 @@ export default {
         },
         callForCreateChatRoom(reset = false) {
             this.messagesList = [];
-            axios.post('/chat-support/start-new-chat', { user_id: this.userId })
+            axios.post('/chat-support/start-new-chat', { user_id: this.userId }, {  headers: this.headerData  })
             .then(res => {
                 this.agent_id = 0;
                 this.agent_name = 'ChatBot';
@@ -687,6 +695,8 @@ export default {
             this.messagesList = []; /*Emptying Message list so new chat is not appended to existing Message list*/
             this.getChatWindow(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
             window.Echo.leave("message-channel." + this.roomId) /*DISCONNECTING SOCKET*/
+            window.Echo.leave("chat-request-accepted-channel." + this.userId) /*DISCONNECTING SOCKET*/
+            this.getChatWindow(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
             
             this.roomId = null;
             this.chatStatus = null;
@@ -758,7 +768,7 @@ export default {
                 user_id: this.userId
             }
 
-            axios.post('/chat-support/end-chat', data)
+            axios.post('/chat-support/end-chat', data, {  headers: this.headerData  })
                 .then(res => {
                     // console.log(res);
 
@@ -772,7 +782,7 @@ export default {
                 user_id: this.userId
             }
 
-            axios.post('/chat-support/restart-chat', data)
+            axios.post('/chat-support/restart-chat', data, {  headers: this.headerData  })
                 .then(res => {
                     window.Echo.leave("message-channel." + this.roomId) /*DISCONNECTING SOCKET OF CURRENT ROOM*/
                     this.messagesList = []
@@ -796,13 +806,12 @@ export default {
                 user_id: this.userId
             }
 
-            axios.post('/chat-support/request-live-chat', data)
+            axios.post('/chat-support/request-live-chat', data, {  headers: this.headerData  })
                 .then(res => {
                     this.chatStatus = res.data.data.status;
                     this.nextActionData = [];
                     this.senderType = 1;
                     this.$toast.success(res.data.message);
-                    this.awaitAgentSocket();
                 }).catch(e => {
                     console.error(e);
                 })

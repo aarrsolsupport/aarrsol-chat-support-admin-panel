@@ -44,7 +44,7 @@ export default {
             menu: {
                 1: ['dashboard', 'chatflow', 'operators', 'tickets'],
                 2: ['dashboard', 'chatflow', 'whitelabels', 'chats', 'tickets'],
-                3: ['dashboard', 'chatflow', 'agents', 'chats', 'tickets', 'themesettings'],
+                3: ['dashboard', 'chatflow', 'agents', 'chatrequests', 'chats', 'tickets', 'themesettings'],
                 4: ['dashboard', 'chatrequests', 'chats', 'tickets', 'autosuggestions'],
             }
         }

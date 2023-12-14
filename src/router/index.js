@@ -48,7 +48,7 @@ const routes = createRouter({
             component: () => import('@/components/agents/DetailComponent.vue')
         },
         {
-            path: '/chats',
+            path: '/chats/:user?',
             component: () => import('@/components/chats/ListComponent.vue')
         },
         {

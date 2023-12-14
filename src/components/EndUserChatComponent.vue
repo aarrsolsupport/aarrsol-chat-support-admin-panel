@@ -20,27 +20,27 @@
                         <ul class="dropdown-menu dropdown-menu-end more-action-list">
                             <template v-if="senderType == 0">
                                 <li>
+                                    <button class="dropdown-item more-list-btn" type="button" @click="callForEndChat()">
+                                        <div class="thm-heading">
+                                            <h2 class="text-danger"> End chat  </h2>
+                                        </div>
+                                    </button>
+                                </li>
+                                <li>
                                     <button class="dropdown-item more-list-btn" type="button" @click="callForRestartChat()">
                                         <div class="thm-heading">
-                                            <h2> Restart Chat </h2>
+                                            <h2 class="text-primary"> Restart Chat </h2>
                                         </div>
                                     </button>
                                 </li>
                                 <li>
                                     <button class="dropdown-item more-list-btn" type="button" @click="callForLiveChat()">
                                         <div class="thm-heading">
-                                            <h2> Live Agent </h2>
+                                            <h2 class="text-success"> Request Live Agent </h2>
                                         </div>
                                     </button>
                                 </li>
                             </template>
-                            <li>
-                                <button class="dropdown-item more-list-btn" type="button" @click="callForEndChat()">
-                                    <div class="thm-heading">
-                                        <h2>End chat  </h2>
-                                    </div>
-                                </button>
-                            </li>
                         </ul>
                     </div>
                     <button type="button" class="btn-close" @click="cloaseChatModal()"></button>

@@ -89,3 +89,14 @@ span.message-time.messages-time-item {
     margin-top: -118px;
     z-index: 99;
 }
+
+.outgoing-messages{
+	text-align: right;
+}
+
+
+.outgoing-messages .messages-item-content{
+	border-radius: 8px 8px 0px 8px !important;
+	background:  #F6FAFD !important;
+	margin-left: auto;
+}

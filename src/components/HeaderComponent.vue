@@ -8,20 +8,20 @@
                 </a>
              </div>
              <div class="admin-notification">
-                <!-- <div class="notification-sec">
-                   <button type="button" class="header-admin-btn">
+                <!-- <div class="notification-sec" v-if="authData.role_id > 2">
+                   <button type="button" class="header-admin-btn" title="Chat With Admin">
                       <div class="notification-img">
                          <img src="@/assets/images/chat-icon.svg" alt="">
                       </div>
                    </button>
                 </div> -->
-                <div class="notification-sec">
+                <!-- <div class="notification-sec">
                    <button type="button" class="header-admin-btn">
                       <div class="notification-img">
                          <img src="@/assets/images/notification-bing.svg" alt="">
                       </div>
                    </button>
-                </div>
+                </div> -->
                 <div class="admin-sec">
                    <div class="admin-con thm-heading">
                       <span>Login With  </span>

@@ -2,15 +2,15 @@
     <div class="borad-inner-body-sec chat-user-wrapper  agent-chat-user">
         <div class="borad-inner-body">
             <div class="chat-user-tab chats-tabs-item-con">
-                <template v-if="authData.role_id == 4">
-                    <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                    <template v-if="authData.role_id == 4">
                         <li class="nav-item" role="presentation" @click="chat_type = 1">
                             <button class="nav-link active" id="pills-open-chat-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-open-chat" type="button" role="tab" aria-controls="pills-open-chat"
                                 aria-selected="true">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Open Chats<div v-if="unread_count[1]"> ({{ unread_count[1] }})</div>
+                                        <h2>Open<div v-if="unread_count[1]"> ({{ unread_count[1] }})</div>
                                         </h2>
                                     </div>
                                 </div>
@@ -22,110 +22,86 @@
                                 aria-selected="false" tabindex="-1">
                                 <div class="chat-heading">
                                     <div class="thm-heading">
-                                        <h2>Closed Chats<div v-if="unread_count[2]"> ({{ unread_count[2] }})</div>
+                                        <h2>Closed<div v-if="unread_count[2]"> ({{ unread_count[2] }})</div>
                                         </h2>
                                     </div>
                                 </div>
                             </button>
                         </li>
-                    </ul>
-                    <div class="tab-content" id="pills-tabContent">
-                        <!-- tab-pane fade show active -->
-                        <div class="" :id="chat_type == 1 ? 'pills-open-chat' : 'pills-close-chat'" role="tabpanel"
-                            aria-labelledby="pills-open-chat-tab">
-                            <div class="chat-user-body">
-                                <div class="search-sec p-0 border-0 justify-content-center">
-                                    <div class="search-input-sec">
-                                        <input type="text" placeholder="Search" v-model="search">
-                                        <div class="search-icon">
-                                            <img src="@/assets/images/search-icon.svg" alt="">
-                                        </div>
+                        <li class="nav-item" role="presentation" @click="chat_type = 0">
+                            <button class="nav-link" id="pills-my-chat-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-my-chat" type="button" role="tab" aria-controls="pills-my-chat"
+                                aria-selected="true">
+                                <div class="chat-heading">
+                                    <div class="thm-heading">
+                                        <h2>Admin<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div></h2>
                                     </div>
                                 </div>
-                                <div class="chat-user-sec">
-                                    <div class="chat-user-tab-sec">
-                                        <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
-                                            :class="(current_chat.chat_room_id == item.chat_room_id) ? 'user-item-active' : ''"
-                                            @click="getChatsMessages(item, true)">
-                                            <button class="chat-user-btn user-active">
-                                                <div class="thm-heading">
-                                                    <h2>{{ item.end_user_name }}</h2>
-                                                    <div class="dots">
-                                                        <span class="dots-btn"></span>
-                                                        <div class="user-active-con">
-                                                            <div class="thm-heading">
-                                                                <p>Active *TO-DO*</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dots" v-if="item.unread_message_count > 0">
-                                                    <div class="user-status-active dots-btn">
-                                                        <span> {{ item.unread_message_count }}</span>
-                                                    </div>
+                            </button>
+                        </li>
+                    </template>
+                    <template v-else>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-my-chat-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-my-chat" type="button" role="tab" aria-controls="pills-my-chat"
+                                aria-selected="true">
+                                <div class="chat-heading">
+                                    <div class="thm-heading">
+                                        <h2>My Chats<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div></h2>
+                                    </div>
+                                </div>
+                            </button>
+                        </li>
+                    </template>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <!-- tab-pane fade show active -->
+                    <div :id="chat_type == 0 ? 'pills-my-chat' : (chat_type == 1 ? 'pills-open-chat' : 'pills-close-chat')" role="tabpanel"
+                        :aria-labelledby="chat_type == 0 ? 'pills-my-chat-tab' : (chat_type == 1 ? 'pills-open-chat-tab' : 'pills-close-chat-tab')">
+                        <div class="chat-user-body">
+                            <div class="search-sec p-0 border-0 justify-content-center">
+                                <div class="search-input-sec">
+                                    <input type="text" placeholder="Search" v-model="search">
+                                    <div class="search-icon">
+                                        <img src="@/assets/images/search-icon.svg" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-user-sec">
+                                <div class="chat-user-tab-sec">
+                                    <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
+                                        :class="(current_chat.chat_room_id == item.chat_room_id) ? 'user-item-active' : ''"
+                                        @click="getChatMessages(item, true)">
+                                        <button class="chat-user-btn user-active">
+                                            <div class="thm-heading">
+                                                <h2>{{ item.end_user_name }}</h2>
+                                                <div class="dots">
+                                                    <span class="dots-btn"></span>
                                                     <div class="user-active-con">
                                                         <div class="thm-heading">
-                                                            <p>Open Chat</p>
+                                                            <p>Active *TO-DO*</p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </button>
-                                        </div>
+                                            </div>
+                                            <div class="dots" v-if="item.unread_message_count > 0">
+                                                <div class="user-status-active dots-btn">
+                                                    <span> {{ item.unread_message_count }}</span>
+                                                </div>
+                                                <div class="user-active-con">
+                                                    <div class="thm-heading">
+                                                        <p>Open Chat</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- SCROLL PAGINATION *TO-DO* -->
                     </div>
-                </template>
-                <template v-else>
-                    <div class="chat-heading">
-                        <div class="thm-heading">
-                            <h2>My Chats<div v-if="unread_count[0]"> ({{ unread_count[0] }})</div>
-                            </h2>
-                        </div>
-                    </div>
-                    <div class="chat-user-body">
-                        <div class="search-sec p-0 border-0 justify-content-center">
-                            <div class="search-input-sec">
-                                <input type="text" placeholder="Search" v-model="search">
-                                <div class="search-icon">
-                                    <img src="@/assets/images/search-icon.svg" alt="">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chat-user-sec">
-                            <div class="chat-user-tab-sec">
-                                <div v-for="(item, index) in filteredItems" :key="index" class="chat-user-item"
-                                    @click="getChatsMessages(item, true)">
-                                    <button class="chat-user-btn user-active">
-                                        <div class="thm-heading">
-                                            <h2> {{ item.end_user_name }}</h2>
-                                            <div class="dots">
-                                                <span class="dots-btn"></span>
-                                                <div class="user-active-con">
-                                                    <div class="thm-heading">
-                                                        <p>Active *TO-DO*</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dots" v-if="item.unread_message_count > 0">
-                                            <div class="user-status-active dots-btn">
-                                                <span> {{ item.unread_message_count }}</span>
-                                            </div>
-                                            <div class="user-active-con">
-                                                <div class="thm-heading">
-                                                    <p>Open Chat</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+                    <!-- SCROLL PAGINATION *TO-DO* -->
+                </div>
             </div>
             <div v-if="current_chat.chat_room_id" class="borad-inner-body-con w-100 messag-fix-sec agent-chat-sec"
                 :class="showChat && current_chat.chat_room_id ? 'show' : ''">
@@ -141,15 +117,12 @@
                                     <span>Online *TO-DO*</span>
                                 </div>
                             </div>
-                            <div class="Categories-btn">
-                                <template v-if="authData.role_id == 4">
-                                    <button class="thm-btn danger-thm" v-if="current_chat.status == 1"
-                                        @click="callForEndChat(current_chat.chat_room_id)">End Chat </button>
-                                    <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
-                                        data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas"
-                                        @click="callForCatagory()">Add
-                                        Ticket</button>
-                                </template>
+                            <div class="Categories-btn" v-if="chat_type != 0">
+                                <button class="thm-btn danger-thm" v-if="current_chat.status == 1"
+                                    @click="callForEndChat(current_chat.chat_room_id)">End Chat </button>
+                                <button class="thm-btn thm-border-btn blue-bg" data-bs-toggle="offcanvas"
+                                    data-bs-target="#addticketoffcanvas" aria-controls="operatoroffcanvas"
+                                    @click="callForCatagory()">Add Ticket</button>
                                 <div class="more-action-sec">
                                     <button class="more-action-btn" data-bs-toggle="dropdown"><img
                                             src="@/assets/images/more-action.svg" alt=""></button>
@@ -174,7 +147,7 @@
                                     :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
                                     <div class="messages-item-con" v-if="unreadMessage && mes.id == unreadMessage?.unread_from">
                                         <div class="sub-messages-con chat-ended-message">
-                                                        <span class="message-time">{{ unreadMessage?.unread_count }} Unread Messages</span>
+                                            <span class="message-time">{{ unreadMessage?.unread_count }} Unread Messages</span>
                                         </div>
                                     </div>
                                     <div class="messages-item-con">
@@ -206,7 +179,7 @@
                             </div>
                         </div>
                         <div class="messages-footer-sec" v-if="current_chat.status == 1">
-                            <div class="auto-message-slider">
+                            <div class="auto-message-slider" v-if="filteredSuggestions.length">
                                 <div class="auto-message-slider-con reason-sec">
                                     <!-- <div class="owl-carousel owl-theme" id="auto-message-slider"> -->
                                     <Carousel v-bind="settings" :breakpoints="breakpoints" class="w-100 owl-theme">
@@ -381,6 +354,10 @@ export default {
         filteredItems() {
             const filtered_data = this.listItems;
             if (this.search) {
+                if(this.chat_type == 0) {
+                    const filtered_contacts = this.contacts;
+                    return filtered_contacts.filter(item => item.end_user_name.toLowerCase().includes(this.search.toLowerCase()));
+                } 
                 return filtered_data.filter(item => item.end_user_name.toLowerCase().includes(this.search.toLowerCase()));
             }
             return filtered_data;
@@ -403,7 +380,7 @@ export default {
             defaultFile: require('@/assets/images/file-icon.svg'),
             messages: [],
             my_chats: true,
-            chat_type: 0,
+            chat_type: 2,
             unread_count: { 0: 0, 1: 0, 2: 0 },
             search: '',
             suggestions: {},
@@ -450,22 +427,31 @@ export default {
             pagination: {
                 currentPage: 1,
                 lastPage: 1
-            }
+            },
+            contacts: []
         }
     },
     watch: {
         chat_type() {
+            this.current_chat = {};
             this.getChatsList()
         }
     },
     mounted() {
-        if (this.authData && this.authData.role_id == 4) {
-            this.chat_type = 1
+        if (this.authData) {
+            this.chat_type = ( this.authData.role_id == 4 ) ? 1 : 0
         }
+        // if(this.chat_type == 0 ) {
+        //     this.getAdminContacts();
+        // }
     },
     methods: {
         startSocketBrodcast() {
-            window.Echo.channel("message-channel." + this.current_chat.chat_room_id).listen(".receive-messages", (data) => {
+            let channel = "message-channel." + ((this.chat_type == 0) ? 'admin_chat_' : '') + this.current_chat.chat_room_id;
+            console.log(channel)
+            window.Echo.channel(channel).listen(".receive-messages", (data) => {
+                // *TO-DO* bring latest msg chat on top in list
+
                 if(data.next.next_action == 'end' && data.next.status == 2) {
                     let position = this.listItems.findIndex(item => item.chat_room_id == this.current_chat.chat_room_id);
                     this.listItems.splice(position, 1)
@@ -477,34 +463,54 @@ export default {
                 this.scrollToBottom();
             });
         },
-        async getChatsMessages(item, newChat = false) {
-            item.unread_message_count = 0;
-            if(newChat) {
-                this.pagination.currentPage = 1;
-            }
-            this.current_chat = Object.assign({}, item)
-            this.current_chat.user_id = this.authData.id
-            // console.log(['current_chat', this.current_chat])
-            this.$store.commit('is_loader', true);
-            await axios.post(`chat/get-messages?page=${this.pagination.currentPage}`, { room_id: this.current_chat.chat_room_id })
-                .then(res => {
+        async getChatMessages(item, newChat = false) {
+            if(item.chat_room_id) {
+                this.search = ''
+                if(this.current_chat && this.current_chat.chat_room_id != item.chat_room_id) {
+                    item.unread_message_count = 0;
+                    this.current_chat = Object.assign({}, item)
+                    this.current_chat.user_id = this.authData.id
                     if(newChat) {
-                        this.messages = [];
+                        this.pagination.currentPage = 1;
                     }
-                    this.showChat = 1
-                    this.messages.unshift(...res.data.data.messages.data.reverse());
-                    this.mediaUrl = res.data.data.media_base_url
-                    this.startSocketBrodcast();
-                    this.pagination.currentPage == 1 && this.scrollToBottom();
-                    this.unreadMessage = Object.assign({}, res.data.data.unread);
-                    this.pagination.lastPage = res.data.data.messages.last_page;
-                    this.pagination.currentPage += 1;
-                    // this.unread_count[this.chat_type] = res.data.data.unread_count;
-                    this.$store.commit('is_loader', false);
-                }).catch(e => {
-                    this.$toast.error(e.response.message ?? e.response.data.message);
-                    this.$store.commit('is_loader', false);
-                })
+                    // console.log(['current_chat', this.current_chat])
+                    this.$store.commit('is_loader', true);
+                    await axios.post(`chat/get-messages?page=${this.pagination.currentPage}`, { room_id: this.current_chat.chat_room_id, chat_type: this.chat_type })
+                    .then(res => {
+                        if(newChat) {
+                            this.messages = [];
+                        }
+                        this.showChat = 1
+                        this.messages.unshift(...res.data.data.messages.data.reverse());
+                        this.mediaUrl = res.data.data.media_base_url
+                        this.startSocketBrodcast();
+                        this.pagination.currentPage == 1 && this.scrollToBottom();
+                        this.unreadMessage = Object.assign({}, res.data.data.unread);
+                        this.pagination.lastPage = res.data.data.messages.last_page;
+                        this.pagination.currentPage += 1;
+                        // this.unread_count[this.chat_type] = res.data.data.unread_count;
+                        this.$store.commit('is_loader', false);
+                    }).catch(e => {
+                        this.$toast.error(e.response.message ?? e.response.data.message);
+                        this.$store.commit('is_loader', false);
+                    })
+                }
+            } else {
+                this.setupNewChat(item)
+            }
+        },
+        setupNewChat(item) {
+            item.unread_message_count = 0;
+            item.status = 1;
+            item.chat_room_id = 'T'+item.end_user_id
+            item.new_chat = 1
+            item.user_id = this.authData.id
+            this.current_chat = Object.assign({}, item)
+            this.search = ''
+            this.messages = [];
+            this.showChat = 1
+            
+            this.listItems.unshift(item)
         },
         getChatsList() {
             this.$store.commit('is_loader', true);
@@ -517,11 +523,33 @@ export default {
                     this.suggestions = Object.assign([], res.data.data.auto_suggestions)
                     this.listItems = Object.assign([], res.data.data.chats_list)
                     this.unread_count[this.chat_type] = res.data.data.unread_count;
-                    if(this.listItems.length > 0) {
-                        this.getChatsMessages(this.listItems[0]);
+                    if(res.data.data.contacts) {
+                        this.contacts = Object.assign([], res.data.data.contacts)
                     }
+                    if(this.$route.params.user) {
+                        let position = this.listItems.findIndex(item => (item.end_user_name == this.$route.params.user));
+                        if(position > -1) {
+                            this.getChatMessages(this.listItems[position]);
+                        } else {
+                            if(this.chat_type == 0) {
+                                let contPosition = this.contacts.findIndex(item => (item.end_user_name == this.$route.params.user));
+                                if(contPosition > -1){
+                                    let cont = this.contacts[contPosition];
+                                    if(cont.chat_room_id) {
+                                        this.getChatMessages(cont);
+                                    } else {
+                                        this.setupNewChat(cont)
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                    // if(this.listItems.length > 0) {
+                    //     this.getChatMessages(this.listItems[0]);
+                    // }
                     this.$store.commit('is_loader', false);
                 }).catch(e => {
+                    console.error(e)
                     this.$toast.error(e.response.message ?? e.response.data.message);
                     this.$store.commit('is_loader', false);
                 })
@@ -611,12 +639,25 @@ export default {
         setAltImg(event) { 
             event.target.src = this.defaultFile 
         } ,
-        sendMessage() {
+        sendMessage() { 
             if (this.input || this.media || this.voiceRecord.userFile) {
                 let messageData = new FormData();
-                messageData.append('chat_room_id', this.current_chat.chat_room_id)
-                messageData.append('sender_type', 2)
+                if(this.current_chat.new_chat) {
+                    messageData.append('new_chat', 1)
+                    if(this.current_chat.end_user_role_id > this.authData.role_id) {
+                        messageData.append('admin', this.current_chat.user_id)
+                        messageData.append('sub_admin', this.current_chat.end_user_id)
+                    } else {
+                        messageData.append('admin', this.current_chat.end_user_id)
+                        messageData.append('sub_admin', this.current_chat.user_id)
+                    }
+                } else {
+                    messageData.append('new_chat', 0)
+                    messageData.append('chat_room_id', this.current_chat.chat_room_id)
+                    messageData.append('sender_type', 2)
+                }
                 messageData.append('sender_id', this.current_chat.user_id)
+                messageData.append('chat_type', this.chat_type)
                 messageData.append('message', this.input )
     
                 for (let i = 0; i < this.media?.length; i++) {
@@ -626,11 +667,33 @@ export default {
     
                 axios.post('chat/send-message', messageData)
                 .then(res => {
+                    if(this.current_chat.new_chat) {
+                        console.log(res.data)
+                        this.current_chat.new_chat = 0
+                        this.pagination.currentPage = 1;
+                        this.pagination.lastPage = 0;
+                        this.current_chat.roomid = res.data.data.roomid
+                        // PUSH current message in the 
+                        this.messages.unshift(res.data.data)
+                        this.listItems.forEach((element, index) => {
+                            if(element.chat_room_id === this.current_chat.chat_room_id) {
+                                return this.listItems[index]['chat_room_id'] = res.data.data.chat_room_id;
+                            }
+                        });
+                        this.current_chat.chat_room_id = res.data.data.chat_room_id
+                        this.startSocketBrodcast();
+                    }
                     this.input = '';
                     this.audioPreview = false;
                     this.mediaPreviewBlobs = [];
                     this.media = null;
                     this.voiceRecord.userFile = null;
+                    if(this.listItems[0]['chat_room_id'] != this.current_chat.chat_room_id) {                        
+                        let position = this.listItems.findIndex(item => item.chat_room_id == this.current_chat.chat_room_id);
+                        let item = this.listItems[position] 
+                        this.listItems.splice(position, 1)
+                        this.listItems.unshift(item)
+                    }
                 }).catch(e => {
                     console.error(e);
                 })
@@ -686,7 +749,7 @@ export default {
             const currentPos = messagesListSec.scrollHeight
 
             if (atTop && this.pagination.currentPage != this.pagination.lastPage+1) {
-                await this.getChatsMessages(this.current_chat);
+                await this.getChatMessages(this.current_chat);
                 messagesListSec.scrollTop = messagesListSec.scrollHeight - currentPos
             }
         },

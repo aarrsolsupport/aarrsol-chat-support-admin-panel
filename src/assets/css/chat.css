@@ -397,16 +397,10 @@ header{
 }
 
 
-
-.outgoing-messages{
-	text-align: right;
-}
-
-
-.outgoing-messages .messages-item-content{
-	border-radius: 8px 8px 0px 8px !important;
-	background:  #F6FAFD !important;
-	margin-left: auto;
+.outgoing-messages {
+    display: flex;
+    justify-content: end;
+    text-align: end;
 }
 
 .chatbot-wrapper{

@@ -221,7 +221,7 @@ select:focus {
 
 
 :root {
-  --primary-color: #000;
+  /* --primary-color: #000; */
   --secondary-color: #0E5055;
 }
 

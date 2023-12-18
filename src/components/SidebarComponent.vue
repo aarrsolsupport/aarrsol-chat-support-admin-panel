@@ -2,6 +2,7 @@
     <div class="sidebar-menu-sec" v-if="authData">
         <div class="sidebar-menu-con">
             <div class="sidebar-menu-list">
+                <!-- *TO-DO* sidebar-menu-dots for notif -->
                 <div class="sidebar-menu-item" v-for="(item, index) in menu[authData.role_id]" :key="index" :class="$route.path == menu_items[item].path ? 'active': ''">
                     <router-link :to="menu_items[item].path">
                         <div class="menu-item-con">

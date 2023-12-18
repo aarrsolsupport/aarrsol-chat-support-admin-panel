@@ -480,7 +480,7 @@ export default {
             new_option: '',
             categories_data: [],
             new_message: '',
-            uploaded_files: {},
+            uploaded_files: [],
             showMessageOption: '',
             languages: {
                 1: 'English',
@@ -580,7 +580,9 @@ export default {
         setupEditDeleteForm(data) {
             console.log(data);
             if (data) {
-                data.files = data.files?.split('\n') || null
+                if(typeof data.files == 'string') {
+                    data.files = data.files?.split('\n') || null
+                }
                 this.nodeData = data
             }
         },
@@ -596,7 +598,7 @@ export default {
             switch (type) {
                 case 1:
                     this.new_message = '';
-                    this.uploaded_files = {};
+                    this.uploaded_files = [];
                     break;
                 case 2:
                     this.new_option = ''
@@ -750,7 +752,9 @@ export default {
                     node_type: this.nodeData.node_type == 'M' ? 1 : 2
                 }))
 
-                this.removedMedia.length > 0 ? form_data.append("deleted_files", this.removedMedia) : null;
+                for (let i = 0; i < this.removedMedia.length; i++) {
+                    form_data.append('deleted_files[]', this.removedMedia[i]);
+                }
 
                 for (let i = 0; i < this.uploaded_files.length; i++) {
                     form_data.append('file[]', this.uploaded_files[i]);
@@ -760,8 +764,12 @@ export default {
                     .then(res => {
                         this.$store.commit('is_loader', false);
                         if (!res.data.error) {
-                            this.emptyTree = (res.data.data.flow) ? false : true
-                            this.resetTreeData(res.data.data.flow)
+                            if(res.data.data.files) {
+                                this.nodeData.files = res.data.data.files?.split('\n') || null
+                            }
+                            this.uploaded_files = [];
+                            // this.emptyTree = (res.data.data.flow) ? false : true
+                            // this.resetTreeData(res.data.data.flow)
                             this.$toast.success(res.data.message);
                         }
                         this.closeForm()

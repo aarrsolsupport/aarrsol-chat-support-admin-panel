@@ -584,6 +584,8 @@ export default {
                     data.files = data.files?.split('\n') || null
                 }
                 this.nodeData = data
+                this.uploaded_files = [];
+                this.removedMedia = [];
             }
         },
         setupForm(type, data = {}) {
@@ -768,6 +770,7 @@ export default {
                                 this.nodeData.files = res.data.data.files?.split('\n') || null
                             }
                             this.uploaded_files = [];
+                            this.removedMedia = [];
                             // this.emptyTree = (res.data.data.flow) ? false : true
                             // this.resetTreeData(res.data.data.flow)
                             this.$toast.success(res.data.message);

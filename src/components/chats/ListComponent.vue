@@ -143,39 +143,41 @@
                         </div>
                         <div class="messages-body-sec">
                             <div class="messages-list-sec" ref="messagesListSec" @scroll="infiniteScroll">
-                                <div class="messages-item" v-for="(mes, i) in messages" :key="i"
-                                    :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
-                                    <div class="messages-item-con" v-if="unreadMessage && mes.id == unreadMessage?.unread_from">
+                                <template v-for="(mes, i) in messages" :key="i">
+                                    <div class="messages-item-con" v-if="groupByDate(mes.sent_at_timestamp, i) ">
                                         <div class="sub-messages-con chat-ended-message">
-                                            <span class="message-time">{{ unreadMessage?.unread_count }} Unread Messages</span>
+                                            <span class="message-time">{{ $filters.messageDisplayDateFormat(mes.sent_at_timestamp) }}</span>
                                         </div>
                                     </div>
-                                    <div class="messages-item-con">
-                                        <div class="sub-messages-con thm-heading">
-                                            <span class="message-time">{{
-                                                $filters.messageDisplayDateFormat(mes.sent_at_timestamp) }}</span>
-                                        </div>
-                                        <div class="messages-item-content thm-heading" v-if="mes.message">
-                                            <p>{{ mes.message }}</p>
-                                            <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
-
-                                        </div>
-                                        <template v-if="mes.file_paths">
-                                            <div class="video-sec" v-for="(paths, index ) in mes.file_paths.split('\n')" :key="index">
-                                                <template  v-if="['png', 'jpg', 'jpeg'].includes(paths.split('.')[1])">
-                                                    <img :src="mediaUrl + paths"/>
-                                                    <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
-                                                </template>
-                                                <template v-else>
-                                                    <video controls="false">
-                                                        <source :src="mediaUrl + mes.file_paths" />
-                                                    </video>
-                                                    <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
-                                                </template>
+                                    <div class="messages-item" :class="(current_chat.end_user_id == mes.sender_id) ? '' : 'outgoing-messages'">
+                                        <div class="messages-item-con" v-if="unreadMessage && mes.id == unreadMessage?.unread_from">
+                                            <div class="sub-messages-con chat-ended-message">
+                                                <span class="message-time">{{ unreadMessage?.unread_count }} Unread Messages</span>
                                             </div>
-                                        </template>
+                                        </div>
+                                            
+                                        <div class="messages-item-con">
+                                            <div class="messages-item-content thm-heading" v-if="mes.message">
+                                                <p>{{ mes.message }}</p>
+                                                <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
+                                            </div>
+                                            <template v-if="mes.file_paths">
+                                                <div class="video-sec" v-for="(paths, index ) in mes.file_paths.split('\n')" :key="index">
+                                                    <template  v-if="['png', 'jpg', 'jpeg'].includes(paths.split('.')[1])">
+                                                        <img :src="mediaUrl + paths"/>
+                                                        <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
+                                                    </template>
+                                                    <template v-else>
+                                                        <video controls="false">
+                                                            <source :src="mediaUrl + mes.file_paths" />
+                                                        </video>
+                                                        <span class="message-time messages-time-item">{{ $filters.messageDisplayTimeFormat(mes.sent_at_timestamp) }}</span>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
                                     </div>
-                                </div>
+                                </template>
                             </div>
                         </div>
                         <div class="messages-footer-sec" v-if="current_chat.status == 1">
@@ -334,6 +336,7 @@
 
 </template>
 <script setup>
+import moment from 'moment';
 import 'vue3-carousel/dist/carousel.css';
 import EmojiPicker from 'vue3-emoji-picker';
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
@@ -377,6 +380,8 @@ export default {
     },
     data() {
         return {
+            temp_old_dates: [],
+            
             defaultFile: require('@/assets/images/file-icon.svg'),
             messages: [],
             my_chats: true,
@@ -446,6 +451,17 @@ export default {
         // }
     },
     methods: {
+        groupByDate(date, i) {
+            var new_date = moment.unix(date);
+            var date_data = new_date.format('ddd-D-MMM');
+            if(this.temp_old_dates[date_data] == undefined) {
+                this.temp_old_dates[date_data] = i;
+                return true;
+            } else if(this.temp_old_dates[date_data] == i) {
+                return true;
+            }
+            return false;
+        },
         startSocketBrodcast() {
             let channel = "message-channel." + ((this.chat_type == 0) ? 'admin_chat_' : '') + this.current_chat.chat_room_id;
             console.log(channel)
@@ -472,6 +488,7 @@ export default {
                     this.current_chat.user_id = this.authData.id
                     if(newChat) {
                         this.pagination.currentPage = 1;
+                        this.temp_old_dates = []
                     }
                     // console.log(['current_chat', this.current_chat])
                     this.$store.commit('is_loader', true);

@@ -879,3 +879,7 @@ button.start-chat .messages-item-content {
     z-index: 99;
     left: 60px !important;
 }
+
+.chat-ended-message span {
+    background-color: #fff;
+}

@@ -100,3 +100,8 @@ span.message-time.messages-time-item {
 	background:  #F6FAFD !important;
 	margin-left: auto;
 }
+
+.group-Date-sec {
+    text-align: center;
+    margin-top: 20px;
+}

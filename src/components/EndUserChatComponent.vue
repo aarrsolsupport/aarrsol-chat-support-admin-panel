@@ -253,6 +253,7 @@ export default {
     },
     data() {
         return {
+            temp_old_dates: [],
             headerData: {},
             mediaBaseUrl: process.env.VUE_APP_USER_CHAT_MEDIA,
             defaultFile: require('@/assets/images/file-icon.svg'),
@@ -354,16 +355,15 @@ export default {
 
         // RENDER FUNCTIONS START
         renderMedia(data, getChatMessages = false) {
+            let date_html = this.groupByDate(data);
             const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
             const filePathsArray = data.file_paths.split('\n');
                 filePathsArray.forEach(filePath => {
                     const fileType = filePath.split('.').pop().toLowerCase();
                     if (['webp', 'gif','png', 'jpg', 'jpeg'].includes(fileType)) {
-                        let html = `<div class="messages-item ${outgoingClass}">
-                                            <div class="messages-item-con">
-                                                <div class="sub-messages-con">
-                                                    <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
-                                                </div>
+                        let html = `${date_html}
+                                        <div class="messages-item ${outgoingClass}">
+                                            <div class="messages-item-con">                                    
                                                 <div class="messages-item-content">
                                                     <img src="${ this.mediaBaseUrl + filePath}" />
                                                     <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
@@ -372,11 +372,9 @@ export default {
                                         </div>`;
                         getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
                     } else if (['mp3','mpeg', 'ogg', 'wav'].includes(fileType)) {
-                        let html = `<div class="messages-item ${outgoingClass}">
+                        let html = `${date_html}
+                                    <div class="messages-item ${outgoingClass}">
                                         <div class="messages-item-con">
-                                            <div class="sub-messages-con">
-                                                <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
-                                            </div>
                                             <div>
                                                 <audio controls="">
                                                     <source src="${this.mediaBaseUrl + filePath}" />
@@ -387,11 +385,9 @@ export default {
                                     </div>`
                         getChatMessages ? this.messagesList.unshift(html) : this.messagesList.push(html);
                     } else if (['webm', 'mp4', 'mkv'].includes(fileType)) {
-                        let html = `<div class="messages-item ${outgoingClass}">
+                        let html = `${date_html}
+                                    <div class="messages-item ${outgoingClass}">
                                         <div class="messages-item-con">
-                                            <div class="sub-messages-con">
-                                                <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
-                                            </div>
                                             <div class="messages-item-content">
                                                 <div class="audio-sec">
                                                     <video controls="">
@@ -409,28 +405,23 @@ export default {
                     }
                 })
         },
-        renderImageMessage(data) {
-            const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
-            const html = `<div class="messages-item ${outgoingClass}">
-                                <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
-                                    </div>
-                                    <div class="messages-item-content">
-                                        <img src="${ this.mediaBaseUrl + data.file_paths}" />
-                                        <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
-                                    </div>
-                                </div>
+        groupByDate(data = null) {
+            let sent_at_timestamp = data ? data.sent_at_timestamp : moment().unix();
+            var date_data = moment.unix(sent_at_timestamp).format('ddd-D-MMM');
+            if(this.temp_old_dates[date_data] == undefined) {
+                this.temp_old_dates[date_data] = date_data;
+                return `<div class="sub-messages-con chat-ended-message  group-Date-sec">
+                                <span class="message-time">${this.$filters.messageDisplayDateFormat(sent_at_timestamp)}</span>
                             </div>`;
-            this.messagesList.push(html);
+            } 
+            return "";
         },
         renderTextMessage(data, getChatMessages = false) {
+            let date_html = this.groupByDate(data);
             const outgoingClass = data.sender_type === 1 ? 'outgoing-messages' : '';
-            const html = `<div class="messages-item ${outgoingClass}">
+            const html = `${date_html}
+                            <div class="messages-item ${outgoingClass}">
                                 <div class="messages-item-con">
-                                    <div class="sub-messages-con">
-                                        <span class="message-time">${this.$filters.messageDisplayDateFormat(data.sent_at_timestamp)}</span>
-                                    </div>
                                     <div class="messages-item-content">
                                         <p>${data.message}</p>
                                         <span class="message-time messages-time-item">${this.$filters.messageDisplayTimeFormat(data.sent_at_timestamp)}</span>
@@ -441,11 +432,9 @@ export default {
         },
         optionOrLanguage() {
             if (this.chatComponent == 'lang') {
-                let lang = `<div class="messages-item">
+                let lang = `${this.groupByDate()}
+                                <div class="messages-item">
                                     <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.getDateTIme()}</span>
-                                        </div>
                                         <div class="messages-item-content">
                                             <p>Welcome `+ this.userName +`! Choose your language from the list below</p>
                                         </div>
@@ -454,11 +443,9 @@ export default {
                 this.messagesList.push(lang)
             }
             if (this.chatComponent == 'opt') {
-                let opt = `<div class="messages-item">
+                let opt = `${this.groupByDate()}
+                                <div class="messages-item">
                                     <div class="messages-item-con">
-                                        <div class="sub-messages-con">
-                                            <span class="message-time">${this.getDateTIme()}</span>
-                                        </div>
                                         <div class="messages-item-content">
                                             <p>Choose an issue from below</p>
                                         </div>
@@ -542,6 +529,7 @@ export default {
             await axios.post('/chat-support/get-chat-messages', { chat_id: this.currentChatData.chat_id, page: this.pagination.currentPage }, {  headers: this.headerData  })
                 .then(res => {
                     if(res.status == 200) {
+                        this.temp_old_dates = []
                         this.roomId = res.data.data.chat_room_id;
                         this.chatStatus = res.data.data.status;
                         this.agent_id = res.data.data.agent_id;
@@ -603,6 +591,7 @@ export default {
                         this.$toast.error(res.data.message);
                         return
                     } else {
+                        this.temp_old_dates = []
                         const respData = res.data.data;
                         this.chatComponent = respData.next_action.next_action;
                         this.roomId = respData.next_action.room_id;
@@ -655,6 +644,7 @@ export default {
             this.messagesList = [];
             axios.post('/chat-support/start-new-chat', { user_id: this.userId }, {  headers: this.headerData  })
             .then(res => {
+                this.temp_old_dates = []
                 this.agent_id = 0;
                 this.agent_name = 'ChatBot';
                 this.chatStatus = 1;
@@ -668,9 +658,6 @@ export default {
             }).catch(e => {
                 console.error(e);
             })
-        },
-        getDateTIme() {
-            return moment(new Date()).format('DD/MM/YYYY hh:mm A');
         },
         onSelectEmoji(emoji) {
             this.input += emoji.i
@@ -692,6 +679,7 @@ export default {
         //     clearTimeout(this.fetchVerionInterval);
         // },
         backToChatList() {
+            this.temp_old_dates = []
             this.chatComponent = 'chat_list'; /*GOING BACK TO CHATLIST*/
             this.messagesList = []; /*Emptying Message list so new chat is not appended to existing Message list*/
             this.getChatWindow(); /*REFRESHING CHATLIST DATA TO LATEST ONE*/
@@ -785,6 +773,7 @@ export default {
 
             axios.post('/chat-support/restart-chat', data, {  headers: this.headerData  })
                 .then(res => {
+                    this.temp_old_dates = []
                     window.Echo.leave("message-channel." + this.roomId) /*DISCONNECTING SOCKET OF CURRENT ROOM*/
                     this.messagesList = []
                     this.agent_id = 0;
